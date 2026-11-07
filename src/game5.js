@@ -67,10 +67,11 @@ function trayItems(T){const w=tutWait(),it=[];
    else if(o.state==='planted'&&!isRipe(o)){if(needsWater(o))it.push({k:'can',img:IMG.i_can,lbl:S.can?'Лейка':'Пустая',dim:!S.can});if(!o.fert&&S.inv.fert>0)it.push({k:'fert',img:IMG.i_fert,cnt:S.inv.fert,lbl:'Удобрение'})}
    if(S.done&&(o.state!=='planted')&&!o.busy)it.push({k:'move',img:IMG.move,lbl:'Переставить'})}
   else{if(needsWater(o))it.push({k:'can',img:IMG.i_can,lbl:S.can?'Лейка':'Пустая',dim:!S.can});if(!o.busy)it.push({k:'move',img:IMG.move,lbl:'Переставить'})}}
+ if(T.t==='bowl'){if(T.b==='catfood')it.push({k:'catfood',img:IMG.catfood,cnt:S.inv.catfood||null,lbl:S.inv.catfood?'Корм':'Нет корма',dim:!S.inv.catfood});else{const ok=S.can>0||S.water>0||S.build.well;it.push({k:'catwater',img:IMG.i_can,lbl:S.can?'Лейка':ok?'Из бочки':'Нет воды',dim:!ok})}return it}
  if(T.t==='ani'){const a=S[T.a][T.i];if(a.state==='hungry'){it.push({k:'feed:hay',img:IMG.hay,cnt:S.inv.hay||null,lbl:'Сено',dim:!S.inv.hay});it.push({k:'feed:feed',img:IMG.feed,cnt:S.inv.feed||null,lbl:'Комбикорм',dim:!S.inv.feed})}}
  if(w==='dig')return it.filter(i=>i.k==='shovel');if(w==='plant')return it.filter(i=>i.k==='seed:potato');if(w==='water')return it.filter(i=>i.k==='can');if(w==='fert')return it.filter(i=>i.k==='fert');
  return it}
-function trayPos(T){if(T.t==='obj'){const o=objById(T.id);const p=topOf(o);return[p[0],p[1]-6]}const a=ANIM[T.a==='cows'?'cow':'sheep'].pos[T.i];return[a[0],a[1]-120]}
+function trayPos(T){if(T.t==='bowl'){const p=T.b==='catfood'?BOWLF:BOWLW;return[p[0],p[1]-70]}if(T.t==='obj'){const o=objById(T.id);const p=topOf(o);return[p[0],p[1]-6]}const a=ANIM[T.a==='cows'?'cow':'sheep'].pos[T.i];return[a[0],a[1]-120]}
 function openTray(T){const it=trayItems(T);const t=$('tray');if(!it.length){closeTray();return false}
  closeTray();trayT=T;t.innerHTML='';it.forEach(o=>{const d=document.createElement('div');d.className='titem'+(o.dim?' dim':'');d.dataset.k=o.k;d.innerHTML=`<img src="${o.img}">${o.cnt?`<div class="cnt">${o.cnt}</div>`:''}<div class="lbl">${o.lbl}</div>`;d.addEventListener('pointerdown',e=>startDrag(e,o,d));t.appendChild(d)});
  const p=trayPos(T);t.style.left=Math.max(240,Math.min(WW-240,p[0]))+'px';t.style.top=p[1]+'px';t.style.zIndex=6000;t.classList.remove('on');void t.offsetWidth;t.classList.add('on');trayOpen=true;SND.pop();
@@ -79,7 +80,7 @@ function closeTray(){$('tray').classList.remove('on');if(trayT&&trayT.t==='obj'&
 $('tray').addEventListener('pointerdown',e=>e.stopPropagation());
 let drag=null;
 function startDrag(e,o,el){e.preventDefault();e.stopPropagation();ac();
- if(o.dim){SND.fail();if(o.k==='can')toast('Лейка пустая — набери воду в бочке'+(S.build.well?' или колодце':''));else if(o.k.startsWith('poison'))toast('Этого средства нет — купи в магазине, вкладка «Защита»');else if(o.k.startsWith('feed'))toast('Нет корма — сено продаётся в магазине, комбикорм готовят на кухне');return}
+ if(o.dim){SND.fail();if(o.k==='can')toast('Лейка пустая — набери воду в бочке'+(S.build.well?' или колодце':''));else if(o.k.startsWith('poison'))toast('Этого средства нет — купи в магазине, вкладка «Защита»');else if(o.k==='catfood')toast('Нет кошачьего корма — купи в магазине (вкладка «Животные»)');else if(o.k==='catwater')toast('Нет воды — подожди, пока наполнится бочка');else if(o.k.startsWith('feed'))toast('Нет корма — сено продаётся в магазине, комбикорм готовят на кухне');return}
  drag={o,el,sx:e.clientX,sy:e.clientY,moved:false,T:trayT};el.classList.add('drag');const g=$('ghost');g.querySelector('img').src=o.img;g.style.display='block';moveGhost(e.clientX,e.clientY);if(handAnim)$('hand').style.opacity=0}
 function moveGhost(cx,cy){const[x,y]=toStage(cx,cy);const g=$('ghost');g.style.left=x+'px';g.style.top=(y-40)+'px'}
 addEventListener('pointermove',e=>{if(!drag)return;moveGhost(e.clientX,e.clientY);if(Math.hypot(e.clientX-drag.sx,e.clientY-drag.sy)>10*SC)drag.moved=true},{passive:false});
@@ -87,7 +88,7 @@ addEventListener('pointerup',e=>{if(!drag)return;const d=drag;drag=null;$('ghost
  if(!d.moved){applyTool(d.o.k,d.T);return}
  const tg=targetAt(e.clientX,e.clientY)||d.T;applyTool(d.o.k,tg)});
 addEventListener('pointercancel',()=>{if(drag){$('ghost').style.display='none';drag.el.classList.remove('drag');drag=null;$('hand').style.opacity=1}});
-function targetAt(cx,cy){for(const dy of [-40*SC,0]){const[x,y]=toStage(cx,cy+dy);const c=fromStage(x,y);const el=document.elementFromPoint(c[0],c[1]);const t=el&&el.closest&&el.closest('[data-tap]');if(t){const k=t.dataset.tap;if(k.startsWith('obj:'))return{t:'obj',id:k.slice(4)};if(k.startsWith('ani:')){const[,a,i]=k.split(':');return{t:'ani',a,i:+i}}}}return null}
+function targetAt(cx,cy){for(const dy of [-40*SC,0]){const[x,y]=toStage(cx,cy+dy);const c=fromStage(x,y);const el=document.elementFromPoint(c[0],c[1]);const t=el&&el.closest&&el.closest('[data-tap]');if(t){const k=t.dataset.tap;if(k.startsWith('obj:'))return{t:'obj',id:k.slice(4)};if(k.startsWith('ani:')){const[,a,i]=k.split(':');return{t:'ani',a,i:+i}}if(k==='catfood'||k==='catwater')return{t:'bowl',b:k}}}return null}
 
 /* ================= ACTIONS ================= */
 function startBusy(o,type,data){o.busy={type,data,t0:now(),t1:now()+D[type](),fx:0};renderStatus(o,true);guide(null);save()}
@@ -104,6 +105,7 @@ function finishBusy(o){const k=o.busy.type,data=o.busy.data;o.busy=null;const R=
  renderObj(o,k==='plant');save()}
 function applyTool(k,T){closeTray();if(!T)return;
  if(T.t==='ani'){if(k.startsWith('feed:'))feedAnimal(T,k.slice(5));return}
+ if(T.t==='bowl'){fillBowl(T.b);return}
  const o=objById(T.id);if(!o||o.busy)return;
  if(!S.done&&o!==tutBed())return;
  if(k==='move'){startPlace(o,false,0);return}
@@ -138,7 +140,7 @@ function handleTap(target,wp){if(placing){placeAt(wp);return}
  if(tap.startsWith('fix:'))return tapFix(tap.slice(4));
  if(tap==='house')return openFac('kitchen');
  if(tap==='scare')return toast(S.scareUntil>now()?'Пугало сторожит ещё '+fmt(S.scareUntil-now()):'Пугало развалилось — поставь новое (Магазин → Защита)');
- if(tap==='cat')return petCat();if(tap==='catfood'||tap==='catwater')return fillBowl(tap)}
+ if(tap==='cat')return petCat();if(tap==='catfood'||tap==='catwater')return tapBowl(tap)}
 function tapObj(o){if(!o)return;const w=tutWait();
  if(!S.done&&o!==tutBed())return;
  if(o.busy){toast('Работа идёт — осталось '+fmt(o.busy.t1-now()));return}

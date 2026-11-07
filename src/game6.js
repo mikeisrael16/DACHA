@@ -21,7 +21,7 @@ function renderAnimals(){['cows','sheep'].forEach(a=>{const A=ANIM[aniKey(a)];S[
   const im=el.querySelector('img');if(im.dataset.s!==src){im.src=IMG[src];im.dataset.s=src}el.classList.toggle('ready',x.state==='ready');
   aniStatus(a,i,x)})})}
 const aBub={};
-function aniStatus(a,i,x){const id=a+i;let el=aBub[id];const p=ANIM[aniKey(a)].pos[i];if(!el){el=document.createElement('div');el.className='bb';el.style.left=p[0]+'px';el.style.top=(p[1]-(a==='cows'?120:100))+'px';el.style.transform='translate(-50%,-100%) scale(.75)';$('bubs').appendChild(el);aBub[id]=el}
+function aniStatus(a,i,x){const id=a+i;let el=aBub[id];const p=ANIM[aniKey(a)].pos[i];if(!el){el=document.createElement('div');el.className='bb';el.style.left=p[0]+'px';el.style.top=(p[1]-(a==='cows'?120:100))+'px';el.style.transform='translate(-50%,-100%) scale(calc(var(--bz,1)*.9))';$('bubs').appendChild(el);aBub[id]=el}
  let key,html;const t=now();
  if(x.state==='ready'){key='r';html=`<div class="b" style="border-color:#f1c40f"><img src="${IMG[a==='cows'?'milk':'wool']}"></div>`}
  else if(x.state==='hungry'){key='h';html=`<div class="b" style="border-color:#e67e22"><img src="${IMG.hay}"></div>`}
@@ -59,7 +59,7 @@ function cook(f,id){const r=FAC[f].rec[id],F=S.fac[f];if(level()<r[0]||!canCook(
  Object.entries(r[1]).forEach(([k,n])=>takeItem(k,n));F.slots[i]={r:id,t0:now(),t1:now()+r[2]*1000*tm()};SND.plant();toast('Готовим: '+PROD[id][0]);renderHUD();renderFacUI();save()}
 function collectDish(f,i){const x=S.fac[f].slots[i];if(!x)return;const q=FAC[f].rec[x.r][3];addItem(x.r,q);S.fac[f].slots[i]=null;SND.harvest();stat('cook');stat('cook_'+x.r);
  const c=elStage($('hStore'));floatText(c[0]-40,c[1]+70,'+'+q+' '+PROD[x.r][0],'#fff',true);addXp(Math.round(PROD[x.r][1]/10),FB[f][0],FB[f][1]);bump('hStore');renderFacUI();renderHUD();save()}
-const FB={kitchen:[680,440],dairy:[885,330],spinnery:[760,790]};const kbKey={};
+const FB={kitchen:[680,440],dairy:[885,330],spinnery:[540,890]};const kbKey={};
 function renderFacBubs(){for(const f in FAC){let el=$('kb_'+f);if(!el){el=document.createElement('div');el.id='kb_'+f;el.className='bb';el.dataset.tap=f==='kitchen'?'house':'fix:'+f;el.style.pointerEvents='auto';el.style.left=FB[f][0]+'px';el.style.top=FB[f][1]+'px';$('kbubs').appendChild(el)}
   if(!facOn(f)){el.style.display='none';continue}el.style.display='';const t=now();const xs=S.fac[f].slots.filter(Boolean);const ready=xs.filter(x=>t>=x.t1);let key,html;
   if(ready.length){key='r';html=`<div class="kb ready"><img src="${IMG[PROD[ready[0].r][2]]}">Готово!</div>`}

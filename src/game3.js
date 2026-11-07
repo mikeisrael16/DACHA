@@ -5,7 +5,7 @@ const minS=()=>Math.max(SW/WW,SH/WH);
 const maxS=()=>minS()*3;
 function clampCam(){cam.s=Math.min(maxS(),Math.max(minS(),cam.s));cam.x=Math.min(0,Math.max(SW-WW*cam.s,cam.x));cam.y=Math.min(0,Math.max(SH-WH*cam.s,cam.y))}
 let guideRaf=0;
-function applyCam(anim){for(const el of [$('world'),$('guideL')]){el.classList.toggle('anim',!!anim);el.style.transform=`translate(${cam.x}px,${cam.y}px) scale(${cam.s})`}
+function applyCam(anim){const rel=cam.s/minS();$('world').style.setProperty('--bz',Math.max(.8,Math.min(1.35,1.3/Math.pow(rel,.7))).toFixed(3));for(const el of [$('world'),$('guideL')]){el.classList.toggle('anim',!!anim);el.style.transform=`translate(${cam.x}px,${cam.y}px) scale(${cam.s})`}
  if(!guideRaf)guideRaf=requestAnimationFrame(()=>{guideRaf=0;if(S&&!S.done)updateGuide()})}
 function camTo(wx,wy,s,anim){cam.s=s;cam.x=SW/2-wx*s;cam.y=SH/2-wy*s;clampCam();applyCam(anim)}
 function camHome(anim){camTo(1330,700,minS()*1.25,anim)}
@@ -38,7 +38,7 @@ function newCropObj(kind,z,c,r,rot){return{id:'o'+(uid++)+'_'+Math.floor(Math.ra
 function newPerObj(p,z,c,r){return{id:'o'+(uid++)+'_'+Math.floor(Math.random()*1e4),kind:PER[p][1],p,z,c,r,rot:0,stage:0,seg:null,ripe:false,ripeAt:0,busy:null}}
 function blankInv(){const inv={};Object.keys(ITEMS).forEach(k=>inv[k]=0);return inv}
 function newState(){const inv=blankInv();inv.seed_potato=1;inv.fert=1;
- return{ver:VERSION,seenVer:'0',coins:0,xp:0,water:1,waterAt:now(),can:0,inv,lots:{},objs:[newCropObj('bed',0,4,2,0)],
+ return{ver:VERSION,seenVer:'0',coins:0,xp:0,water:1,waterAt:now(),can:0,inv,lots:{},objs:[newCropObj('bed',0,1,2,0)],
  upg:{shovel:0,can:0,soil:0,gutter:0,cap:0},ghLvl:1,build:{market:true},cows:[],sheep:[],
  fac:{kitchen:{cap:1,slots:[]},dairy:{cap:1,slots:[]},spinnery:{cap:1,slots:[]}},
  firstPotato:true,seenLvl:1,tut:0,done:false,orders:[],nextOrderAt:0,giftAt:0,

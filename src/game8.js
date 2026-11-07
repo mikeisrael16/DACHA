@@ -1,27 +1,35 @@
 
 /* ================= CAT ================= */
-const CATP=[600,735],BOWLF=[668,740],BOWLW=[728,740];
+const CATP=[625,742],BOWLF=[468,792],BOWLW=[545,796];
 function catOn(){return S.done&&S.cat&&!S.cat.gone}
 function renderCat(){const P=$('pets');if(!catOn()){P.innerHTML='';return}
- if(!P.children.length){P.innerHTML=`<div id="cat" data-tap="cat" style="left:${CATP[0]}px;top:${CATP[1]}px;z-index:${CATP[1]}"><img><div class="zz" style="display:none">Zz</div></div><div class="nm" id="catName" style="left:${CATP[0]}px;top:${CATP[1]+4}px"></div><div class="bowl" id="bowlF" data-tap="catfood" style="left:${BOWLF[0]}px;top:${BOWLF[1]}px"><img></div><div class="bowl" id="bowlW" data-tap="catwater" style="left:${BOWLW[0]}px;top:${BOWLW[1]}px"><img></div>`}
- const c=S.cat,t=now(),fe=c.food<t,we=c.water<t,night=nightNow();
- let src=(c.act&&t-c.actAt<4000)?(c.act==='eat'?'cat_eat':'cat_drink'):(fe||we)?'cat_stand':'cat_sit';
- const im=$('cat').querySelector('img');if(im.dataset.s!==src){im.src=IMG[src];im.dataset.s=src}
- $('cat').querySelector('.zz').style.display=night&&!fe&&!we&&src==='cat_sit'?'':'none';$('catName').textContent=c.name;
- $('bowlF').querySelector('img').src=fe?IMG.foodbowl0:IMG.foodbowl;$('bowlW').querySelector('img').src=we?IMG.bowl_empty:IMG.bowl_water;
+ if(!P.children.length){P.innerHTML=`<div class="bowl" id="bowlF" data-tap="catfood" style="left:${BOWLF[0]}px;top:${BOWLF[1]}px;width:78px;z-index:${BOWLF[1]}"><img></div><div class="bowl" id="bowlW" data-tap="catwater" style="left:${BOWLW[0]}px;top:${BOWLW[1]}px;width:78px;z-index:${BOWLW[1]}"><img></div><div id="cat" data-tap="cat"><img><div class="zz" style="display:none">Zz</div></div><div class="nm" id="catName"></div>`}
+ const c=S.cat,t=now(),fe=c.food<t,we=c.water<t,night=nightNow(),acting=c.act&&t-c.actAt<7000;
+ let src,pos=CATP,w=118;
+ if(acting){src=c.act==='eat'?'cat_eat':'cat_drink';w=170;pos=c.act==='eat'?[BOWLF[0]-52,BOWLF[1]+4]:[BOWLW[0]+50,BOWLW[1]+4]}
+ else if(night&&!fe&&!we){src='cat_sleep';w=150}else if(fe||we)src='cat_stand';else src='cat_sit';
+ const el=$('cat'),im=el.querySelector('img');if(im.dataset.s!==src){im.src=IMG[src];im.dataset.s=src}
+ el.style.left=pos[0]+'px';el.style.top=pos[1]+'px';el.style.width=w+'px';el.style.zIndex=pos[1]+1;
+ el.querySelector('.zz').style.display=src==='cat_sleep'?'':'none';
+ const nm=$('catName');nm.textContent=c.name;nm.style.left=pos[0]+'px';nm.style.top=(pos[1]+4)+'px';
+ $('bowlF').style.visibility=acting&&c.act==='eat'?'hidden':'';$('bowlW').style.visibility=acting&&c.act==='drink'?'hidden':'';
+ $('bowlF').querySelector('img').src=fe?IMG.bowl_food0:IMG.bowl_food;$('bowlW').querySelector('img').src=we?IMG.bowl_empty:IMG.bowl_water;
  $('bowlF').classList.toggle('empty',fe);$('bowlW').classList.toggle('empty',we)}
+function tapBowl(k){if(!catOn())return;const c=S.cat;const full=k==='catfood'?c.food:c.water;
+ if(full>now()+3600000){toast((k==='catfood'?'Миска с кормом полная':'Воды хватает')+' — ещё '+fmt(full-now()));return}
+ openTray({t:'bowl',b:k})}
 function fillBowl(k){if(!catOn())return;const c=S.cat;
- if(k==='catfood'){if(c.food>now()+3600000){toast('Миска полная — ещё '+fmt(c.food-now()));return}if(!S.inv.catfood){toast('Нет кошачьего корма — купи в магазине (вкладка «Животные»)');SND.fail();return}takeItem('catfood',1);c.food=now()+86400000;c.act='eat';c.actAt=now();SND.pop();toast(c.name+' мурлычет: спасибо за еду!')}
- else{if(c.water>now()+3600000){toast('Воды хватает — ещё '+fmt(c.water-now()));return}if(S.can>0)S.can--;else if(S.water>0||S.build.well){if(!S.build.well)S.water--}else{toast('Нужна вода: набери из бочки');SND.fail();return}c.water=now()+86400000;c.act='drink';c.actAt=now();SND.fill()}
- renderCat();renderHUD();save()}
-function petCat(){if(!catOn())return;tone(900,.12,'sine',.12,600);tone(700,.25,'sine',.1,1000,.12);floatText(CATP[0],CATP[1]-130,'💗 Мяу!','#ff7aa8');
+ if(k==='catfood'){if(!S.inv.catfood){toast('Нет кошачьего корма — купи в магазине (вкладка «Животные»)');SND.fail();return}takeItem('catfood',1);c.food=now()+86400000;c.act='eat';c.actAt=now();SND.pop();toast(c.name+' мурлычет: спасибо за еду!')}
+ else{if(S.can>0)S.can--;else if(S.build.well){}else if(S.water>0)S.water--;else{toast('Нужна вода: набери из бочки');SND.fail();return}c.water=now()+86400000;c.act='drink';c.actAt=now();SND.fill()}
+ renderCat();renderHUD();save();setTimeout(renderCat,7200)}
+function petCat(){if(!catOn())return;tone(900,.12,'sine',.12,600);tone(700,.25,'sine',.1,1000,.12);const el=$('cat');floatText(parseFloat(el.style.left),parseFloat(el.style.top)-140,'💗 Мяу!','#ff7aa8');
  if(!S.cat.petAt||now()-S.cat.petAt>3600000){S.cat.petAt=now();addXp(2,CATP[0],CATP[1]-90)}}
 function catTick(){if(!S.cat||S.cat.gone||!S.done)return;const t=now(),c=S.cat;
  if(t>c.food+86400000||t>c.water+86400000){c.gone=true;renderCat();save();sayLater([[4,`Ох… ${c.name} ушёл — миски стояли пустыми целый день. Коты не любят, когда о них забывают.`],[3,'Его можно позвать обратно в магазине (вкладка «Животные»). Только корми и пои каждый день!']])}
  else renderCat()}
 function askCatName(){popup(done=>{$('nameCat').src=IMG.cat_sit;$('nameIn').value='Барсик';modal('mName');setTimeout(()=>{try{$('nameIn').focus();$('nameIn').select()}catch(e){}},300);
  $('nameOk').onclick=()=>{let n=$('nameIn').value.trim().slice(0,16)||'Барсик';S.cat={name:n,food:now()+86400000,water:now()+86400000,gone:false};addItem('catfood',3);modal('mName',false);renderCat();SND.magic();save();
-  camTo(CATP[0]+200,CATP[1]-100,minS()*1.8,true);setTimeout(()=>dialog([[5,`${n} — отличное имя! Смотри, он уже устроился у крыльца.`],[3,`Каждый день наполняй миски: корм — из магазина, воду — из лейки или бочки. Нажми на миску, чтобы наполнить. Если миски простоят пустыми сутки, ${n} обидится и уйдёт.`],[1,'Я положила тебе 3 пачки корма для начала. А погладить кота можно, просто нажав на него!']],done),900)}})}
+  camTo(CATP[0]+200,CATP[1]-100,minS()*1.8,true);setTimeout(()=>dialog([[5,`${n} — отличное имя! Смотри, он уже устроился у крыльца.`],[3,`Каждый день наполняй миски: корм — из магазина, воду — из лейки или бочки. Нажми на миску и перетащи в неё корм или воду из лейки. Если миски простоят пустыми сутки, ${n} обидится и уйдёт.`],[1,'Я положила тебе 3 пачки корма для начала. А погладить кота можно, просто нажав на него!']],done),900)}})}
 
 /* ================= PESTS: birds & bugs (lvl 5) ================= */
 const pestsOn=()=>S.done&&level()>=PEST_LVL;

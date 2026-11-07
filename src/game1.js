@@ -2,7 +2,7 @@
 'use strict';
 const $=id=>document.getElementById(id);
 const IMG=__IMGMAP__;
-const VERSION='1.0';
+const VERSION='1.1';
 const WW=2576,WH=1093;
 const now=()=>Date.now();
 const SPOIL=6*3600000;
@@ -50,8 +50,8 @@ const FAC={
 const ANIM={cow:{name:'Корова',lvl:7,house:'cowshed',cost:250,max:3,time:300,prod:'milk',pos:[[2075,735],[2195,760],[2315,745]]},
  sheep:{name:'Овца',lvl:9,house:'sheeppen',cost:300,max:4,time:480,prod:'wool',pos:[[2345,820],[2445,850],[2525,800],[2420,770]]}};
 // fixed buildings: x,y (bottom centre), width, level, cost
-const FIX={market:{n:'Скупщик',x:2190,y:1060,w:270,lvl:1,cost:0},well:{n:'Старый колодец',x:420,y:990,w:160,lvl:6,cost:400},
- dairy:{n:'Сыроварня',x:885,y:545,w:240,lvl:8,cost:700},spinnery:{n:'Прядильня',x:760,y:1000,w:240,lvl:10,cost:900},
+const FIX={market:{n:'Скупщик',x:2190,y:1060,w:270,lvl:1,cost:0},well:{n:'Старый колодец',x:330,y:1000,w:150,lvl:6,cost:400},
+ dairy:{n:'Сыроварня',x:885,y:545,w:240,lvl:8,cost:700},spinnery:{n:'Прядильня',x:540,y:1090,w:230,lvl:10,cost:900},
  cowshed:{n:'Коровник',x:2190,y:650,w:260,lvl:7,cost:500},sheeppen:{n:'Овчарня',x:2440,y:735,w:250,lvl:9,cost:700}};
 const ITEMS={fert:['Удобрение','i_fert'],catfood:['Кошачий корм','catfood'],p_aphid:['Средство от тли','p_aphid'],p_beetle:['От колорадского жука','p_beetle'],p_slug:['Гранулы от слизней','p_slug']};
 ANN_IDS.forEach(id=>{ITEMS['seed_'+id]=['Семена: '+ANN[id][0].toLowerCase(),id+'_seed'];ITEMS[id]=[ANN[id][0],id+'_crop']});
@@ -63,8 +63,9 @@ const iName=id=>ITEMS[id]?ITEMS[id][0]:id;
 function baseSell(id){return ANN[id]?ANN[id][5]:PER[id]?PER[id][7]:PROD[id]?PROD[id][1]:5}
 // grid
 const CW=80,CH=56;
-const ZONES=[{x0:960,y0:520,cols:11,rows:7},{x0:900,y0:404,cols:11,rows:1}];
-const SIZE={bedh:[3,2],bedv:[2,3],gh:[3,3],bush:[1,1],tree:[2,1]};
+const ZONES=[{x0:960,y0:520,cols:6,rows:8,k:'bed'},{x0:900,y0:404,cols:11,rows:1,k:'per'},{x0:1440,y0:520,cols:5,rows:8,k:'gh'},{x0:720,y0:744,cols:3,rows:4,k:'bed'}];
+const zoneOk=(kind,z)=>kind==='bush'||kind==='tree'?true:ZONES[z].k===(kind==='bed'?'bed':'gh');
+const SIZE={bedh:[3,2],bedv:[2,3],bush:[1,1],tree:[2,1]};
 const BED_COST=[0,40,90,160,250,380,550,750,1000,1300,1700,2200];
 const GH_COST=[250,600,1200],GHL=[null,{n:'Плёночная',lvl:5,cost:0,mult:.75,img:'gh1'},{n:'Поликарбонатная',lvl:7,cost:500,mult:.6,img:'gh2'},{n:'Стеклянная',lvl:9,cost:1000,mult:.45,img:'gh3'}];
 const PEST_LVL=5,THIEF_LVL=4,CAT_LVL=5,SCARE_H=12,BASE_KEY='dacha_v1_save';
