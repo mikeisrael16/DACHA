@@ -110,6 +110,30 @@ svg.layer{position:absolute;left:0;top:0;width:1600px;height:893px;pointer-event
 .status{position:absolute;transform:translate(-50%,0);background:rgba(40,60,20,.88);color:#fff;font-weight:800;font-size:18px;padding:6px 14px;border-radius:16px;border:2px solid #cfe8a8;white-space:nowrap;pointer-events:none}
 
 /* guide */
+#ghImg{position:absolute;left:6px;top:330px;width:244px;filter:drop-shadow(0 8px 6px rgba(0,0,0,.35));pointer-events:none}
+#ghImg.pop{animation:framePop .7s cubic-bezier(.3,1.6,.5,1)}
+#cctv{position:absolute;left:928px;top:228px;width:70px;height:50px;pointer-events:none}
+#cctv .led{animation:led 1.2s steps(2) infinite}@keyframes led{50%{opacity:.15}}
+#kitchenBub{position:absolute;left:318px;top:440px;transform:translate(-50%,-100%);cursor:pointer;display:none}
+#kitchenBub .kb{display:flex;align-items:center;gap:6px;background:rgba(255,248,225,.97);border:4px solid #7a4e26;border-radius:20px;padding:4px 10px 4px 4px;box-shadow:0 5px 12px rgba(0,0,0,.35);font-weight:900;font-size:18px;color:#4a2e14;white-space:nowrap}
+#kitchenBub img{width:54px;height:54px;object-fit:contain}
+#kitchenBub.ready .kb{border-color:#f1c40f;animation:bob 1s ease-in-out infinite}
+#thieves{position:absolute;inset:0;pointer-events:none}
+.thief{position:absolute;width:110px;height:140px;margin:-140px 0 0 -55px;pointer-events:auto;cursor:pointer;z-index:7}
+.thief svg{width:100%;height:100%;filter:drop-shadow(0 6px 4px rgba(0,0,0,.4))}
+.thief:not(.flee) svg{animation:sneak .5s ease-in-out infinite alternate}
+@keyframes sneak{to{transform:translateY(-4px) rotate(3deg)}}
+.thief:after{content:'';position:absolute;inset:-18px}
+.kslots{display:flex;gap:14px;margin-bottom:16px;justify-content:center}
+.kslot{width:330px;height:96px;border:4px dashed #c9a46d;border-radius:20px;display:flex;align-items:center;gap:10px;padding:6px 12px;background:rgba(255,255,255,.6);font-weight:800;color:#7a5a3a}
+.kslot img{width:80px;height:80px;object-fit:contain}
+.kslot.busy{border-style:solid;background:#fff}
+.kslot .track{position:relative;height:16px;background:#d8c49a;border-radius:8px;overflow:hidden;border:2px solid #7a4e26;margin-top:6px}
+.kslot .fill{height:100%;background:linear-gradient(#ffd27a,#e67e22)}
+.need{display:flex;flex-wrap:wrap;gap:3px;justify-content:center;min-height:52px}
+.need span{display:flex;align-items:center;font-size:13px;font-weight:900;color:#2e7d32}
+.need span.miss{color:#c0392b}
+.need img{width:30px!important;height:30px!important}
 #scarecrow{position:absolute;left:1205px;top:330px;width:130px;height:180px;display:flex;align-items:flex-end;justify-content:center;cursor:pointer}
 #scarecrow img{max-width:100%;max-height:100%;filter:drop-shadow(0 6px 4px rgba(0,0,0,.35))}
 #birds{position:absolute;inset:0;pointer-events:none}
@@ -191,7 +215,7 @@ svg.layer{position:absolute;left:0;top:0;width:1600px;height:893px;pointer-event
 #toast.on{opacity:1}
 
 /* ---------- DIALOG ---------- */
-#dlg{position:absolute;inset:0;z-index:45;display:none;cursor:pointer}
+#dlg{position:absolute;inset:0;z-index:60;display:none;cursor:pointer}
 #dlg.on{display:block}
 #dlg .shade{position:absolute;inset:0;background:linear-gradient(transparent 45%,rgba(0,0,0,.35))}
 #dlg .por{position:absolute;left:10px;bottom:0;width:330px;height:330px;display:flex;align-items:flex-end;justify-content:center;animation:porIn .45s cubic-bezier(.3,1.4,.5,1)}
@@ -270,10 +294,14 @@ svg.layer{position:absolute;left:0;top:0;width:1600px;height:893px;pointer-event
   <div id="game" class="screen">
     <div id="view"><div id="world">
       <img class="bg" src="__IMG_bg__" alt="">
+      <svg class="layer" id="hifence" viewBox="0 0 1600 893" style="display:none"></svg>
       <svg class="layer" id="frames" viewBox="0 0 1600 893"></svg>
+      <img id="ghImg" alt="" style="display:none">
+      <div id="cctv" style="display:none"><svg viewBox="0 0 70 50"><rect x="2" y="4" width="10" height="26" rx="2" fill="#666"/><path d="M12 14h10" stroke="#555" stroke-width="5"/><g transform="rotate(14 40 18)"><rect x="20" y="8" width="44" height="20" rx="5" fill="#eceff1" stroke="#455a64" stroke-width="3"/><circle cx="60" cy="18" r="6" fill="#263238"/><circle cx="60" cy="18" r="2.5" fill="#4fc3f7"/></g><circle class="led" cx="28" cy="12" r="3" fill="#e53935"/></svg></div>
       <svg class="layer" id="soils" viewBox="0 0 1600 893"><defs><pattern id="clods" width="26" height="22" patternUnits="userSpaceOnUse"><circle cx="5" cy="6" r="3" fill="rgba(0,0,0,.18)"/><circle cx="17" cy="15" r="4" fill="rgba(255,255,255,.07)"/><circle cx="20" cy="4" r="2" fill="rgba(0,0,0,.2)"/></pattern><pattern id="tufts" width="34" height="26" patternUnits="userSpaceOnUse"><path d="M6 22l3-12 2 12M18 24l2-14 3 14M28 20l2-9 1 9" stroke="#3e7a22" stroke-width="2.5" fill="none" stroke-linecap="round"/><circle cx="24" cy="8" r="2.5" fill="#f4e04d"/></pattern></defs></svg>
       <div id="plantsWrap"></div>
       <div class="hitbox" id="houseHit" data-tap="house"></div>
+      <div id="kitchenBub" data-tap="house"></div>
       <div id="scarecrow" data-tap="scare" style="display:none"><img alt=""></div>
       <div class="hitbox" id="barrelHit" data-tap="barrel"></div>
       <div id="gaugeTimer"></div>
@@ -296,6 +324,7 @@ svg.layer{position:absolute;left:0;top:0;width:1600px;height:893px;pointer-event
       <div id="bubsWrap"></div>
       <svg class="layer" id="hitSvg" viewBox="0 0 1600 893"></svg>
       <div id="birds"></div>
+      <div id="thieves"></div>
       <div id="tray"></div>
     </div></div>
     <div id="guideL"><div id="ring"></div>
@@ -326,6 +355,7 @@ svg.layer{position:absolute;left:0;top:0;width:1600px;height:893px;pointer-event
     <div class="modal" id="mOrders"><div class="panel"><div class="ptitle">Доска заказов</div><div class="close" data-close>✕</div><div id="ordersList"></div></div></div>
     <div class="modal" id="mShop"><div class="panel" style="width:1120px;max-width:94%"><div class="ptitle">Дачный магазин</div><div class="close" data-close id="shopClose">✕</div><div class="tabs" id="shopTabs"></div><div class="cards" id="shopCards"></div></div></div>
     <div class="modal" id="mStore"><div class="panel"><div class="ptitle">Сарай</div><div class="close" data-close>✕</div><div class="inv" id="invList"></div></div></div>
+    <div class="modal" id="mKitchen"><div class="panel" style="width:1120px;max-width:94%"><div class="ptitle">Летняя кухня</div><div class="close" data-close>✕</div><div id="kSlots"></div><div class="cards" id="kCards"></div></div></div>
     <div class="modal" id="mQuest"><div class="panel"><div class="ptitle">Задания</div><div class="close" data-close>✕</div><div id="questList"></div></div></div>
     <div class="modal" id="mMsg"><div class="panel" style="min-width:560px"><div class="ptitle" id="msgTitle">Внимание</div><div class="mtext" id="msgText"></div><div class="row" id="msgBtns"></div></div></div>
   </div>
@@ -356,6 +386,11 @@ const CROPS={
  dill:    {name:'Укроп',acc:'укроп',lvl:3,grow:150,w:1,sell:30, cost:10,xp:14,seed:'__IMG_dill_seed__',plant:'__IMG_p_dill_plant__',icon:'__IMG_dill_crop__',fly:'__IMG_dill_crop__',size:100},
  garlic:  {name:'Чеснок',acc:'чеснок',lvl:4,grow:240,w:2,sell:50, cost:18,xp:22,seed:'__IMG_garlic_seed__',plant:'__IMG_p_garlic_plant__',icon:'__IMG_garlic_crop__',fly:'__IMG_garlic_crop__',size:96},
  zucchini:{name:'Кабачки',acc:'кабачки',lvl:5,grow:360,w:2,sell:80, cost:30,xp:35,seed:'__IMG_zucchini_seed__',plant:'__IMG_p_zucchini_plant__',icon:'__IMG_zucchini_crop__',fly:'__IMG_zucchini_crop__',size:106},
+ lettuce: {name:'Салат',acc:'салат',lvl:3,grow:100,w:1,sell:26, cost:9, xp:12,seed:'__IMG_lettuce_seed__',plant:'__IMG_p_lettuce_plant__',icon:'__IMG_lettuce_crop__',fly:'__IMG_lettuce_crop__',size:100},
+ parsley: {name:'Петрушка',acc:'петрушку',lvl:4,grow:200,w:1,sell:42, cost:15,xp:18,seed:'__IMG_parsley_seed__',plant:'__IMG_p_parsley_plant__',icon:'__IMG_parsley_crop__',fly:'__IMG_parsley_crop__',size:100},
+ peas:    {name:'Горох',acc:'горох',lvl:6,grow:420,w:2,sell:85, cost:32,xp:38,seed:'__IMG_peas_seed__',plant:'__IMG_p_peas_plant__',icon:'__IMG_peas_crop__',fly:'__IMG_peas_crop__',size:104},
+ pepper:  {name:'Перец',acc:'перец',lvl:7,grow:780,w:3,sell:160,cost:62,xp:62,seed:'__IMG_pepper_seed__',plant:'__IMG_p_pepper_plant__',icon:'__IMG_pepper_crop__',fly:'__IMG_pepper_crop__',size:104},
+ pumpkin: {name:'Тыква',acc:'тыкву',lvl:8,grow:1200,w:3,sell:260,cost:100,xp:95,seed:'__IMG_pumpkin_seed__',plant:'__IMG_p_pumpkin_plant__',icon:'__IMG_pumpkin_crop__',fly:'__IMG_pumpkin_crop__',size:112},
  eggplant:{name:'Баклажаны',acc:'баклажаны',lvl:7,grow:900,w:3,sell:190,cost:75,xp:75,seed:'__IMG_eggplant_seed__',plant:'__IMG_p_eggplant_plant__',icon:'__IMG_eggplant_crop__',fly:'__IMG_eggplant_crop__',size:104}
 };
 const CROP_IDS=Object.keys(CROPS).sort((a,b)=>(a==='carrot'?1.5:CROPS[a].lvl)-(b==='carrot'?1.5:CROPS[b].lvl)||CROPS[a].grow-CROPS[b].grow);
@@ -369,13 +404,26 @@ const svgUri=x=>'data:image/svg+xml,'+encodeURIComponent(x);
 function poisonIcon(col,bug,label){const inner=BUGSVG[bug].replace('<svg ','<svg x="64" y="62" width="40" height="34" ');
  return svgUri(`<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 120 120"><circle cx="60" cy="60" r="56" fill="#f4efe2" stroke="#9d8c6e" stroke-width="5"/><rect x="40" y="18" width="22" height="14" rx="3" fill="#555"/><path d="M62 22h14l4 6h-18z" fill="#777"/><path d="M34 34h34q6 0 6 7v52q0 8-8 8H36q-8 0-8-8V41q0-7 6-7z" fill="${col}" stroke="#333" stroke-width="3.5"/><rect x="33" y="52" width="36" height="26" rx="4" fill="#fff" stroke="#333" stroke-width="2"/><text x="51" y="70" font-size="13" font-weight="900" text-anchor="middle" fill="#c0392b" font-family="Arial">${label}</text>${inner}<path d="M70 60l38 38M108 60L70 98" stroke="#e74c3c" stroke-width="4" stroke-linecap="round" opacity=".85"/></svg>`)}
 IMG.p_aphid=poisonIcon('#4caf50','aphid','ТЛЯ');IMG.p_beetle=poisonIcon('#e67e22','beetle','ЖУК');IMG.p_slug=poisonIcon('#3f7fc4','slug','СЛИЗЬ');
+IMG.cam=svgUri(`<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 120 120"><circle cx="60" cy="60" r="56" fill="#f4efe2" stroke="#9d8c6e" stroke-width="5"/><rect x="18" y="30" width="14" height="40" rx="3" fill="#666"/><path d="M32 46h14" stroke="#555" stroke-width="7"/><g transform="rotate(14 70 50)"><rect x="42" y="34" width="62" height="30" rx="7" fill="#eceff1" stroke="#455a64" stroke-width="4"/><circle cx="98" cy="49" r="9" fill="#263238"/><circle cx="98" cy="49" r="4" fill="#4fc3f7"/></g><circle cx="52" cy="40" r="4" fill="#e53935"/><path d="M30 88h60" stroke="#9d8c6e" stroke-width="4" stroke-dasharray="6 5"/></svg>`);
+IMG.fenceI=svgUri(`<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 120 120"><circle cx="60" cy="60" r="56" fill="#f4efe2" stroke="#9d8c6e" stroke-width="5"/>${[20,36,52,68,84].map((x,i)=>`<path d="M${x} 100V30l8-10 8 10v70z" fill="${i%2?'#a8743f':'#8d5f31'}" stroke="#4a2c14" stroke-width="3"/>`).join('')}<path d="M16 48h88M16 82h88" stroke="#5b391c" stroke-width="7"/></svg>`);
 IMG.pro=svgUri(`<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 120 120"><circle cx="60" cy="60" r="56" fill="#fff3c4" stroke="#d4a017" stroke-width="6"/><path d="M60 14l34 12v26q0 30-34 50Q26 82 26 52V26z" fill="#2e7d32" stroke="#174d1a" stroke-width="4"/><path d="M44 58l11 11 22-24" fill="none" stroke="#fff" stroke-width="8" stroke-linecap="round" stroke-linejoin="round"/><text x="60" y="44" font-size="15" font-weight="900" text-anchor="middle" fill="#ffe14d" font-family="Arial">ПРО</text></svg>`);
 const BIRDSVG='<svg viewBox="0 0 64 48"><g class="wing"><path d="M30 22q-14-18-28-9q12 3 21 15z" fill="#33333f"/></g><ellipse cx="34" cy="29" rx="16" ry="11" fill="#22222c"/><path d="M19 31l-13 7 15-2z" fill="#22222c"/><circle cx="48" cy="20" r="8.5" fill="#22222c"/><path d="M55 18l9 3-9 3z" fill="#f2a01e"/><circle cx="50" cy="17.5" r="2.4" fill="#fff"/><circle cx="50.6" cy="17.5" r="1.2" fill="#000"/><path d="M31 39l-2 7M38 39l1 7" stroke="#f2a01e" stroke-width="2.4" stroke-linecap="round"/></svg>';
 const SCARE=['__IMG_p_scare0__','__IMG_p_scare1__','__IMG_p_scare2__'];IMG.scareIcon='__IMG_scare0_icon__';
-const PEST_LVL=5,BED3_LVL=6,BED3_COST=150,SCARE_H=12;
-const ITEMS={fert:{name:'Удобрение',img:IMG.fert},p_aphid:{name:'Средство от тли',img:IMG.p_aphid},p_beetle:{name:'Отрава от колорадского жука',img:IMG.p_beetle},p_slug:{name:'Гранулы от слизней',img:IMG.p_slug}};
+const PEST_LVL=5,BED3_LVL=6,BED3_COST=150,SCARE_H=12,THIEF_LVL=4,KITCHEN_LVL=4;
+const RECIPES={
+ borsch: {name:'Набор для борща',lvl:4,need:{beet:1,cabbage:1,potato:1,carrot:1,onion:1},time:600,sell:300,xp:40,img:'__IMG_r_borsch__'},
+ caviar: {name:'Кабачковая икра',lvl:5,need:{zucchini:1,carrot:1,onion:1},time:360,sell:220,xp:30,img:'__IMG_r_caviar__'},
+ salad:  {name:'Весенний салат',lvl:5,need:{radish:1,cucumber:1,dill:1},time:180,sell:230,xp:30,img:'__IMG_r_salad__'},
+ pickles:{name:'Хрустящие соленья',lvl:6,need:{cucumber:1,dill:1,garlic:1},time:480,sell:300,xp:40,img:'__IMG_r_pickles__'},
+ lecho:  {name:'Дачное лечо',lvl:7,need:{tomato:1,eggplant:1,garlic:1},time:900,sell:620,xp:70,img:'__IMG_r_lecho__'}};
+const REC_IDS=Object.keys(RECIPES);
+const GHL=[null,{name:'Плёночная теплица',lvl:5,cost:200,mult:.75,img:'__IMG_gh1__',desc:'Всё растёт на 25% быстрее, без вредителей и воров'},
+ {name:'Поликарбонатная теплица',lvl:7,cost:500,mult:.6,img:'__IMG_gh2__',desc:'Растёт на 40% быстрее'},
+ {name:'Стеклянная теплица',lvl:9,cost:1000,mult:.45,img:'__IMG_gh3__',desc:'На 55% быстрее и двойной урожай'}];
+const KITCHEN_SLOT2=250;
+const ITEMS={fert:{name:'Удобрение',img:IMG.fert},borsch:{name:'Набор для борща',img:'__IMG_r_borsch__'},caviar:{name:'Кабачковая икра',img:'__IMG_r_caviar__'},salad:{name:'Весенний салат',img:'__IMG_r_salad__'},pickles:{name:'Хрустящие соленья',img:'__IMG_r_pickles__'},lecho:{name:'Дачное лечо',img:'__IMG_r_lecho__'},p_aphid:{name:'Средство от тли',img:IMG.p_aphid},p_beetle:{name:'Отрава от колорадского жука',img:IMG.p_beetle},p_slug:{name:'Гранулы от слизней',img:IMG.p_slug}};
 CROP_IDS.forEach(id=>{const c=CROPS[id];ITEMS['seed_'+id]={name:'Семена: '+c.name.toLowerCase(),img:c.seed};ITEMS[id]={name:c.name,img:c.icon}});
-const SAVE_KEY='yaroslavl_dacha_save',OLD_KEYS=['yaroslavl_dacha_save_v2'],SAVE_VER=4;
+const SAVE_KEY='yaroslavl_dacha_save',OLD_KEYS=['yaroslavl_dacha_save_v2'],SAVE_VER=6;
 const BED2_COST=40;
 const WW=1600,WH=893;
 
@@ -492,12 +540,13 @@ function mkGeo(L,T,R,B){const P=(u,v)=>[L[0]+u*(T[0]-L[0])+v*(B[0]-L[0])+u*v*(R[
 function scaledGeo(base,cx,cy,k){const c=[(base.L[0]+base.T[0]+base.R[0]+base.B[0])/4,(base.L[1]+base.T[1]+base.R[1]+base.B[1])/4];const f=p=>[cx+(p[0]-c[0])*k,cy+(p[1]-c[1])*k];const g=mkGeo(f(base.L),f(base.T),f(base.R),f(base.B));g.k=k;return g}
 const G0=mkGeo([838,680],[1155,506],[1391,590],[1104,792]);
 G0.k=1;
-const GEO=[G0,scaledGeo(G0,598,742,.8),scaledGeo(G0,1428,786,.56)];
+const GEO=[G0,scaledGeo(G0,598,742,.8),scaledGeo(G0,1428,786,.56),(()=>{const g=mkGeo([50,500],[125,455],[200,482],[122,528]);g.k=.7;g.gh=true;g.bar=[150,330];g.hit='6,330 250,330 250,575 6,575';return g})()];
 const BED_C=G0.C;
 function buildBeds(){
  const soils=$('soils'),pw=$('plantsWrap'),bw=$('bubsWrap'),hit=$('hitSvg'),fr=$('frames');
  [...soils.querySelectorAll('.soilg')].forEach(n=>n.remove());pw.innerHTML='';bw.innerHTML='';hit.innerHTML='';fr.innerHTML='';
  GEO.forEach((g,i)=>{
+  if(g.gh){const p=document.createElement('div');p.className='plants';p.id='plants'+i;pw.appendChild(p);const b=document.createElement('div');b.className='bubs';b.id='bub'+i;bw.appendChild(b);const h=document.createElementNS('http://www.w3.org/2000/svg','polygon');h.setAttribute('points',g.hit);h.dataset.tap='bed:'+i;h.id='hit'+i;hit.appendChild(h);const sg=document.createElementNS('http://www.w3.org/2000/svg','g');sg.id='soil'+i;sg.setAttribute('class','soilg');sg.style.display='none';sg.innerHTML='<g class="dirt"><polygon class="sf"/><g class="fur"></g><polygon class="shine"/></g>';soils.appendChild(sg);return}
   let furrows='';for(const v of [.17,.5,.83]){const a=g.P(.05,v),b=g.P(.95,v);furrows+=`<line x1="${a[0]}" y1="${a[1]}" x2="${b[0]}" y2="${b[1]}" stroke="#4a2c14" stroke-width="13" stroke-linecap="round" opacity=".55"/><line x1="${a[0]}" y1="${a[1]-6}" x2="${b[0]}" y2="${b[1]-6}" stroke="#8a5a34" stroke-width="7" stroke-linecap="round" opacity=".7"/>`}
   const gEl=document.createElementNS('http://www.w3.org/2000/svg','g');gEl.setAttribute('class','soilg');gEl.id='soil'+i;
   gEl.innerHTML=(i>0?`<g class="weeds"><polygon points="${g.pts}" fill="#5f8f37" stroke="#3e6a20" stroke-width="4"/><polygon points="${g.pts}" fill="url(#tufts)"/></g>`:'')+`<g class="dirt"><polygon class="sf" points="${g.pts}" fill="#6b4426" stroke="#4a2c14" stroke-width="5"/><polygon points="${g.pts}" fill="url(#clods)"/><g class="fur">${furrows}</g><polygon class="shine" points="${g.pts}" fill="rgba(0,0,0,0)"/></g>`;
@@ -514,11 +563,11 @@ function frameSVG(g){const c=g.C,ex=p=>[c[0]+(p[0]-c[0])*1.1,c[1]+(p[1]-c[1])*1.
 
 /* ---------- state & save ---------- */
 const now=()=>Date.now();
-function newBed(){return{state:'weeds',crop:null,fert:false,frac:0,waterIdx:0,total:0,speed:1,seg:null,busy:null,bug:null,bugDmgAt:0,pausedF1:null}}
-function newState(){const inv={fert:1,p_aphid:0,p_beetle:0,p_slug:0};CROP_IDS.forEach(id=>{inv[id]=0;inv['seed_'+id]=0});inv.seed_potato=1;
+function newBed(){return{ripeAt:0,state:'weeds',crop:null,fert:false,frac:0,waterIdx:0,total:0,speed:1,seg:null,busy:null,bug:null,bugDmgAt:0,pausedF1:null}}
+function newState(){const inv={fert:1,p_aphid:0,p_beetle:0,p_slug:0,borsch:0,caviar:0,salad:0,pickles:0,lecho:0};CROP_IDS.forEach(id=>{inv[id]=0;inv['seed_'+id]=0});inv.seed_potato=1;
  return{ver:SAVE_VER,coins:0,xp:0,water:1,waterAt:now(),can:false,harvests:0,inv,beds:[newBed()],
  upg:{shovel:0,can:0,soil:0,gutter:0,cap:0},firstPotato:true,seenLvl:1,
- tut:0,done:false,orders:[],nextOrderAt:0,giftAt:0,scareUntil:0,scareEver:false,proUntil:0,lastSeen:now(),nextPestAt:0,tips:{},scared:0,
+ tut:0,done:false,orders:[],nextOrderAt:0,giftAt:0,gh:{lvl:0,bed:newBed()},kitchen:{cap:1,slots:[]},camera:false,fence:false,nextThiefAt:0,stolen:0,knownCrops:['potato','carrot'],knownRec:[],scareUntil:0,scareEver:false,proUntil:0,lastSeen:now(),nextPestAt:0,tips:{},scared:0,
  quests:{carrotDone:false,saveDone:false,harvDone:false,carrot:0},
  ui:{coins:false,xp:false,store:false,shop:false,board:false,quest:false}}}
 function migrate(s){ // keeps old progress working in every future update
@@ -528,7 +577,10 @@ function migrate(s){ // keeps old progress working in every future update
  for(const k in d.inv)if(s.inv[k]===undefined)s.inv[k]=0;
  for(const k in d.upg)if(s.upg[k]===undefined)s.upg[k]=0;
  for(const k in d.quests)if(s.quests[k]===undefined)s.quests[k]=d.quests[k];
- s.beds=s.beds.map(b=>Object.assign(newBed(),b));
+ s.beds=s.beds.map(b=>Object.assign(newBed(),b));s.gh.bed=Object.assign(newBed(),s.gh.bed||{});
+ if(!s.kitchen.slots)s.kitchen.slots=[];
+ if(s.knownCrops.length===2&&s.done)s.knownCrops=['potato','carrot','onion','radish','beet','dill','cabbage','garlic','cucumber','zucchini','tomato','eggplant'];
+ [...s.beds,s.gh.bed].forEach(b=>{if(b.state==='planted'&&!b.seg&&b.frac>=1&&!b.ripeAt)b.ripeAt=Date.now()});
  if(!s.seenLvl)s.seenLvl=level0(s.xp);
  s.ver=SAVE_VER;return s}
 let lastSave=0;
@@ -536,6 +588,9 @@ function save(){if(!S)return;lastSave=now();S.lastSeen=lastSave;try{localStorage
 function loadSave(){try{let t=localStorage.getItem(SAVE_KEY);if(!t)for(const k of OLD_KEYS){t=localStorage.getItem(k);if(t)break}
  const s=t?JSON.parse(t):null;return s&&(s.beds||s.bed)?migrate(s):null}catch(e){return null}}
 const xpFor=n=>25*n*(n-1);
+function BD(i){return i===3?S.gh.bed:S.beds[i]}
+function owned(i){return i===3?S.gh.lvl>0:i<S.beds.length}
+function allBeds(){const a=S.beds.slice();if(S.gh&&S.gh.lvl)a[3]=S.gh.bed;return a}
 function level0(xp){let n=1;while(xp>=xpFor(n+1))n++;return n}
 const level=()=>level0(S.xp);
 const lvlScale=()=>1+0.05*(level()-1);
@@ -555,14 +610,14 @@ const unlocked=id=>id==='carrot'?(S.done||S.tut>=TI.shop):level()>=CROPS[id].lvl
 function show(id,on){$(id).classList.toggle('hide',!on)}
 function renderHUD(){
  $('coinTxt').textContent=S.coins;const lv=level();$('lvTxt').textContent=lv;$('xpBar').style.width=Math.min(100,(S.xp-xpFor(lv))/(xpFor(lv+1)-xpFor(lv))*100)+'%';
- $('storeCnt').textContent=CROP_IDS.reduce((a,id)=>a+S.inv[id],0);
+ $('storeCnt').textContent=CROP_IDS.concat(REC_IDS).reduce((a,id)=>a+(S.inv[id]||0),0);
  show('hCoins',S.ui.coins);show('hXp',S.ui.xp);show('hStore',S.ui.store);show('hShop',S.ui.shop);show('hQuest',S.ui.quest);
  $('board').classList.toggle('closed',!S.ui.board);
  const canFill=S.done?S.orders.filter(o=>S.inv[o.crop]>=o.qty).length:(S.tut>=TI.sell&&S.inv.potato>0?1:0);
  $('boardBadge').style.display=S.ui.board&&canFill?'block':'none';$('boardBadge').textContent=canFill;
  renderGauge();$('canBadge').classList.toggle('on',S.can);
  $('questDot').style.display=S.done&&questClaimable()?'block':'none';
- GEO.forEach((g,i)=>{$('hit'+i).classList.toggle('off',i>=S.beds.length);const f=$('frame'+i);if(f)f.style.display=i<S.beds.length?'':'none'});
+ GEO.forEach((g,i)=>{$('hit'+i).classList.toggle('off',!owned(i));const f=$('frame'+i);if(f)f.style.display=owned(i)?'':'none'});renderGH();
 }
 function renderGauge(){const g=$('gauge').querySelector('.segs'),mx=waterMax();
  if(g.children.length!==mx){g.innerHTML='';for(let i=0;i<mx;i++){const d=document.createElement('div');d.className='seg';g.appendChild(d)}$('gauge').style.width=(60+mx*24)+'px'}
@@ -579,7 +634,9 @@ function levelUp(){const top=level();if(top<=S.seenLvl)return;SND.level();for(le
 function levelNews(lv){
  const news=CROP_IDS.filter(id=>CROPS[id].lvl===lv);
  toast('Новый уровень: '+lv+'!');
- if(S.done&&news.length){bump('hShop');sayLater([[5,`Уровень ${lv}! В магазине появились новые семена: ${news.map(id=>CROPS[id].name.toLowerCase()).join(', ')}. Загляни скорее!`]])}
+ if(S.done&&news.length){bump('hShop');S.knownCrops.push(...news.filter(id=>!S.knownCrops.includes(id)));sayLater([[5,`Уровень ${lv}! В магазине появились новые семена: ${news.map(id=>CROPS[id].name.toLowerCase()).join(', ')}. Загляни скорее!`]])}
+ const rn=REC_IDS.filter(id=>RECIPES[id].lvl===lv);if(S.done&&rn.length&&lv>KITCHEN_LVL)sayLater([[2,'Новый рецепт на летней кухне: '+rn.map(id=>RECIPES[id].name.toLowerCase()).join(', ')+'!']]);
+ if(S.done)setTimeout(announceNew,300);
  if(S.done&&lv===PEST_LVL)sayLater([[4,'Уровень 5 — но будь начеку! Теперь на урожай будут нападать вороны и жуки.'],[3,'Ворон прогоняй нажатием, а лучше поставь пугало — оно сторожит 12 часов. От тли, колорадского жука и слизней есть средства во вкладке «Защита».']]);
  if(S.done&&lv===BED3_LVL)sayLater([[5,'Уровень 6! Теперь можно построить третью грядку — загляни в «Магазин → Постройки».']]);
 }
@@ -595,7 +652,8 @@ function startSeg(b){const w=WATERS[CROPS[b.crop].w];const f1=w[b.waterIdx-1]!=n
 function sproutSVG(big){return `<svg viewBox="0 0 60 50" width="${big?78:52}" height="${big?64:44}"><ellipse cx="30" cy="46" rx="16" ry="4" fill="rgba(0,0,0,.25)"/><path d="M30 46V24" stroke="#3e8b22" stroke-width="4"/><path d="M30 28q-20-2-22-18q18-2 22 18z" fill="#7cc84a" stroke="#2d6a19" stroke-width="2.5"/><path d="M30 24q16-6 22-20q-18 0-22 20z" fill="#9be36d" stroke="#2d6a19" stroke-width="2.5"/>${big?'<path d="M30 34q-14 4-24-4q12-8 24 4z" fill="#7cc84a" stroke="#2d6a19" stroke-width="2.5"/><path d="M30 32q12 6 24-2q-12-8-24 2z" fill="#8fd65c" stroke="#2d6a19" stroke-width="2.5"/>':''}</svg>`}
 const shown=[];
 function renderBed(i,anim){
- const b=S.beds[i],g=GEO[i],st=b.state,el=$('soil'+i);
+ const b=BD(i),g=GEO[i],st=b.state,el=$('soil'+i);
+ if(g.gh){shown[i]=shown[i]||{};shown[i].stage=stageOf(b);$('plants'+i).innerHTML='';renderStatus(i,true);return}
  el.classList.toggle('on',st!=='weeds'||i>0);
  const weeds=el.querySelector('.weeds');if(weeds)weeds.style.display=st==='weeds'?'':'none';
  el.querySelector('.dirt').style.display=st==='weeds'?'none':'';
@@ -614,9 +672,9 @@ function renderBed(i,anim){
   if(b.bug){g.spots.forEach(([x,y],j)=>{for(let q=0;q<(b.bug.type==='aphid'?2:1);q++){const e=document.createElement('div');e.className='bug';e.innerHTML=BUGSVG[b.bug.type];e.style.left=(x-14+q*14+(j%2?6:-6))+'px';e.style.top=(y-34-q*16-(j*7)%20)+'px';e.style.animationDelay=(j*.3+q*.2)+'s';pl.appendChild(e)}})}}
  renderStatus(i,true);
 }
-function renderAll(anim){S.beds.forEach((_,i)=>renderBed(i,anim));GEO.forEach((_,i)=>{if(i>=S.beds.length){$('soil'+i).classList.remove('on');$('plants'+i).innerHTML='';$('bub'+i).innerHTML=''}});renderHUD()}
+function renderAll(anim){allBeds().forEach((_,i)=>renderBed(i,anim));GEO.forEach((_,i)=>{if(!owned(i)){$('soil'+i).classList.remove('on');$('plants'+i).innerHTML='';$('bub'+i).innerHTML=''}});renderHUD()}
 function renderStatus(i,force){
- const b=S.beds[i],g=GEO[i],box=$('bub'+i);shown[i]=shown[i]||{};let key,html;
+ const b=BD(i),g=GEO[i],box=$('bub'+i);shown[i]=shown[i]||{};let key,html;
  const pct=x=>Math.round(Math.min(1,Math.max(0,x))*100);
  if(b.bug&&!b.busy){key='bug'+b.bug.type;html=`<div class="pbar bugbar"><div class="bugico">${BUGSVG[b.bug.type]}</div><div><div class="lb" style="color:#c0392b">${BUGS[b.bug.type].name}! Рост остановлен</div><div class="lb" style="font-size:14px">Перетащи средство на грядку</div></div></div>`}
  else if(b.busy){const k=b.busy.type,f=(now()-b.busy.t0)/(b.busy.t1-b.busy.t0);
@@ -642,7 +700,7 @@ function sparkles(g,n=18){for(let i=0;i<n;i++){const[x,y]=g.P(Math.random(),Math
 function rain(g,n=10){for(let i=0;i<n;i++){const[x,y]=g.P(Math.random(),Math.random());const p=document.createElement('div');p.className='pt';p.style.cssText+=`left:${x}px;top:${y-160}px;width:6px;height:16px;border-radius:3px;background:#7fd3ff`;$('world').appendChild(p);p.animate([{transform:'translateY(0)',opacity:.9},{transform:'translateY(160px)',opacity:.6}],{duration:420,delay:Math.random()*600,easing:'ease-in',fill:'both'}).onfinish=()=>p.remove()}}
 const tools={};
 function toolShow(i,type){toolHide(i);const g=GEO[i];const d=document.createElement('div');d.className='fly';const sz=120*(.4+.6*g.k);d.style.width=d.style.height=sz+'px';d.style.margin=`-${sz/2}px 0 0 -${sz/2}px`;
- const src={dig:IMG.shovel,water:IMG.can,plant:IMG.shovel}[type]||IMG.shovel;d.innerHTML=`<img src="${type==='plant'&&S.beds[i].busy&&CROPS[S.beds[i].busy.data]?CROPS[S.beds[i].busy.data].seed:src}">`;
+ const src={dig:IMG.shovel,water:IMG.can,plant:IMG.shovel}[type]||IMG.shovel;d.innerHTML=`<img src="${type==='plant'&&BD(i).busy&&CROPS[BD(i).busy.data]?CROPS[BD(i).busy.data].seed:src}">`;
  const pos=type==='water'?[g.C[0]-90,g.C[1]-60]:[g.C[0]+40,g.C[1]+10];d.style.left=pos[0]+'px';d.style.top=pos[1]+'px';$('world').appendChild(d);
  const fr=type==='dig'?[{transform:'rotate(0) translateY(-10px)'},{transform:'rotate(-30deg) translateY(30px)'},{transform:'rotate(0) translateY(-10px)'}]:type==='water'?[{transform:'rotate(-25deg)'},{transform:'rotate(-45deg) translateX(40px)'},{transform:'rotate(-25deg)'}]:[{transform:'translate(-80px,0) scale(.8)'},{transform:'translate(80px,10px) scale(.8)'},{transform:'translate(-80px,0) scale(.8)'}];
  d.animate(fr,{duration:type==='water'?1400:700,iterations:Infinity,easing:'ease-in-out'});tools[i]=d}
@@ -734,7 +792,7 @@ $('dlg').addEventListener('pointerdown',e=>{e.stopPropagation();ac();if(!typedFu
 /* ---------- tray ---------- */
 let trayOpen=false,trayBed=0;
 function trayItems(i){
- const b=S.beds[i],w=tutWait(),it=[];
+ const b=BD(i),w=tutWait(),it=[];
  if(b.bug){Object.values(BUGS).forEach(x=>{const n=S.inv[x.poison]||0;it.push({k:'poison:'+x.poison,img:IMG[x.poison],cnt:n||null,lbl:n?ITEMS[x.poison].name.split(' ').slice(-1)[0]:'нет',dim:!n})});return it}
  if(b.state==='weeds'||b.state==='used')it.push({k:'shovel',img:IMG.shovel,lbl:'Лопата'});
  else if(b.state==='dug'){CROP_IDS.forEach(c=>{const sk='seed_'+c;if(S.inv[sk]>0)it.push({k:'seed:'+c,img:CROPS[c].seed,cnt:S.inv[sk],lbl:CROPS[c].name})})}
@@ -774,22 +832,22 @@ addEventListener('pointerup',e=>{if(!drag)return;const d=drag;drag=null;$('ghost
  if(i!=null)applyTool(d.o.k,i);else SND.fail()});
 addEventListener('pointercancel',()=>{if(drag){$('ghost').style.display='none';drag.el.classList.remove('drag');drag=null;$('hand').style.opacity=1}});
 function bedAtS(cx,cy){const[x,y]=toStage(cx,cy);const c=fromStage(x,y-40);return bedAt(c[0],c[1])}
-function bedAt(cx,cy){const el=document.elementFromPoint(cx,cy);if(el&&el.dataset&&el.dataset.tap&&el.dataset.tap.startsWith('bed:')){const i=+el.dataset.tap.slice(4);return i<S.beds.length?i:null}return null}
+function bedAt(cx,cy){const el=document.elementFromPoint(cx,cy);if(el&&el.dataset&&el.dataset.tap&&el.dataset.tap.startsWith('bed:')){const i=+el.dataset.tap.slice(4);return owned(i)?i:null}return null}
 
 /* ---------- actions (timed) ---------- */
-function startBusy(i,type,data){const b=S.beds[i];b.busy={type,data,t0:now(),t1:now()+D[type](),fx:0};toolShow(i,type);renderStatus(i,true);guide(null);save()}
-function busyFx(i){const b=S.beds[i],g=GEO[i];if(!b.busy)return;const t=now();if(t-(b.busy.fx||0)<450)return;b.busy.fx=t;
+function startBusy(i,type,data){const b=BD(i);b.busy={type,data,t0:now(),t1:now()+D[type](),fx:0};toolShow(i,type);renderStatus(i,true);guide(null);save()}
+function busyFx(i){const b=BD(i),g=GEO[i];if(!b.busy)return;const t=now();if(t-(b.busy.fx||0)<450)return;b.busy.fx=t;
  if(b.busy.type==='dig'){const[x,y]=g.P(Math.random(),Math.random());burst(x,y,6,['#3b2412','#5a3a1e','#7a5232','#2f8a2a']);tone(110,.08,'square',.05,70);noise(.1,300,.35,0,.8)}
  if(b.busy.type==='water'){rain(g,10);noise(.4,2400,.08,0,.6)}
  if(b.busy.type==='plant'){const[x,y]=g.spots[Math.floor(Math.random()*6)];burst(x,y-6,4,['#5a3a1e','#3b2412'],40,[5,9]);tone(500+Math.random()*300,.06,'triangle',.06)}}
-function finishBusy(i){const b=S.beds[i],g=GEO[i],k=b.busy.type,data=b.busy.data;b.busy=null;toolHide(i);
+function finishBusy(i){const b=BD(i),g=GEO[i],k=b.busy.type,data=b.busy.data;b.busy=null;toolHide(i);
  if(k==='dig'){b.state='dug';SND.pop();renderBed(i);addXp(2,g.C[0],g.C[1]-80);if(i===0)tutEvent('dig')}
- if(k==='plant'){Object.assign(b,{state:'planted',crop:data,fert:false,frac:0,waterIdx:0,seg:null,speed:1,total:D.grow(data)});SND.plant();renderBed(i,true);addXp(2,g.C[0],g.C[1]-80);if(i===0)tutEvent('plant')}
+ if(k==='plant'){Object.assign(b,{state:'planted',crop:data,fert:false,frac:0,waterIdx:0,seg:null,speed:1,ripeAt:0,total:D.grow(data)*(g.gh?GHL[S.gh.lvl].mult:1)});SND.plant();renderBed(i,true);addXp(2,g.C[0],g.C[1]-80);if(i===0)tutEvent('plant')}
  if(k==='water'){b.waterIdx++;startSeg(b);SND.pop();renderBed(i);addXp(2,g.C[0],g.C[1]-80);if(i===0)tutEvent('water');
   if(!S.done&&tutWait()==='fert')setTimeout(()=>openTray(0),600)}
  save()}
 function applyTool(k,i){
- const b=S.beds[i],g=GEO[i];closeTray();if(b.busy)return;
+ const b=BD(i),g=GEO[i];closeTray();if(b.busy)return;
  if(!S.done&&i!==0)return;
  if(k.startsWith('poison:')&&b.bug){const pk=k.slice(7);if(BUGS[b.bug.type].poison!==pk){SND.fail();toast('Не помогло — это средство от других вредителей!');return}S.inv[pk]--;cure(i,true);return}
  if(k==='shovel'&&(b.state==='weeds'||b.state==='used')){SND.dig();startBusy(i,'dig');return}
@@ -801,18 +859,18 @@ function applyTool(k,i){
   SND.magic();sparkles(g,26);renderBed(i);if(i===0)tutEvent('fert');save();return}
  SND.fail()}
 function harvest(i){
- const b=S.beds[i],g=GEO[i],c=CROPS[b.crop],id=b.crop;closeTray();SND.harvest();
+ const b=BD(i),g=GEO[i],c=CROPS[b.crop],id=b.crop;closeTray();SND.harvest();
  const dest=elWorld($('hStore'));
- g.spots.forEach(([x,y],j)=>{burst(x,y-20,5,['#3b2412','#5a3a1e','#4c9a2a'],70);
+ (g.gh?[g.C,g.C,g.C]:g.spots).forEach(([x,y],j)=>{burst(x,y-20,5,['#3b2412','#5a3a1e','#4c9a2a'],70);
   const f=document.createElement('div');f.className='fly';f.innerHTML=`<img src="${c.fly}">`;f.style.left=x+'px';f.style.top=(y-40)+'px';$('world').appendChild(f);
   const mx=(x+dest[0])/2,my=Math.min(y,dest[1])-160;
   f.animate([{transform:'translate(0,0) scale(.6)'},{transform:`translate(${(mx-x)}px,${(my-y)}px) scale(1.1)`,offset:.45},{transform:`translate(${dest[0]-x}px,${dest[1]-y}px) scale(.5)`}],{duration:900,delay:j*90,easing:'ease-in-out',fill:'forwards'}).onfinish=()=>{f.remove();tone(800+j*80,.08,'triangle',.1)}});
- S.inv[id]++;S.ui.store=true;S.ui.xp=true;S.harvests=(S.harvests||0)+1;
+ const qty=(g.gh&&S.gh.lvl>=3)?2:1;S.inv[id]+=qty;S.ui.store=true;S.ui.xp=true;S.harvests=(S.harvests||0)+1;
  if(id==='carrot'&&S.done)S.quests.carrot=1;
  if(id==='potato')S.firstPotato=false;
- Object.assign(b,{state:'used',crop:null,fert:false,frac:0,waterIdx:0,seg:null,speed:1,total:0});
+ Object.assign(b,{state:'used',crop:null,fert:false,frac:0,waterIdx:0,seg:null,speed:1,total:0,ripeAt:0});
  renderBed(i);renderHUD();
- setTimeout(()=>{bump('hStore');const hs=elStage($('hStore'));floatText(hs[0]-40,hs[1]+70,'+1 '+c.name,'#fff',true);addXp(c.xp,g.C[0],g.C[1]-60);if(i===0)tutEvent('harvest');checkQuests();save()},1100);
+ setTimeout(()=>{bump('hStore');const hs=elStage($('hStore'));floatText(hs[0]-40,hs[1]+70,'+'+qty+' '+c.name,'#fff',true);addXp(c.xp,g.C[0],g.C[1]-60);if(i===0)tutEvent('harvest');checkQuests();save()},1100);
 }
 function flashBarrel(){if(!S.done)return;guide({ring:[497,575,160]});setTimeout(()=>{if(S.done)guide(null)},1800)}
 
@@ -821,14 +879,15 @@ function handleTap(target){
  const el=target&&target.closest?target.closest('[data-tap]'):null;const tap=el&&el.dataset.tap;
  if(!tap){if(trayOpen){closeTray();updateGuide()}return}
  if(tap.startsWith('bird:'))return shooBird(+tap.slice(5),true);
+ if(tap.startsWith('thief:'))return shooThief(+tap.slice(6),true);
  if(tap==='scare')return toast(scareActive()?'Пугало сторожит ещё '+fmt(S.scareUntil-now()):'Пугало развалилось — купи новое в «Защите»');
  if(tap.startsWith('bed:'))return tapBed(+tap.slice(4));
  if(tap==='barrel')return tapBarrel();
  if(tap==='board')return tapBoard();
- if(tap==='house'&&S.done)toast(greeting()+' Татьяна ставит самовар ☕');
+ if(tap==='house'&&S.done){if(kitchenOn())openKitchen();else toast(greeting()+' Татьяна ставит самовар ☕ Летняя кухня откроется на уровне '+KITCHEN_LVL)}
 }
 function tapBed(i){
- if(i>=S.beds.length)return;const b=S.beds[i],w=tutWait();
+ if(!owned(i))return;const b=BD(i),w=tutWait();
  if(!S.done&&i!==0){toast('Сначала закончим с первой грядкой');return}
  if(b.busy){toast('Работа идёт — осталось '+fmt(b.busy.t1-now()));return}
  if(b.bug){openTray(i);return}
@@ -855,51 +914,129 @@ let tickT=null;
 function tick(){if(!S)return;const t=now();
  const mx=waterMax(),per=D.refill();
  if(S.water>=mx)S.waterAt=t;else{const n=Math.floor((t-S.waterAt)/per);if(n>0){const add=Math.min(n,mx-S.water);S.water+=add;S.waterAt=S.water>=mx?t:S.waterAt+n*per;renderHUD();floatText(497,470,'+'+add+' 💧','#bfe9ff')}}
- S.beds.forEach((b,i)=>{
+ allBeds().forEach((b,i)=>{
   if(b.busy){if(t>=b.busy.t1)finishBusy(i);else busyFx(i)}
-  if(b.seg&&t>=b.seg.t1){b.frac=b.seg.f1;b.seg=null;
+  if(b.seg&&t>=b.seg.t1){b.frac=b.seg.f1;if(b.frac>=1)b.ripeAt=b.seg.t1;b.seg=null;
    if(b.frac>=1){renderBed(i);SND.harvest();if(S.done)toast(CROPS[b.crop].name+' созрел'+(b.crop==='potato'||b.crop==='onion'?'':'и')+' — собирай урожай!');if(i===0)tutEvent('ripe')}
    else{renderBed(i);SND.fail();toast(CROPS[b.crop].name+': грядка хочет пить — полей!')}
    save()}
   if(b.state==='planted'&&shown[i]&&stageOf(b)!==shown[i].stage)renderBed(i,true);
   renderStatus(i)});
- tickPests(t);if(S.done&&t%5000<200)renderScare();
+ tickPests(t);tickThieves(t);renderKitchenBub();if(S.done&&t%5000<200)renderScare();
  if(S.done){const maxO=2+S.beds.length;if(S.orders.length<maxO&&t>=S.nextOrderAt){S.orders.push(genOrder());S.nextOrderAt=t+35000;renderHUD()}}
- if(S.done&&!S.beds.some(b=>b.busy||b.state==='planted')&&S.coins<CROPS.potato.cost&&!CROP_IDS.some(id=>S.inv['seed_'+id]||S.inv[id])&&t>S.giftAt){S.giftAt=t+60000;S.inv.seed_potato++;save();sayLater([[5,'Держи клубень картошки из моих запасов — без урожая не останемся!']])}
+ if(S.done&&!allBeds().some(b=>b.busy||b.state==='planted')&&S.coins<CROPS.potato.cost&&!CROP_IDS.some(id=>S.inv['seed_'+id]||S.inv[id])&&t>S.giftAt){S.giftAt=t+60000;S.inv.seed_potato++;save();sayLater([[5,'Держи клубень картошки из моих запасов — без урожая не останемся!']])}
  renderGauge();
- const ripe=S.beds.some(isRipe);const nx=S.beds.filter(b=>b.busy||b.seg).map(b=>(b.busy||b.seg).t1).sort()[0];
+ const ripe=allBeds().some(isRipe);const nx=allBeds().filter(b=>b.busy||b.seg).map(b=>(b.busy||b.seg).t1).sort()[0];
  document.title=ripe?'🥔 Урожай готов! — Моя дача':nx?'⏳ '+fmt(nx-t)+' — Моя дача':'Ярославль: Моя дача';
  if(t-lastSave>3000)save()}
 function startTick(){clearInterval(tickT);tickT=setInterval(tick,200)}
+
+/* ---------- greenhouse ---------- */
+function renderGH(){const im=$('ghImg');if(!S.gh||!S.gh.lvl){im.style.display='none';return}im.style.display='';const src=GHL[S.gh.lvl].img;if(im.dataset.src!==src){im.src=src;im.dataset.src=src}}
+function upgradeGH(){const nl=S.gh.lvl+1;S.gh.lvl=nl;$('mShop').classList.remove('on');renderAll();save();const g=GEO[3];camTo(g.C[0]+250,g.C[1]-40,minS()*1.3,true);
+ setTimeout(()=>{const im=$('ghImg');im.classList.remove('pop');void im.offsetWidth;im.classList.add('pop');SND.harvest();sparkles(g,30)},900);
+ setTimeout(()=>{dialog(nl===1?[[5,'Своя теплица! Внутри всё растёт быстрее, и туда не доберутся ни вороны, ни жуки, ни воришки.'],[1,'Нажми на теплицу и работай с ней как с грядкой: вскопать, посадить, полить.']]:nl===2?[[7,'Поликарбонатная теплица — тепло держит отлично! Растения растут ещё быстрее.']]:[[7,'Стеклянная теплица — мечта любого дачника! Всё растёт в два раза быстрее, и урожай двойной!']],()=>camHome(true))},2200)}
+
+/* ---------- kitchen (production chains) ---------- */
+const kitchenOn=()=>S.done&&level()>=KITCHEN_LVL;
+const recUnlocked=id=>level()>=RECIPES[id].lvl;
+function canCook(id){const n=RECIPES[id].need;return Object.keys(n).every(k=>(S.inv[k]||0)>=n[k])}
+function openKitchen(){if(!kitchenOn()){toast('Летняя кухня откроется на уровне '+KITCHEN_LVL);SND.fail();return}renderKitchen();$('mKitchen').classList.add('on')}
+function renderKitchen(){const sl=$('kSlots');sl.innerHTML='<div class="kslots"></div>';const box=sl.firstChild;const t=now();
+ for(let i=0;i<S.kitchen.cap;i++){const x=S.kitchen.slots[i];const d=document.createElement('div');
+  if(!x){d.className='kslot';d.innerHTML='🍳 Свободная конфорка — выбери рецепт'}
+  else{const r=RECIPES[x.r];const done=t>=x.t1;d.className='kslot busy';d.innerHTML=`<img src="${r.img}"><div style="flex:1"><div>${r.name}</div>${done?'':`<div class="track"><div class="fill" style="width:${Math.min(100,(t-x.t0)/(x.t1-x.t0)*100)}%"></div></div><div style="font-size:15px;margin-top:4px">готово через ${fmt(x.t1-t)}</div>`}</div>${done?'<div class="btn">Забрать</div>':''}`;
+   if(done)d.querySelector('.btn').onclick=()=>collectDish(i)}
+  box.appendChild(d)}
+ if(S.kitchen.cap<2){const d=document.createElement('div');d.className='kslot';d.innerHTML=`<div style="flex:1">Вторая конфорка<br><span style="font-size:14px">готовить два блюда сразу</span></div><div class="btn orange ${S.coins<KITCHEN_SLOT2?'off':''}">${KITCHEN_SLOT2} ${coinSvg}</div>`;d.querySelector('.btn').onclick=()=>{if(S.coins<KITCHEN_SLOT2)return;S.coins-=KITCHEN_SLOT2;S.kitchen.cap=2;SND.level();renderHUD();save();renderKitchen()};box.appendChild(d)}
+ const cards=$('kCards');cards.innerHTML='';
+ REC_IDS.forEach(id=>{const r=RECIPES[id],ok=recUnlocked(id),can=canCook(id),free=S.kitchen.slots.filter(Boolean).length<S.kitchen.cap;
+  const need=Object.entries(r.need).map(([k,n])=>`<span class="${(S.inv[k]||0)>=n?'':'miss'}"><img src="${CROPS[k].icon}">${S.inv[k]||0}/${n}</span>`).join('');
+  const d=document.createElement('div');d.className='card'+(ok?'':' locked');d.style.width='206px';
+  d.innerHTML=`${ok?'':'<div class="soon">🔒 ур. '+r.lvl+'</div>'}${S.inv[id]?`<div class="own">${S.inv[id]}</div>`:''}<img src="${r.img}" style="width:140px;height:140px"><div class="need">${need}</div><div class="cd">⏱ ${fmt(r.time*1000)} · заказ ~${r.sell} ${coinSvg}</div><div class="btn ${ok&&can&&free?'':'off'}">Готовить</div>`;
+  d.querySelector('.btn').onclick=()=>cook(id);cards.appendChild(d)})}
+function cook(id){const r=RECIPES[id];if(!recUnlocked(id)||!canCook(id))return;let i=0;while(S.kitchen.slots[i])i++;if(i>=S.kitchen.cap){toast('Все конфорки заняты');return}
+ Object.entries(r.need).forEach(([k,n])=>S.inv[k]-=n);S.kitchen.slots[i]={r:id,t0:now(),t1:now()+r.time*1000};SND.plant();toast('Готовим: '+r.name);renderHUD();renderKitchen();renderKitchenBub(true);save()}
+function collectDish(i){const x=S.kitchen.slots[i];if(!x)return;const r=RECIPES[x.r];S.inv[x.r]=(S.inv[x.r]||0)+1;S.kitchen.slots[i]=null;SND.harvest();
+ const c=elStage($('hStore'));floatText(c[0]-40,c[1]+70,'+1 '+r.name,'#fff',true);addXp(r.xp,318,380);bump('hStore');renderKitchen();renderKitchenBub(true);renderHUD();save()}
+let kbKey='';
+function renderKitchenBub(force){const el=$('kitchenBub');if(!kitchenOn()){el.style.display='none';return}el.style.display='block';const t=now();
+ const xs=S.kitchen.slots.filter(Boolean);const ready=xs.filter(x=>t>=x.t1);let key,html;
+ if(ready.length){key='ready';html=`<div class="kb"><img src="${RECIPES[ready[0].r].img}">Готово!</div>`}
+ else if(xs.length){const x=xs.sort((a,b)=>a.t1-b.t1)[0];key='cook'+x.r;html=`<div class="kb"><img src="${RECIPES[x.r].img}"><span class="kt">${fmt(x.t1-t)}</span></div>`}
+ else{key='idle';html=`<div class="kb" style="font-size:16px">🍳 Кухня</div>`}
+ el.classList.toggle('ready',key==='ready');
+ if(force||key!==kbKey){kbKey=key;el.innerHTML=html;if(key==='ready'&&!force){SND.harvest();toast('Заготовка готова — загляни на летнюю кухню!')}}
+ else if(key.startsWith('cook')){const k=el.querySelector('.kt');const x=xs.sort((a,b)=>a.t1-b.t1)[0];if(k)k.textContent=fmt(x.t1-t)}}
+
+/* ---------- thieves (from level 4) ---------- */
+const THIEFSVG='<svg viewBox="0 0 110 140"><ellipse cx="55" cy="134" rx="30" ry="5" fill="rgba(0,0,0,.25)"/><path d="M40 92l-8 40h12l10-30 10 30h12l-8-40z" fill="#37474f"/><path d="M30 50q25-12 50 0l4 46H26z" fill="#455a64"/><path d="M30 60l-16 22 10 6 14-18zM80 60l18 18-8 8-16-14z" fill="#455a64"/><circle cx="55" cy="36" r="16" fill="#f1c9a5"/><path d="M38 36q0-22 17-22t17 22q-8-6-17-6t-17 6z" fill="#263238"/><rect x="40" y="31" width="30" height="8" rx="4" fill="#111"/><circle cx="48" cy="35" r="2.2" fill="#fff"/><circle cx="62" cy="35" r="2.2" fill="#fff"/><path d="M84 70q20 4 18 30q-8 14-26 6q-6-18 8-36z" fill="#c9a26b" stroke="#7a5a2a" stroke-width="3"/><path d="M84 72q6-6 10 0" stroke="#7a5a2a" stroke-width="3" fill="none"/></svg>';
+const thieves={};
+const thiefOn=()=>S.done&&level()>=THIEF_LVL;
+const thiefRisk=()=>(S.fence?.35:1)*(S.camera?.5:1);
+function thiefCandidates(t){return allBeds().map((b,i)=>i).filter(i=>i!==3&&isRipe(BD(i))&&BD(i).ripeAt&&t-BD(i).ripeAt>10*60000&&!thieves[i])}
+function tickThieves(t){if(!thiefOn())return;
+ for(const i in thieves){const th=thieves[i];if(t>=th.stealAt)steal(+i)}
+ if(!S.nextThiefAt){S.nextThiefAt=t+60000;return}if(t<S.nextThiefAt)return;S.nextThiefAt=t+60000+Math.random()*60000;
+ const cand=thiefCandidates(t);if(!cand.length||Math.random()>.6)return;const i=cand[Math.floor(Math.random()*cand.length)];
+ if(Math.random()>thiefRisk()){floatText(1300,330,S.fence&&Math.random()<.5||!S.camera?'Высокий забор остановил воришку!':'Камера спугнула воришку!','#fff');return}
+ spawnThief(i)}
+function spawnThief(i){const g=GEO[i];const el=document.createElement('div');el.className='thief';el.dataset.tap='thief:'+i;el.innerHTML=THIEFSVG;el.style.left=(g.C[0]+60)+'px';el.style.top=(g.C[1]-10)+'px';$('thieves').appendChild(el);
+ el.animate([{transform:`translate(${1700-g.C[0]}px,-60px)`},{transform:'translate(0,0)'}],{duration:2600,easing:'ease-out'});
+ thieves[i]={el,stealAt:now()+14000};SND.fail();toast('Воришка лезет за урожаем! Нажми на него!');
+ tip('thief',[[4,'Ой, воришка! Если долго не собирать урожай, соседи-хитрецы его утащат.'],[3,'Нажми на вора, чтобы прогнать. А для надёжности купи камеру и высокий забор во вкладке «Защита».']])}
+function shooThief(i,byTap){const th=thieves[i];if(!th)return;delete thieves[i];const el=th.el;el.dataset.tap='';el.classList.add('flee');
+ el.animate([{transform:'translate(0,0)'},{transform:'translate(900px,-40px) scaleX(-1)'}],{duration:1100,easing:'ease-in',fill:'forwards'}).onfinish=()=>el.remove();
+ if(byTap){SND.caw();const g=GEO[i];addXp(3,g.C[0],g.C[1]-60);toast('Воришка убежал без добычи!');save()}}
+function steal(i){const b=BD(i),g=GEO[i];shooThief(i,false);if(!isRipe(b))return;const name=CROPS[b.crop].name;
+ Object.assign(b,{state:'used',crop:null,fert:false,frac:0,waterIdx:0,seg:null,speed:1,total:0,ripeAt:0});S.stolen=(S.stolen||0)+1;renderBed(i);SND.fail();
+ floatText(g.C[0],g.C[1]-60,'Урожай украли!','#ff8a7a');toast('Воришка утащил урожай: '+name.toLowerCase()+'!');save()}
+function clearThieves(){for(const i in thieves){thieves[i].el.remove();delete thieves[i]}}
+function offlineThieves(){if(!thiefOn())return 0;let n=0;const t=now(),since=S.lastSeen||t;
+ allBeds().forEach((b,i)=>{if(i===3||!isRipe(b)||!b.ripeAt)return;const start=Math.max(b.ripeAt+10*60000,since);const w=Math.min(3,Math.floor((t-start)/(20*60000)));
+  for(let k=0;k<w;k++)if(Math.random()<.3*thiefRisk()){Object.assign(b,{state:'used',crop:null,fert:false,frac:0,waterIdx:0,seg:null,speed:1,total:0,ripeAt:0});n++;break}});
+ S.stolen=(S.stolen||0)+n;return n}
+function renderSecurity(){$('cctv').style.display=S.camera?'':'none';const f=$('hifence');f.style.display=S.fence?'':'none';
+ if(S.fence&&!f.innerHTML){let h='';for(let x=962;x<1600;x+=22){const y=348+(x-962)*.095;h+=`<rect x="${x}" y="${y-150}" width="20" height="150" fill="${x%44<22?'#8d5f31':'#a8743f'}" stroke="#4a2c14" stroke-width="2.5"/><path d="M${x} ${y-150}l10-12 10 12" fill="#8d5f31" stroke="#4a2c14" stroke-width="2.5"/>`}
+  h+=`<path d="M962 ${348-110}L1600 ${348-110+638*.095}M962 ${348-40}L1600 ${348-40+638*.095}" stroke="#5b391c" stroke-width="9"/>`;f.innerHTML=h}}
+
+/* ---------- announcements for new content (also for existing players) ---------- */
+function announceNew(){if(!S.done)return;const lines=[];
+ const nc=CROP_IDS.filter(id=>unlocked(id)&&!S.knownCrops.includes(id));
+ if(nc.length){S.knownCrops.push(...nc);lines.push([5,'В магазине новые семена: '+nc.map(id=>CROPS[id].name.toLowerCase()).join(', ')+'. Загляни скорее!'])}
+ if(kitchenOn()&&!S.tips.kitchen){S.tips.kitchen=1;lines.push([3,'У нас открылась летняя кухня! Нажми на домик — там из овощей можно делать заготовки: борщевой набор, икру, соленья, лечо. Они стоят намного дороже!'])}
+ if(thiefOn()&&!S.tips.thiefIntro){S.tips.thiefIntro=1;lines.push([4,'Соседи шепчутся о воришках: если долго не собирать спелый урожай, его могут утащить. Защитят камера и высокий забор во вкладке «Защита».'])}
+ if(level()>=GHL[1].lvl&&!S.tips.gh){S.tips.gh=1;lines.push([1,'А ещё теперь можно поставить теплицу — в «Магазин → Постройки». В ней всё растёт быстрее и под защитой!'])}
+ if(lines.length){sayLater(lines);save()}}
 
 /* ---------- pests: birds & bugs (from level 5) ---------- */
 const pestsOn=()=>S.done&&level()>=PEST_LVL;
 const scareActive=()=>S.scareUntil>now();
 const proActive=()=>S.proUntil>now();
 const birds={};
-function eligible(b){return b.state==='planted'&&!b.busy&&(isRipe(b)||curFrac(b)>.15||(!b.seg&&b.frac>=1))}
+function eligible(b){return b!==S.gh.bed&&b.state==='planted'&&!b.busy&&(isRipe(b)||curFrac(b)>.15||(!b.seg&&b.frac>=1))}
 function tip(key,lines){if(S.tips[key])return;S.tips[key]=1;save();sayLater(lines)}
 function tickPests(t){
  if(!pestsOn())return;
  for(const i in birds){const bd=birds[i];if(bd&&!bd.scared&&t>=bd.eatAt)birdEat(+i)}
- S.beds.forEach((b,i)=>{if(b.bug&&t>=b.bugDmgAt){b.bugDmgAt=t+60000;if(b.frac>0){b.frac=Math.max(0,b.frac-.08);renderBed(i);const g=GEO[i];floatText(g.C[0],g.C[1]-50,'−8% урожая','#ff8a7a');save()}}});
+ allBeds().forEach((b,i)=>{if(b.bug&&t>=b.bugDmgAt){b.bugDmgAt=t+60000;if(b.frac>0){b.frac=Math.max(0,b.frac-.08);renderBed(i);const g=GEO[i];floatText(g.C[0],g.C[1]-50,'−8% урожая','#ff8a7a');save()}}});
  if(!S.nextPestAt){S.nextPestAt=t+30000;return}
  if(t<S.nextPestAt)return;
  S.nextPestAt=t+40000+Math.random()*50000;
- const cand=S.beds.map((b,i)=>i).filter(i=>eligible(S.beds[i])&&!birds[i]);if(!cand.length)return;
- const i=cand[Math.floor(Math.random()*cand.length)],b=S.beds[i],r=Math.random();
+ const cand=allBeds().map((b,i)=>i).filter(i=>i!==3&&eligible(BD(i))&&!birds[i]);if(!cand.length)return;
+ const i=cand[Math.floor(Math.random()*cand.length)],b=BD(i),r=Math.random();
  if(r<.6)spawnBird(i,scareActive());
  else if(!b.bug&&!proActive()){const types=Object.keys(BUGS);infest(i,types[Math.floor(Math.random()*types.length)])}
 }
-function infest(i,type,silent){const b=S.beds[i];if(b.bug)return;
+function infest(i,type,silent){const b=BD(i);if(b.bug)return;
  if(b.seg){b.frac=curFrac(b);b.pausedF1=b.seg.f1;b.seg=null}else b.pausedF1=b.frac>=1?1:null;
  b.bug={type};b.bugDmgAt=now()+60000;renderBed(i);save();
  if(!silent){SND.fail();toast(BUGS[type].name+' напали на грядку! Рост остановлен');
   tip('bug_'+type,[[4,`Ой, беда — ${BUGS[type].name.toLowerCase()} на грядке! Пока они там, ничего не растёт, да ещё и урожай портят.`],[3,`Купи «${ITEMS[BUGS[type].poison].name}» во вкладке «Защита» и перетащи на грядку. А если жуков совсем много — закажи профессиональную обработку.`]])}}
-function cure(i,anim){const b=S.beds[i],g=GEO[i];if(!b.bug)return;b.bug=null;
+function cure(i,anim){const b=BD(i),g=GEO[i];if(!b.bug)return;b.bug=null;
  if(b.pausedF1!=null){const f1=b.pausedF1;b.pausedF1=null;if(b.frac<f1)b.seg={f0:b.frac,f1,t0:now(),t1:now()+(f1-b.frac)*b.total*b.speed};else b.frac=f1}
  renderBed(i);if(anim){SND.magic();burst(g.C[0],g.C[1]-20,16,['#9be36d','#e8ffd0','#ffffff'],90,[6,12]);addXp(3,g.C[0],g.C[1]-70);toast('Вредители уничтожены!')}save()}
-function birdEat(i){const b=S.beds[i],g=GEO[i];shooBird(i,false);
+function birdEat(i){const b=BD(i),g=GEO[i];shooBird(i,false);
  if(b.seg){const cur=curFrac(b),nf=Math.max(0,cur-.25);b.seg={f0:nf,f1:b.seg.f1,t0:now(),t1:now()+(b.seg.f1-nf)*b.total*b.speed}}
  else if(b.frac>=1&&!b.bug){b.frac=.75;b.seg={f0:.75,f1:1,t0:now(),t1:now()+.25*b.total*b.speed}}
  else b.frac=Math.max(0,b.frac-.25);
@@ -917,7 +1054,7 @@ function shooBird(i,byTap){const bd=birds[i];if(!bd)return;delete birds[i];const
 function clearBirds(){for(const i in birds){birds[i].el.remove();delete birds[i]}}
 function offlinePests(away){if(!pestsOn()||away<10*60000)return null;
  const n=Math.min(3,Math.floor(away/(20*60000)));let ate=0,bugs=0,scared=0;const t0=now()-away;
- S.beds.forEach((b,i)=>{for(let k=1;k<=n;k++){if(!eligible(b))break;const r=Math.random(),tk=t0+k*20*60000;
+ allBeds().forEach((b,i)=>{for(let k=1;k<=n;k++){if(!eligible(b))break;const r=Math.random(),tk=t0+k*20*60000;
   if(r<.35){if(S.scareUntil>tk)scared++;else{birdEat(i);ate++}}
   else if(r<.5&&!b.bug&&!(S.proUntil>tk)){infest(i,Object.keys(BUGS)[Math.floor(Math.random()*3)],true);bugs++}}});
  S.scared=(S.scared||0)+scared;return{ate,bugs,scared}}
@@ -940,8 +1077,10 @@ function greeting(){const h=hourNow();return h<5?'Доброй ночи!':h<12?'
 
 /* ---------- orders ---------- */
 const NEIGH=[['Сосед Петрович','👴'],['Тётя Валя','👵'],['Михалыч с лодкой','🎣'],['Внучка Света','👧'],['Дачница Люда','👩‍🌾'],['Председатель СНТ','🧔']];
-function genOrder(){const crops=CROP_IDS.filter(unlocked);const c=crops[Math.floor(Math.random()*crops.length)];const q=Math.random()<.65?1:2;const n=NEIGH[Math.floor(Math.random()*NEIGH.length)];
- const bonus=1+0.08*(level()-1);return{who:n[0],ava:n[1],crop:c,qty:q,reward:Math.round((CROPS[c].sell*q+Math.floor(Math.random()*3)*q)*bonus),xp:3*q}}
+function genOrder(){const pool=CROP_IDS.filter(unlocked).concat(kitchenOn()?REC_IDS.filter(recUnlocked):[]);const stock=pool.filter(k=>(S.inv[k]||0)>0);
+ const c=(stock.length&&Math.random()<.5)?stock[Math.floor(Math.random()*stock.length)]:(kitchenOn()&&Math.random()<.3&&REC_IDS.some(recUnlocked)?REC_IDS.filter(recUnlocked)[Math.floor(Math.random()*REC_IDS.filter(recUnlocked).length)]:pool[Math.floor(Math.random()*pool.length)]);
+ const isR=!!RECIPES[c];const q=isR?1:(Math.random()<.65?1:2);const n=NEIGH[Math.floor(Math.random()*NEIGH.length)];
+ const bonus=1+0.08*(level()-1);const price=isR?RECIPES[c].sell:CROPS[c].sell;return{who:n[0],ava:n[1],crop:c,qty:q,reward:Math.round((price*q+Math.floor(Math.random()*3)*q)*bonus),xp:isR?Math.round(RECIPES[c].xp/2):3*q}}
 function genOrders(){S.orders=[genOrder(),genOrder(),genOrder()];S.nextOrderAt=now()}
 const coinSvg='<svg class="coinIco" viewBox="0 0 44 44"><circle cx="22" cy="22" r="18" fill="#ffd23f" stroke="#c98a00" stroke-width="4"/><text x="22" y="28" font-size="16" font-weight="900" text-anchor="middle" fill="#a86b00">₽</text></svg>';
 function openOrders(){
@@ -949,7 +1088,7 @@ function openOrders(){
  const orders=S.done?S.orders:[{who:'Сосед Петрович',ava:'👴',crop:'potato',qty:1,reward:15,xp:0}];
  if(!orders.length)list.innerHTML='<div class="mtext">Новых заказов пока нет — новый появится через '+fmt(S.nextOrderAt-now())+'</div>';
  orders.forEach((o,i)=>{const have=S.inv[o.crop]||0;const ok=have>=o.qty;const d=document.createElement('div');d.className='order';
-  d.innerHTML=`<div class="ava">${o.ava}</div><img class="it" src="${CROPS[o.crop].icon}"><div><div class="who">${o.who}</div><div class="wants">хочет купить: <b>${o.qty}× ${CROPS[o.crop].name}</b><br>на складе: ${have}</div></div><div class="rew">+${o.reward} ${coinSvg}<div class="btn ${ok?'':'off'}">Продать</div></div>`;
+  const IT=CROPS[o.crop]||RECIPES[o.crop];d.innerHTML=`<div class="ava">${o.ava}</div><img class="it" src="${IT.icon||IT.img}"><div><div class="who">${o.who}</div><div class="wants">хочет купить: <b>${o.qty}× ${IT.name}</b><br>на складе: ${have}</div></div><div class="rew">+${o.reward} ${coinSvg}<div class="btn ${ok?'':'off'}">Продать</div></div>`;
   d.querySelector('.btn').onclick=()=>{if(!ok)return;S.inv[o.crop]-=o.qty;$('mOrders').classList.remove('on');
    if(S.done){S.orders.splice(i,1);if(S.nextOrderAt<now())S.nextOrderAt=now()+35000}
    const c=elStage($('hCoins'));S.ui.coins=true;renderHUD();
@@ -974,22 +1113,25 @@ const SHOP={
  water:{name:'Вода и полив',items:()=>[upgItem('gutter'),upgItem('cap'),{k:'well',name:'Старый колодец',desc:'Бесконечная вода',img:IMG.barrel,cost:300,soon:true}]},
  fert:{name:'Удобрения',items:()=>[{k:'fert',name:'Удобрение',desc:'Урожай растёт на 40% быстрее',img:IMG.fert,cost:8}]},
  protect:{name:'Защита',items:()=>[
-  {k:'scare',name:'Пугало',desc:scareActive()?'Сторожит ещё '+fmt(S.scareUntil-now())+' · обновить на 12 ч':'Прогоняет ворон 12 часов, даже когда ты не в игре',img:IMG.scareIcon,cost:30,btn:null},
+  {k:'camera',name:'Камера наблюдения',desc:S.camera?'Установлена — спугивает воришек':'Спугивает половину воришек',img:IMG.cam,cost:150,maxed:S.camera,btn:S.camera?'Есть ✔':null},
+  {k:'fence',name:'Высокий забор',desc:S.fence?'Построен — воришкам не пролезть':'Останавливает 2 из 3 воришек',img:IMG.fenceI,cost:250,maxed:S.fence,btn:S.fence?'Есть ✔':null},
+  ...[{k:'scare',name:'Пугало',desc:scareActive()?'Сторожит ещё '+fmt(S.scareUntil-now())+' · обновить на 12 ч':'Прогоняет ворон 12 часов, даже когда ты не в игре',img:IMG.scareIcon,cost:30,btn:null},
   {k:'p_aphid',name:'Средство от тли',desc:'Убивает тлю на одной грядке',img:IMG.p_aphid,cost:12},
   {k:'p_beetle',name:'От колорадского жука',desc:'Убивает жуков на одной грядке',img:IMG.p_beetle,cost:18},
   {k:'p_slug',name:'Гранулы от слизней',desc:'Убивают слизней на одной грядке',img:IMG.p_slug,cost:15},
-  {k:'pro',name:'Профессиональная обработка',desc:proActive()?'Защита ещё '+fmt(S.proUntil-now()):'Все вредители на всех грядках + защита от жуков на 24 ч',img:IMG.pro,cost:120}]},
+  {k:'pro',name:'Профессиональная обработка',desc:proActive()?'Защита ещё '+fmt(S.proUntil-now()):'Все вредители на всех грядках + защита от жуков на 24 ч',img:IMG.pro,cost:120}].map(x=>level()<PEST_LVL?Object.assign(x,{lock:true,desc:'Откроется на уровне '+PEST_LVL}):x)]},
  build:{name:'Постройки',items:()=>[S.beds.length<2?{k:'bed2',name:'Вторая грядка',desc:'Сажай два овоща сразу',img:IMG.bed,cost:BED2_COST}:{k:'bed2',name:'Вторая грядка',desc:'Уже построена',img:IMG.bed,cost:0,maxed:true,btn:'Есть ✔'},
   S.beds.length<2?{k:'bed3',name:'Третья грядка',desc:'Сначала постройте вторую',img:IMG.bed,cost:BED3_COST,lock:true}:S.beds.length<3?{k:'bed3',name:'Третья грядка',desc:level()>=BED3_LVL?'Ещё больше урожая':'Откроется на уровне '+BED3_LVL,img:IMG.bed,cost:BED3_COST,lock:level()<BED3_LVL}:{k:'bed3',name:'Третья грядка',desc:'Уже построена',img:IMG.bed,cost:0,maxed:true,btn:'Есть ✔'},
-  {k:'bed4',name:'Четвёртая грядка',desc:'Скоро — расширение участка',img:IMG.bed,cost:400,soon:true},{k:'green',name:'Теплица',desc:'Защита от заморозков',img:CROPS.tomato.plant,cost:300,soon:true}]}
+  (()=>{const nl=S.gh.lvl+1,G=GHL[nl];if(!G)return{k:'gh',name:GHL[3].name,desc:'Максимальный уровень',img:GHL[3].img,cost:0,maxed:true,btn:'Есть ✔'};return{k:'gh',name:(S.gh.lvl?'Улучшить: ':'')+G.name,desc:level()>=G.lvl?G.desc:'Откроется на уровне '+G.lvl,img:G.img,cost:G.cost,lock:level()<G.lvl}})(),
+  {k:'bed4',name:'Четвёртая грядка',desc:'Скоро — расширение участка',img:IMG.bed,cost:400,soon:true}]}
 };
-function tabLocked(t){return(!S.done&&t!=='seeds')||(t==='protect'&&level()<PEST_LVL)}
+function tabLocked(t){return(!S.done&&t!=='seeds')||(t==='protect'&&level()<THIEF_LVL)}
 function openShop(tab){if(!S.done)shopTab='seeds';else if(tab)shopTab=tab;renderShop();$('mShop').classList.add('on');guide(null);
  if(!S.done){const btn=[...$('shopCards').querySelectorAll('.card')].find(c=>c.dataset.k==='seed_carrot');if(btn)setTimeout(()=>{const c=elWorld(btn.querySelector('.btn'));guide({arrow:[c[0],c[1]-34/cam.s],ring:[c[0],c[1],130/cam.s]})},380)}}
 function renderShop(){
  const tabs=$('shopTabs');tabs.innerHTML='';
  Object.entries(SHOP).forEach(([k,t])=>{const d=document.createElement('div');d.className='tab'+(k===shopTab?' on':'')+(tabLocked(k)?' lock':'');d.textContent=t.name;
-  d.onclick=()=>{if(tabLocked(k)){toast(S.done?'Откроется на уровне '+PEST_LVL:'Откроется после обучения');SND.fail();return}shopTab=k;SND.tap();renderShop()};tabs.appendChild(d)});
+  d.onclick=()=>{if(tabLocked(k)){toast(S.done?'Откроется на уровне '+THIEF_LVL:'Откроется после обучения');SND.fail();return}shopTab=k;SND.tap();renderShop()};tabs.appendChild(d)});
  const cards=$('shopCards');cards.innerHTML='';
  SHOP[shopTab].items().forEach(it=>{
   const tutBlock=!S.done&&it.k!=='seed_carrot';
@@ -1002,8 +1144,11 @@ function buy(it){if(it.maxed||it.lock||S.coins<it.cost||it.soon)return;S.coins-=
  if(it.k.startsWith('upg:')){const k=it.k.slice(4);S.upg[k]++;SND.level();toast(UPG[k].name+' — уровень '+S.upg[k]+'!');renderGauge()}
  else if(it.k==='bed2'){buildBed(1);return}
  else if(it.k==='bed3'){buildBed(2);return}
+ else if(it.k==='gh'){upgradeGH();return}
+ else if(it.k==='camera'){S.camera=true;SND.level();renderSecurity();toast('Камера установлена!');for(const i in thieves)shooThief(+i,false)}
+ else if(it.k==='fence'){S.fence=true;SND.level();renderSecurity();$('hifence').animate([{opacity:0,transform:'translateY(40px)'},{opacity:1,transform:'none'}],{duration:800});toast('Высокий забор построен!');for(const i in thieves)shooThief(+i,false)}
  else if(it.k==='scare'){S.scareUntil=now()+SCARE_H*3600000;S.scareEver=true;SND.buy();renderScare();$('scarecrow').animate([{transform:'scale(.3)',opacity:0},{transform:'scale(1)',opacity:1}],{duration:600,easing:'cubic-bezier(.3,1.6,.5,1)'});for(const i in birds)shooBird(+i,false);toast('Пугало поставлено на 12 часов!')}
- else if(it.k==='pro'){S.proUntil=now()+24*3600000;S.beds.forEach((b,i)=>{if(b.bug)cure(i,false)});SND.magic();S.beds.forEach((_,i)=>sparkles(GEO[i],14));toast('Профессионалы обработали все грядки! Защита от жуков на 24 часа')}
+ else if(it.k==='pro'){S.proUntil=now()+24*3600000;allBeds().forEach((b,i)=>{if(b.bug)cure(i,false)});SND.magic();allBeds().forEach((_,i)=>sparkles(GEO[i],14));toast('Профессионалы обработали все грядки! Защита от жуков на 24 часа')}
  else{S.inv[it.k]=(S.inv[it.k]||0)+1;SND.buy()}
  renderHUD();bump('hCoins');
  const c=elStage($('hCoins'));floatText(c[0],c[1]+70,'-'+it.cost,'#ffb0a0',true);
@@ -1021,7 +1166,7 @@ $('hShop').addEventListener('pointerdown',e=>{e.stopPropagation();ac();if(!S.don
 /* ---------- store & quests ---------- */
 $('hStore').addEventListener('pointerdown',e=>{e.stopPropagation();ac();SND.tap();
  const l=$('invList');l.innerHTML='';
- Object.entries(ITEMS).forEach(([k,v])=>{const n=S.inv[k]||0;if(!n&&k!=='fert'&&!(k in CROPS&&unlocked(k))&&!(k.startsWith('p_')&&level()>=PEST_LVL))return;const d=document.createElement('div');d.className='slot';d.style.opacity=n?1:.45;d.innerHTML=`<img src="${v.img}"><div>${v.name}</div><b>${n}</b>`;l.appendChild(d)});
+ Object.entries(ITEMS).forEach(([k,v])=>{const n=S.inv[k]||0;if(!n&&k!=='fert'&&!(k in CROPS&&unlocked(k))&&!(k.startsWith('p_')&&level()>=PEST_LVL)&&!(k in RECIPES&&kitchenOn()&&recUnlocked(k)))return;const d=document.createElement('div');d.className='slot';d.style.opacity=n?1:.45;d.innerHTML=`<img src="${v.img}"><div>${v.name}</div><b>${n}</b>`;l.appendChild(d)});
  const w=document.createElement('div');w.className='slot';w.innerHTML=`<img src="${IMG.can}"><div>Лейка: ${S.can?'полная':'пустая'}</div><b>💧${S.water}/${waterMax()}</b>`;l.appendChild(w);
  $('mStore').classList.add('on')});
 function questList(){return[
@@ -1058,16 +1203,16 @@ document.addEventListener('webkitfullscreenchange',()=>setTimeout(fit,200));
 let lightT=null;
 function startGame(state){S=state;tutActive=-1;
  fadeTo(()=>{$('title').style.display='none';$('game').style.display='block';closeTray();guide(null);hint(null);toolHide();
-  ['mOrders','mShop','mStore','mQuest','mMsg'].forEach(i=>$(i).classList.remove('on'));
-  clearBirds();const away=now()-(S.lastSeen||now());const w0=S.water;tick();const off=S.done?offlinePests(away):null;renderAll();renderScare();startTick();updateLighting();clearInterval(lightT);lightT=setInterval(updateLighting,30000);
-  S.beds.forEach((b,i)=>{if(b.busy)toolShow(i,b.busy.type)});
+  ['mOrders','mShop','mStore','mQuest','mMsg','mKitchen'].forEach(i=>$(i).classList.remove('on'));
+  clearBirds();clearThieves();const away=now()-(S.lastSeen||now());const w0=S.water;tick();const off=S.done?offlinePests(away):null;const stolen=S.done?offlineThieves():0;renderAll();renderScare();renderSecurity();renderKitchenBub(true);startTick();updateLighting();clearInterval(lightT);lightT=setInterval(updateLighting,30000);
+  allBeds().forEach((b,i)=>{if(b.busy)toolShow(i,b.busy.type)});
   if(!S.done){
    if(S.tut===0){camTo(BED_C[0],BED_C[1],minS()*1.35);setTimeout(()=>{camHome(true);setTimeout(tutRun,1300)},300)}
    else{camHome();setTimeout(tutRun,600)}}
   else{camHome();setTimeout(()=>{
-   const msgs=[];if(off&&off.scared)msgs.push('пугало прогнало ворон: '+off.scared);if(off&&off.ate)msgs.push('вороны клевали урожай');if(off&&off.bugs)msgs.push('на грядках завелись вредители');if(S.beds.some(isRipe))msgs.push('урожай созрел');if(S.water>w0)msgs.push('бочка набрала воды');if(S.beds.some(needsWater))msgs.push('грядка просит полива');
+   const msgs=[];if(off&&off.scared)msgs.push('пугало прогнало ворон: '+off.scared);if(off&&off.ate)msgs.push('вороны клевали урожай');if(off&&off.bugs)msgs.push('на грядках завелись вредители');if(stolen)msgs.push('воришки утащили урожай с '+stolen+' гр.');if(S.kitchen.slots.some(x=>x&&now()>=x.t1))msgs.push('заготовки готовы');if(allBeds().some(isRipe))msgs.push('урожай созрел');if(S.water>w0)msgs.push('бочка набрала воды');if(allBeds().some(needsWater))msgs.push('грядка просит полива');
    toast(greeting()+' '+(msgs.length?'Пока тебя не было: '+msgs.join(', ')+'.':'С возвращением на дачу!'));
-   if(level()>S.seenLvl)levelUp()},600)}})}
+   if(level()>S.seenLvl)levelUp();setTimeout(announceNew,1500)},600)}})}
 $('hotNew').addEventListener('click',()=>{ac();SND.tap();
  if(loadSave())msgTitle('Новая игра','Начать заново? Весь прогресс будет удалён.',[{t:'Начать заново',cls:'orange',f:()=>{try{localStorage.removeItem(SAVE_KEY);OLD_KEYS.forEach(k=>localStorage.removeItem(k))}catch(e){}startGame(newState())}},{t:'Отмена'}]);
  else startGame(newState())});
@@ -1079,7 +1224,7 @@ document.addEventListener('visibilitychange',()=>{if(document.hidden)save();else
 addEventListener('pagehide',()=>save());
 setInterval(()=>{if(S&&!document.hidden&&$('game').style.display==='block')S.lastSeen=now()},10000);addEventListener('beforeunload',()=>save());
 buildBeds();fit();
-window.__dacha={spawnBird,infest,birds,get S(){return S},STEPS,fromStage,tick,cam,setHour:h=>{forcedHour=h;updateLighting()},GEO};
+window.__dacha={spawnThief,openKitchen,announceNew,spawnBird,infest,birds,get S(){return S},STEPS,fromStage,tick,cam,setHour:h=>{forcedHour=h;updateLighting()},GEO};
 })();
 </script>
 </body>
