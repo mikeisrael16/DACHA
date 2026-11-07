@@ -2,7 +2,7 @@
 'use strict';
 const $=id=>document.getElementById(id);
 const IMG=__IMGMAP__;
-const VERSION='1.1';
+const VERSION='1.2';
 const WW=2576,WH=1093;
 const now=()=>Date.now();
 const SPOIL=6*3600000;
@@ -72,7 +72,7 @@ const PEST_LVL=5,THIEF_LVL=4,CAT_LVL=5,SCARE_H=12,BASE_KEY='dacha_v1_save';
 
 /* ================= SCALE ================= */
 const stage=$('stage');let SC=1,ROT=false,OX=0,OY=0,SW=1600,SH=893;let S=null;
-function fit(){const sw=innerWidth,sh=innerHeight;ROT=sh>sw;const lw=ROT?sh:sw,lh=ROT?sw:sh;
+function fit(){if(typeof typing2!=='undefined'&&typing2)return;const sw=innerWidth,sh=innerHeight;ROT=sh>sw;const lw=ROT?sh:sw,lh=ROT?sw:sh;
  SC=Math.min(lh/893,lw/1150);SW=lw/SC;SH=lh/SC;stage.style.width=SW+'px';stage.style.height=SH+'px';
  if(ROT){OX=sw;OY=0;stage.style.transform=`translate(${sw}px,0) rotate(90deg) scale(${SC})`}else{OX=0;OY=0;stage.style.transform=`scale(${SC})`}
  $('tbox').style.transform=`scale(${SW/1600},${SH/893})`;if(S){clampCam();applyCam()}}

@@ -27,7 +27,8 @@ function petCat(){if(!catOn())return;tone(900,.12,'sine',.12,600);tone(700,.25,'
 function catTick(){if(!S.cat||S.cat.gone||!S.done)return;const t=now(),c=S.cat;
  if(t>c.food+86400000||t>c.water+86400000){c.gone=true;renderCat();save();sayLater([[4,`Ох… ${c.name} ушёл — миски стояли пустыми целый день. Коты не любят, когда о них забывают.`],[3,'Его можно позвать обратно в магазине (вкладка «Животные»). Только корми и пои каждый день!']])}
  else renderCat()}
-function askCatName(){popup(done=>{$('nameCat').src=IMG.cat_sit;$('nameIn').value='Барсик';modal('mName');setTimeout(()=>{try{$('nameIn').focus();$('nameIn').select()}catch(e){}},300);
+function askCatName(){popup(done=>{$('nameCat').src=IMG.cat_sit;$('nameIn').value='Барсик';modal('mName');
+ const ch=$('nameChips');ch.innerHTML='';['Барсик','Мурзик','Тимоха','Рыжик','Васька','Персик','Кузя','Пушок'].forEach(n=>{const b=document.createElement('div');b.className='chip';b.textContent=n;b.onclick=()=>{$('nameIn').value=n;SND.tap();[...ch.children].forEach(x=>x.classList.toggle('on',x===b))};ch.appendChild(b)});ch.firstChild.classList.add('on');
  $('nameOk').onclick=()=>{let n=$('nameIn').value.trim().slice(0,16)||'Барсик';S.cat={name:n,food:now()+86400000,water:now()+86400000,gone:false};addItem('catfood',3);modal('mName',false);renderCat();SND.magic();save();
   camTo(CATP[0]+200,CATP[1]-100,minS()*1.8,true);setTimeout(()=>dialog([[5,`${n} — отличное имя! Смотри, он уже устроился у крыльца.`],[3,`Каждый день наполняй миски: корм — из магазина, воду — из лейки или бочки. Нажми на миску и перетащи в неё корм или воду из лейки. Если миски простоят пустыми сутки, ${n} обидится и уйдёт.`],[1,'Я положила тебе 3 пачки корма для начала. А погладить кота можно, просто нажав на него!']],done),900)}})}
 

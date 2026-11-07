@@ -106,3 +106,36 @@ input.nameIn{font:inherit;font-size:30px;font-weight:800;padding:10px 18px;borde
 .order .wants{font-size:20px!important}.slot{font-size:16px!important}
 #cat{width:150px}
 #gaugeTimer{left:85px!important;width:300px!important;white-space:nowrap}
+/* v1.2 recipe details, cat name, bigger fonts */
+.card{cursor:pointer}
+.card .canb{position:absolute;left:50%;top:-14px;transform:translateX(-50%);background:#2e7d32;color:#fff;font-weight:900;font-size:16px;padding:3px 12px;border-radius:12px;white-space:nowrap;border:2px solid #fff;z-index:2}
+.card .more{font-size:15px;color:#a0522d;font-weight:800;margin-top:2px}
+.need span{font-size:17px!important}.need img{width:36px!important;height:36px!important}
+.rdet{display:flex;gap:26px;width:100%;padding:6px 10px;align-items:flex-start}
+.rdet .rl{width:280px;text-align:center;flex:none}.rdet .rl img{width:220px}
+.rdet .rt{font-size:30px;font-weight:900;color:#3a2410;margin:6px 0}.rdet .ri{font-size:22px;font-weight:700;color:#6d4b27;line-height:1.5}
+.rdet .rr{flex:1}.rdet .rh{font-size:26px;font-weight:900;color:#3a2410;margin-bottom:8px}
+.rrow{display:flex;align-items:center;gap:14px;background:#fff;border:4px solid #c9a46d;border-radius:18px;padding:6px 14px;margin-bottom:8px}
+.rrow.ok{border-color:#5fb53a;background:#f1fbe9}.rrow.no{border-color:#e5806f;background:#fff1ee}
+.rrow img{width:62px;height:62px;object-fit:contain}.rrow .rn{flex:1;font-size:23px;color:#3a2410}.rrow .rn small{display:block;font-size:17px;font-weight:700;color:#8a5a3a}
+.rrow .rc{font-size:28px;font-weight:900}.rrow.ok .rc{color:#2e7d32}.rrow.no .rc{color:#c0392b}
+.rs{font-size:22px;font-weight:900;color:#c0392b;text-align:center;margin-top:6px}.rs.go{color:#2e7d32}
+.nhint{font-size:24px;font-weight:800;color:#3a2410;margin-bottom:12px;text-align:left}
+#nameChips{display:flex;flex-wrap:wrap;gap:10px;margin-bottom:14px}
+.chip{font-size:24px;font-weight:900;padding:8px 18px;border-radius:16px;border:3px solid #c9a46d;background:#fff;color:#6d4b27;cursor:pointer}
+.chip.on{background:#5fb53a;border-color:#2d6a19;color:#fff}
+input.nameIn{width:100%!important;margin-bottom:14px!important}
+#mName.typing{align-items:flex-start}#mName.typing .panel{margin-top:40px;padding-top:56px}
+#mName.typing #nameCat,#mName.typing #nameChips,#mName.typing .nhint{display:none}
+/* bigger text everywhere */
+#hint,#placeTip{font-size:27px!important}
+#dlg .txt{font-size:33px!important}#dlg .name{font-size:27px!important}
+.mtext{font-size:29px!important}.tab{font-size:20px!important}
+.card .cn{font-size:22px!important}.card .cd{font-size:18px!important}
+.titem .lbl{font-size:18px!important}.pbar .lb{font-size:21px!important}.pbar .tm{font-size:29px!important}
+#kbubs .kb{font-size:24px!important}.order .who{font-size:24px!important}.order .wants{font-size:22px!important}
+.quest .qt{font-size:24px!important}.quest .qs{font-size:19px!important}.mrow .mn{font-size:22px!important}.mrow .mn small{font-size:17px!important}
+.kslot{font-size:20px}.slot{font-size:18px!important}.wn{font-size:23px!important}.wn h3{font-size:26px!important}
+.btn{font-size:26px}.dcard .rw{font-size:18px!important}.qrw{font-size:18px!important}.nm{font-size:24px!important}.fix .lk{font-size:30px!important}
+.pill{font-size:30px}
+.rdet .rl img{width:170px}.rrow{padding:4px 12px;margin-bottom:6px}.rrow img{width:52px;height:52px}

@@ -54,7 +54,15 @@ function renderFacUI(){const f=curFac,F=S.fac[f];const box=document.createElemen
   const need=Object.entries(r[1]).map(([k,n])=>`<span class="${(S.inv[k]||0)>=n?'':'miss'}"><img src="${iImg(k)}">${S.inv[k]||0}/${n}</span>`).join('');
   const d=document.createElement('div');d.className='card'+(ok?'':' locked');d.style.width='200px';
   d.innerHTML=`${ok?'':'<div class="soon">🔒 ур. '+r[0]+'</div>'}${S.inv[id]?`<div class="own">${S.inv[id]}</div>`:''}<img src="${IMG[PROD[id][2]]}" style="width:120px;height:120px"><div class="cn" style="min-height:30px;font-size:17px">${PROD[id][0]}${r[3]>1?' ×'+r[3]:''}</div><div class="need">${need}</div><div class="cd">⏱ ${fmt(r[2]*1000*tm())} · цена ~${PROD[id][1]}</div><div class="btn ${ok&&can&&free?'':'off'}">Готовить</div>`;
-  d.querySelector('.btn').onclick=()=>cook(f,id);cards.appendChild(d)})}
+  if(ok&&can)d.insertAdjacentHTML('afterbegin','<div class="canb">✔ Можно готовить</div>');d.insertAdjacentHTML('beforeend','<div class="more">ℹ Нажми — состав</div>');
+  d.querySelector('.btn').onclick=e=>{e.stopPropagation();if(ok&&can&&free)cook(f,id);else showRecipe(f,id)};d.onclick=()=>showRecipe(f,id);cards.appendChild(d)})}
+function srcHint(k){if(ANN[k])return'Вырасти на грядке (семена — Магазин → Семена)';if(PER[k])return(PER[k][1]==='tree'?'Собери с дерева':'Собери с куста')+' (Магазин → Сад)';
+ return{milk:'Подои корову',wool:'Постриги овцу',yarn:'Сделай в прядильне из шерсти',hay:'Купи в магазине'}[k]||'Сделай в мастерской'}
+function showRecipe(f,id){SND.tap();const r=FAC[f].rec[id],F=S.fac[f],ok=level()>=r[0],can=canCook(f,id),free=F.slots.filter(Boolean).length<F.cap;
+ const rows=Object.entries(r[1]).map(([k,n])=>{const have=S.inv[k]||0,g=have>=n;return`<div class="rrow ${g?'ok':'no'}"><img src="${iImg(k)}"><div class="rn"><b>${iName(k)}</b><small>${g?'Есть ✔':srcHint(k)}</small></div><div class="rc">${have} / ${n}</div></div>`}).join('');
+ const state=!ok?`🔒 Откроется на уровне ${r[0]}`:!can?'Собери все продукты, отмеченные красным':!free?'Все места заняты — дождись, пока приготовится':'Всё собрано — можно готовить!';
+ $('kCards').innerHTML=`<div class="rdet"><div class="rl"><img src="${IMG[PROD[id][2]]}"><div class="rt">${PROD[id][0]}${r[3]>1?' ×'+r[3]:''}</div><div class="ri">⏱ Готовится ${fmt(r[2]*1000*tm())}<br>💰 Соседи платят ~${PROD[id][1]}</div><div class="rs ${ok&&can&&free?'go':''}">${state}</div><div class="row" style="gap:12px;margin-top:10px"><div class="btn orange" id="rBack">←</div><div class="btn ${ok&&can&&free?'':'off'}" id="rCook">Готовить</div></div></div><div class="rr"><div class="rh">Что нужно:</div>${rows}</div></div>`;
+ $('rBack').onclick=()=>{SND.tap();renderFacUI()};$('rCook').onclick=()=>{if(ok&&can&&free)cook(f,id)}}
 function cook(f,id){const r=FAC[f].rec[id],F=S.fac[f];if(level()<r[0]||!canCook(f,id))return;let i=0;while(F.slots[i])i++;if(i>=F.cap){toast('Все места заняты');return}
  Object.entries(r[1]).forEach(([k,n])=>takeItem(k,n));F.slots[i]={r:id,t0:now(),t1:now()+r[2]*1000*tm()};SND.plant();toast('Готовим: '+PROD[id][0]);renderHUD();renderFacUI();save()}
 function collectDish(f,i){const x=S.fac[f].slots[i];if(!x)return;const q=FAC[f].rec[x.r][3];addItem(x.r,q);S.fac[f].slots[i]=null;SND.harvest();stat('cook');stat('cook_'+x.r);
