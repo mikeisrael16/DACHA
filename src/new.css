@@ -1,0 +1,92 @@
+
+/* ===== v1.0 additions ===== */
+#world{width:2576px;height:1093px}
+.zl{position:absolute;left:0;top:0;width:2576px;height:1093px;pointer-events:none}
+.obj{position:absolute;pointer-events:auto;cursor:pointer}
+.obj .soil{position:absolute;inset:0;border-radius:10px;border:6px solid #8d5f31;box-shadow:0 9px 0 #5b391c,0 14px 10px rgba(0,0,0,.28);background:#6b4426;overflow:hidden}
+.obj .soil:before{content:'';position:absolute;inset:0;background:radial-gradient(circle at 20% 30%,rgba(0,0,0,.18) 2px,transparent 3px) 0 0/22px 18px,radial-gradient(circle at 70% 60%,rgba(255,255,255,.07) 3px,transparent 4px) 0 0/26px 22px}
+.obj.h .soil:after{content:'';position:absolute;inset:0;background:repeating-linear-gradient(0deg,transparent 0 22px,rgba(40,20,8,.45) 22px 28px,rgba(160,110,70,.35) 28px 31px)}
+.obj.v .soil:after{content:'';position:absolute;inset:0;background:repeating-linear-gradient(90deg,transparent 0 22px,rgba(40,20,8,.45) 22px 28px,rgba(160,110,70,.35) 28px 31px)}
+.obj.weeds .soil{background:#5f8f37}
+.obj.weeds .soil:after{background:radial-gradient(circle at 30% 70%,#3e7a22 3px,transparent 4px) 0 0/18px 16px,radial-gradient(circle at 70% 30%,#f4e04d 2px,transparent 3px) 0 0/34px 26px}
+.obj.used .soil{background:#8a6844}.obj.used .soil:after{display:none}
+.obj.wet .soil{background:#4a2c16}
+.obj .pl{position:absolute;transform:translate(-50%,-100%);pointer-events:none;transform-origin:50% 100%}
+.obj .pl img{width:100%;display:block}
+.obj .pl.ripe{animation:sway 2.2s ease-in-out infinite}
+.obj .spr{position:absolute;left:50%;bottom:0;transform:translateX(-50%);pointer-events:auto;filter:drop-shadow(0 6px 4px rgba(0,0,0,.3))}
+.obj .spr.mir{transform:translateX(-50%) scaleX(-1)}
+.obj.ghost{opacity:.75;pointer-events:none}
+.obj.ghost.bad{filter:sepia(1) hue-rotate(-50deg) saturate(4)}
+.obj.ghost.ok{filter:drop-shadow(0 0 8px #7dff6a)}
+.obj .bug{position:absolute;width:38px;height:34px;pointer-events:none;animation:crawl 1.6s ease-in-out infinite alternate}
+.obj .bug svg{width:100%;height:100%}
+@keyframes sway{0%,100%{transform:translate(-50%,-100%) rotate(-2deg)}50%{transform:translate(-50%,-100%) rotate(2deg) scale(1.03)}}
+@keyframes crawl{0%{transform:translate(0,0) rotate(-12deg)}50%{transform:translate(6px,-4px) rotate(8deg)}100%{transform:translate(-4px,3px) rotate(-4deg)}}
+#gridSvg rect{fill:rgba(255,255,255,.18);stroke:rgba(255,255,255,.55);stroke-width:1.5}
+#gridSvg rect.occ{fill:rgba(220,60,40,.25)}
+.fix{position:absolute;transform:translate(-50%,-100%);pointer-events:auto;cursor:pointer}
+.fix img{width:100%;display:block;filter:drop-shadow(0 8px 6px rgba(0,0,0,.35))}
+.fix.locked img{filter:grayscale(1) opacity(.45)}
+.fix .lk{position:absolute;left:50%;bottom:10%;transform:translateX(-50%);background:rgba(60,35,15,.88);color:#fff;font-weight:900;font-size:22px;padding:4px 14px;border-radius:14px;white-space:nowrap;border:3px solid #fff}
+.ani{position:absolute;transform:translate(-50%,-100%);pointer-events:auto;cursor:pointer;width:150px}
+.ani img{width:100%;display:block;filter:drop-shadow(0 5px 4px rgba(0,0,0,.3))}
+.ani.ready img{animation:bob 1s ease-in-out infinite}
+.hitz{position:absolute;pointer-events:auto;cursor:pointer}
+.bb{position:absolute;transform:translate(-50%,-100%);pointer-events:none}
+.bb .b{width:62px;height:62px;border-radius:50%;background:#fff;border:4px solid #4aa3df;display:flex;align-items:center;justify-content:center;box-shadow:0 4px 8px rgba(0,0,0,.3);animation:bob 1.2s ease-in-out infinite}
+.bb .b img{width:80%}
+.bb.ready .b{border-color:#f1c40f;width:72px;height:72px}
+.bb .pbar{transform:none;position:relative}
+.nm{position:absolute;transform:translate(-50%,0);background:rgba(60,35,15,.8);color:#fff;font-weight:800;font-size:16px;padding:2px 10px;border-radius:10px;white-space:nowrap;pointer-events:none}
+#cat{position:absolute;width:120px;transform:translate(-50%,-100%);pointer-events:auto;cursor:pointer}
+#cat img{width:100%;display:block;filter:drop-shadow(0 4px 3px rgba(0,0,0,.3))}
+#cat .zz{position:absolute;right:-10px;top:-14px;font-size:30px;font-weight:900;color:#fff;-webkit-text-stroke:1px #446;animation:bob 1.6s infinite}
+.bowl{position:absolute;width:64px;transform:translate(-50%,-100%);pointer-events:auto;cursor:pointer}
+.bowl img,.bowl svg{width:100%;display:block}
+.bowl.empty:after{content:'!';position:absolute;right:-8px;top:-18px;width:26px;height:26px;border-radius:50%;background:#e74c3c;color:#fff;font-weight:900;text-align:center;line-height:26px;border:2px solid #fff}
+#placeBar{position:absolute;left:50%;bottom:22px;transform:translateX(-50%);display:none;gap:14px;z-index:30}
+#placeBar.on{display:flex}
+#placeBar .btn{font-size:24px;padding:14px 26px}
+#placeTip{position:absolute;left:50%;top:92px;transform:translateX(-50%);background:rgba(255,248,225,.96);border:4px solid #7a4e26;border-radius:20px;padding:8px 22px;font-size:22px;font-weight:800;color:#4a2e14;display:none;z-index:30;white-space:nowrap}
+#placeTip.on{display:block}
+#hDaily{left:20px;bottom:282px;width:96px;height:96px;background:linear-gradient(#ffd86b,#e6a817);font-size:15px;border-radius:22px}
+#hDaily img{width:58px;height:58px}
+#hDaily .dot{position:absolute;right:-6px;top:-6px;width:26px;height:26px;border-radius:50%;background:#e74c3c;border:3px solid #fff;display:none}
+#hHome{right:16px;top:252px;width:66px;height:66px}
+#hHome svg{width:44px;height:44px}
+.drow{display:flex;gap:12px;justify-content:center;flex-wrap:wrap;max-width:980px}
+.dcard{position:relative;width:124px;text-align:center}
+.dcard img{width:120px}
+.dcard.today img{filter:drop-shadow(0 0 14px #ffd84a);animation:bob 1s infinite}
+.dcard.past img{opacity:.55}
+.dcard .rw{font-weight:900;font-size:16px;color:#4a2e14;min-height:38px}
+.dcard .ok{position:absolute;right:4px;top:4px;font-size:30px}
+.mrow{display:flex;align-items:center;gap:12px;background:#fff;border:3px solid #c9a46d;border-radius:16px;padding:6px 12px;margin-bottom:8px}
+.mrow img{width:56px;height:56px;object-fit:contain}
+.mrow .mn{flex:1;font-weight:800;font-size:18px;color:#3a2410}
+.mrow .mn small{display:block;font-size:13px;color:#a0522d}
+.mrow .btn{font-size:17px;padding:6px 14px}
+.mlist{max-height:470px;overflow-y:auto;width:760px;padding-right:6px;touch-action:pan-y}
+.wn{max-width:820px;max-height:520px;overflow-y:auto;font-size:21px;font-weight:600;color:#3a2410;line-height:1.35;touch-action:pan-y}
+.wn li{margin:0 0 8px 22px}
+.wn h3{margin:6px 0 10px;font-size:24px;color:#2e7d32}
+input.nameIn{font:inherit;font-size:30px;font-weight:800;padding:10px 18px;border-radius:16px;border:4px solid #c9a46d;width:420px;text-align:center;user-select:text;-webkit-user-select:text;margin-bottom:20px}
+.titem.tapok{cursor:pointer}
+#kbubs .kb{display:flex;align-items:center;gap:6px;background:rgba(255,248,225,.97);border:4px solid #7a4e26;border-radius:20px;padding:4px 10px 4px 4px;box-shadow:0 5px 12px rgba(0,0,0,.35);font-weight:900;font-size:18px;color:#4a2e14;white-space:nowrap}
+#kbubs .kb img{width:50px;height:50px;object-fit:contain}
+#kbubs .kb.ready{border-color:#f1c40f;animation:bob 1s ease-in-out infinite}
+.qrw{font-size:15px;color:#7a5a3a;font-weight:700}
+.thief{position:absolute;width:110px;height:140px;margin:-140px 0 0 -55px;pointer-events:auto;cursor:pointer;z-index:5}
+.thief svg{width:100%;height:100%;filter:drop-shadow(0 6px 4px rgba(0,0,0,.4))}
+.thief:not(.flee) svg{animation:sneak .5s ease-in-out infinite alternate}
+@keyframes sneak{to{transform:translateY(-4px) rotate(3deg)}}
+.thief:after,.bird:after{content:'';position:absolute;inset:-20px}
+.bird{position:absolute;width:104px;height:78px;margin:-78px 0 0 -52px;pointer-events:auto;cursor:pointer;z-index:6}
+.bird svg{width:100%;height:100%;transform-origin:30% 95%;animation:peck .9s ease-in-out infinite;filter:drop-shadow(0 4px 3px rgba(0,0,0,.35))}
+@keyframes peck{0%,60%,100%{transform:rotate(0)}75%{transform:rotate(22deg)}}
+.tab{font-size:17px!important;padding:9px 4px!important}
+#objs{z-index:0}
+#placeBar,#placeBar .btn{pointer-events:auto}
+#mShop .cards,#mFac .cards{flex-wrap:wrap;overflow-x:hidden;overflow-y:auto;max-height:470px;touch-action:pan-y;justify-content:center}
+#mShop .card,#mFac .card{width:200px}
