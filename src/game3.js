@@ -90,7 +90,7 @@ function renderHUD(){if(!S)return;
  $('storeCnt').textContent=sellables().reduce((a,k)=>a+S.inv[k],0);
  show('hCoins',S.ui.coins);show('hXp',S.ui.xp);show('hStore',S.ui.store);show('hShop',S.ui.shop);show('hQuest',S.ui.quest);show('hDaily',S.done);
  const canFill=S.done?S.orders.filter(o=>S.inv[o.item]>=o.qty).length:(S.tut>=TI.sell&&S.inv.potato>0?1:0);
- $('boardBadge').style.display=S.ui.board&&canFill?'block':'none';$('boardBadge').textContent=canFill;
+ $('boardBadge').style.display=S.ui.board&&canFill?'block':'none';show('hOrders',S.ui.board);$('boardLbl').style.display=S.ui.board?'':'none';$('ordersDot').style.display=S.ui.board&&canFill?'block':'none';$('ordersDot').textContent=canFill||'';$('boardBadge').textContent=canFill;
  renderGauge();$('canBadge').classList.toggle('on',S.can>0);$('canCnt').textContent=S.can>1?S.can:'';$('canCnt').style.display=S.can>1?'':'none';
  $('questDot').style.display=S.done&&S.quests.some(q=>qProg(q)>=q.target)?'block':'none';
  $('dailyDot').style.display=S.done&&S.daily.last!==dayKey()?'block':'none'}

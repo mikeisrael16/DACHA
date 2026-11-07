@@ -139,3 +139,22 @@ input.nameIn{width:100%!important;margin-bottom:14px!important}
 .btn{font-size:26px}.dcard .rw{font-size:18px!important}.qrw{font-size:18px!important}.nm{font-size:24px!important}.fix .lk{font-size:30px!important}
 .pill{font-size:30px}
 .rdet .rl img{width:170px}.rrow{padding:4px 12px;margin-bottom:6px}.rrow img{width:52px;height:52px}
+/* v1.3 bigger buttons */
+.pill{height:70px!important;font-size:34px!important;border-radius:35px!important}
+.pill svg,.pill img{width:52px!important;height:52px!important}
+#hCoins{min-width:190px}#hXp{left:240px!important;width:290px!important}#hXp .bar{height:24px!important}
+.rbtn{width:92px!important;height:92px!important}.rbtn img,.rbtn svg{width:72px!important;height:72px!important}
+#hMenu{right:16px!important;top:10px!important}#hSound{right:122px!important;top:10px!important}#hMusic{right:228px!important;top:10px!important}#hStore{right:334px!important;top:10px!important}
+#hZin{right:16px!important;top:118px!important}#hZout{right:16px!important;top:226px!important}#hHome{right:16px!important;top:334px!important}
+#hZin span,#hZout span{font-size:56px!important}#hHome svg{width:56px!important;height:56px!important}
+#hShop{width:150px!important;height:150px!important;font-size:25px!important;left:18px!important;bottom:18px!important}#hShop svg{width:90px!important;height:80px!important}
+#hQuest,#hOrders,#hDaily{width:122px!important;height:116px!important;font-size:19px!important;left:18px!important;border-radius:24px!important}
+#hQuest{bottom:184px!important}#hOrders{bottom:316px!important;background:linear-gradient(#ff8a6b,#d9442b)!important}#hDaily{bottom:448px!important}
+#hQuest svg,#hOrders svg{width:62px!important;height:62px!important}#hDaily img{width:66px!important;height:66px!important}
+#hOrders .dot{position:absolute;right:-8px;top:-8px;min-width:34px;height:34px;border-radius:17px;background:#2e7d32;border:3px solid #fff;color:#fff;font-size:20px;font-weight:900;line-height:28px;text-align:center;-webkit-text-stroke:0;display:none}
+#hQuest .dot,#hDaily .dot{width:30px!important;height:30px!important}
+.btn{padding:12px 28px;min-height:58px}
+.close{width:76px!important;height:76px!important;font-size:40px!important;right:-26px!important;top:-26px!important}
+.titem{width:104px!important;height:104px!important}
+#placeBar .btn{font-size:28px!important;padding:16px 30px!important}
+.tab{padding:12px 4px!important}

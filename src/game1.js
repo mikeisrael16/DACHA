@@ -2,7 +2,7 @@
 'use strict';
 const $=id=>document.getElementById(id);
 const IMG=__IMGMAP__;
-const VERSION='1.2';
+const VERSION='1.3';
 const WW=2576,WH=1093;
 const now=()=>Date.now();
 const SPOIL=6*3600000;

@@ -45,6 +45,7 @@ function buy(it){if(it.maxed||it.lock)return;if(!S.done&&it.k!=='seed_carrot')re
 function buyAnimal(s){const k=s==='cows'?'cow':'sheep';const A=ANIM[k];if(S[s].length>=A.max)return;S[s].push({state:'hungry',t0:0,t1:0,shorn:false});renderAnimals();SND.harvest();
  const p=A.pos[S[s].length-1];burst(p[0],p[1]-60,18,['#ffd23f','#fff','#7cc84a'],100);shopClose();camTo(p[0],p[1]-100,minS()*1.6,true);
  tip('feed_'+k,[[5,k==='cow'?'Бурёнка у нас! Нажми на корову и дай ей сено — через несколько минут будет ведро молока.':'Овечка у нас! Покорми её сеном — когда шерсть отрастёт, нажми на овцу, чтобы постричь.'],[3,'Сено продаётся в магазине (вкладка «Животные»). А комбикорм из кукурузы и фасоли готовят на кухне — с ним животные работают почти вдвое быстрее!']])}
+$('hOrders').addEventListener('pointerdown',e=>{e.stopPropagation();ac();if(placing)return;tapBoard()});
 $('hShop').addEventListener('pointerdown',e=>{e.stopPropagation();ac();if(placing)return;if(!S.done&&tutWait()!=='buy'){SND.fail();return}SND.tap();openShop()});
 
 /* ================= STORE (barn) ================= */
