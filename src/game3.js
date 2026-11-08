@@ -1,14 +1,14 @@
 
 /* ================= CAMERA ================= */
 const cam={s:1,x:0,y:0};
-const minS=()=>Math.max(SW/WW,SH/WH);
-const maxS=()=>minS()*3;
+const minS=()=>Math.max(SW/WW,SH/WH,.52);
+const maxS=()=>Math.max(1.9,minS()*2.5);
 function clampCam(){cam.s=Math.min(maxS(),Math.max(minS(),cam.s));cam.x=Math.min(0,Math.max(SW-WW*cam.s,cam.x));cam.y=Math.min(0,Math.max(SH-WH*cam.s,cam.y))}
 let guideRaf=0;
 function applyCam(anim){const rel=cam.s/minS();$('world').style.setProperty('--bz',Math.max(.8,Math.min(1.35,1.3/Math.pow(rel,.7))).toFixed(3));for(const el of [$('world'),$('guideL')]){el.classList.toggle('anim',!!anim);el.style.transform=`translate(${cam.x}px,${cam.y}px) scale(${cam.s})`}
  if(!guideRaf)guideRaf=requestAnimationFrame(()=>{guideRaf=0;if(S&&!S.done)updateGuide()})}
 function camTo(wx,wy,s,anim){cam.s=s;cam.x=SW/2-wx*s;cam.y=SH/2-wy*s;clampCam();applyCam(anim)}
-function camHome(anim){camTo(1330,700,minS()*1.25,anim)}
+function camHome(anim){camTo(1560,960,Math.max(minS(),.78),anim)}
 function zoomAt(sx,sy,ns){const wx=(sx-cam.x)/cam.s,wy=(sy-cam.y)/cam.s;cam.s=Math.min(maxS(),Math.max(minS(),ns));cam.x=sx-wx*cam.s;cam.y=sy-wy*cam.s;clampCam();applyCam(false)}
 const s2w=([x,y])=>[(x-cam.x)/cam.s,(y-cam.y)/cam.s];
 function elStage(el){const r=el.getBoundingClientRect();return toStage(r.left+r.width/2,r.top+r.height/2)}
@@ -37,15 +37,16 @@ let uid=1;
 function newCropObj(kind,z,c,r,rot){return{id:'o'+(uid++)+'_'+Math.floor(Math.random()*1e4),kind,z,c,r,rot:rot||0,state:'weeds',crop:null,fert:false,frac:0,waterIdx:0,total:0,speed:1,seg:null,busy:null,bug:null,bugDmgAt:0,pausedF1:null,ripeAt:0}}
 function newPerObj(p,z,c,r){return{id:'o'+(uid++)+'_'+Math.floor(Math.random()*1e4),kind:PER[p][1],p,z,c,r,rot:0,stage:0,seg:null,ripe:false,ripeAt:0,busy:null}}
 function blankInv(){const inv={};Object.keys(ITEMS).forEach(k=>inv[k]=0);return inv}
-function newState(){const inv=blankInv();inv.seed_potato=1;inv.fert=1;
+function newState(){const inv=blankInv();const fac={},ani={};Object.keys(FAC).forEach(f=>fac[f]={cap:1,slots:[]});ANI_IDS.forEach(k=>ani[k]=[]);inv.seed_potato=1;inv.fert=1;
  return{ver:VERSION,seenVer:'0',coins:0,xp:0,water:1,waterAt:now(),can:0,inv,lots:{},objs:[newCropObj('bed',0,1,2,0)],
- upg:{shovel:0,can:0,soil:0,gutter:0,cap:0},ghLvl:1,build:{market:true},cows:[],sheep:[],
- fac:{kitchen:{cap:1,slots:[]},dairy:{cap:1,slots:[]},spinnery:{cap:1,slots:[]}},
+ upg:{shovel:0,can:0,soil:0,gutter:0,cap:0},ghLvl:1,build:{market:true},loc:2,rod2:false,forest:null,fair:null,holGift:{},
+
  firstPotato:true,seenLvl:1,tut:0,done:false,orders:[],nextOrderAt:0,giftAt:0,
  scareUntil:0,scareEver:false,proUntil:0,camera:false,fence:false,lastSeen:now(),nextPestAt:0,nextThiefAt:0,tips:{},
  daily:{last:'',streak:0},cat:null,quests:[],stats:{},created:now(),
- ui:{coins:false,xp:false,store:false,shop:false,board:false,quest:false}}}
-function migrate(s){const d=newState();for(const k in d)if(s[k]===undefined)s[k]=d[k];
+ ui:{coins:false,xp:false,store:false,shop:false,board:false,quest:false},fac,ani}}
+function migrate(s){const d=newState();if(s.loc===undefined)s.loc=1;for(const k in d)if(s[k]===undefined)s[k]=d[k];
+ ANI_IDS.forEach(k=>{if(!s.ani[k])s.ani[k]=[]});if(s.cows){s.ani.cow=s.cows;delete s.cows}if(s.sheep){s.ani.sheep=s.sheep;delete s.sheep}
  for(const k in d.inv)if(s.inv[k]===undefined)s.inv[k]=0;for(const k in d.upg)if(s.upg[k]===undefined)s.upg[k]=0;
  for(const k in d.fac)if(!s.fac[k])s.fac[k]=d.fac[k];for(const k in d.ui)if(s.ui[k]===undefined)s.ui[k]=d.ui[k];
  s.objs.forEach(o=>{const n=o.kind==='bed'||o.kind==='gh'?newCropObj(o.kind,0,0,0):newPerObj(o.p||'strawberry',0,0,0);for(const k in n)if(o[k]===undefined)o[k]=n[k]});
@@ -66,7 +67,7 @@ const D={
  plant:()=>(tutOn()?2:3)*Math.pow(.85,S.upg.shovel)*tm()*1000,
  water:()=>(tutOn()?2:3)*tm()*1000,
  grow:c=>((c==='potato'&&S.firstPotato)?50:ANN[c][2]*tm()*Math.pow(.88,S.upg.soil))*1000,
- refill:()=>60000*Math.pow(.75,S.upg.gutter)};
+ refill:()=>60000*Math.pow(.75,S.upg.gutter)*(weather()==='heat'?1.4:1)};
 const waterMax=()=>3+3*S.upg.cap;
 const canMax=()=>1+S.upg.can;
 function fmt(ms){let s=Math.max(0,Math.ceil(ms/1000));const h=Math.floor(s/3600);s-=h*3600;const m=Math.floor(s/60);return(h?h+':'+String(m).padStart(2,'0'):m)+':'+String(s%60).padStart(2,'0')}

@@ -1,6 +1,6 @@
 
 /* ================= CAT ================= */
-const CATP=[625,742],BOWLF=[468,792],BOWLW=[545,796];
+const CATP=[930,770],BOWLF=[780,800],BOWLW=[855,806];
 function catOn(){return S.done&&S.cat&&!S.cat.gone}
 function renderCat(){const P=$('pets');if(!catOn()){P.innerHTML='';return}
  if(!P.children.length){P.innerHTML=`<div class="bowl" id="bowlF" data-tap="catfood" style="left:${BOWLF[0]}px;top:${BOWLF[1]}px;width:78px;z-index:${BOWLF[1]}"><img></div><div class="bowl" id="bowlW" data-tap="catwater" style="left:${BOWLW[0]}px;top:${BOWLW[1]}px;width:78px;z-index:${BOWLW[1]}"><img></div><div id="cat" data-tap="cat"><img><div class="zz" style="display:none">Zz</div></div><div class="nm" id="catName"></div>`}
@@ -27,10 +27,10 @@ function petCat(){if(!catOn())return;tone(900,.12,'sine',.12,600);tone(700,.25,'
 function catTick(){if(!S.cat||S.cat.gone||!S.done)return;const t=now(),c=S.cat;
  if(t>c.food+86400000||t>c.water+86400000){c.gone=true;renderCat();save();sayLater([[4,`Ох… ${c.name} ушёл — миски стояли пустыми целый день. Коты не любят, когда о них забывают.`],[3,'Его можно позвать обратно в магазине (вкладка «Животные»). Только корми и пои каждый день!']])}
  else renderCat()}
-function askCatName(){popup(done=>{$('nameCat').src=IMG.cat_sit;$('nameIn').value='Барсик';modal('mName');
- const ch=$('nameChips');ch.innerHTML='';['Барсик','Мурзик','Тимоха','Рыжик','Васька','Персик','Кузя','Пушок'].forEach(n=>{const b=document.createElement('div');b.className='chip';b.textContent=n;b.onclick=()=>{$('nameIn').value=n;SND.tap();[...ch.children].forEach(x=>x.classList.toggle('on',x===b))};ch.appendChild(b)});ch.firstChild.classList.add('on');
- $('nameOk').onclick=()=>{let n=$('nameIn').value.trim().slice(0,16)||'Барсик';S.cat={name:n,food:now()+86400000,water:now()+86400000,gone:false};addItem('catfood',3);modal('mName',false);renderCat();SND.magic();save();
-  camTo(CATP[0]+200,CATP[1]-100,minS()*1.8,true);setTimeout(()=>dialog([[5,`${n} — отличное имя! Смотри, он уже устроился у крыльца.`],[3,`Каждый день наполняй миски: корм — из магазина, воду — из лейки или бочки. Нажми на миску и перетащи в неё корм или воду из лейки. Если миски простоят пустыми сутки, ${n} обидится и уйдёт.`],[1,'Я положила тебе 3 пачки корма для начала. А погладить кота можно, просто нажав на него!']],done),900)}})}
+function askCatName(pre){popup(done=>{$('nameCat').src=IMG.cat_sit;$('nameIn').value=pre||'Барсик';modal('mName');
+ const ch=$('nameChips');ch.innerHTML='';['Барсик','Мурзик','Тимоха','Рыжик','Васька','Персик','Кузя','Пушок'].forEach(n=>{const b=document.createElement('div');b.className='chip';b.textContent=n;b.onclick=()=>{$('nameIn').value=n;SND.tap();[...ch.children].forEach(x=>x.classList.toggle('on',x===b))};ch.appendChild(b)});[...ch.children].forEach(x=>x.classList.toggle('on',x.textContent===$('nameIn').value));
+ $('nameOk').onclick=()=>{let n=$('nameIn').value.trim().slice(0,16)||'Барсик';S.cat={name:n,food:now()+86400000,water:now()+86400000,gone:false};S.tips.cat=1;S.catFixed=1;addItem('catfood',3);modal('mName',false);renderCat();SND.magic();save();
+  camTo(CATP[0]+200,CATP[1]-100,Math.max(minS(),1.15),true);setTimeout(()=>dialog([[5,`${n} — отличное имя! Смотри, он уже устроился у крыльца нашего нового дома.`],[3,`Каждый день наполняй миски: корм — из магазина, воду — из лейки или бочки. Нажми на миску и перетащи в неё корм или воду из лейки. Если миски простоят пустыми сутки, ${n} обидится и уйдёт.`],[1,'Я положила тебе 3 пачки корма для начала. А погладить кота можно, просто нажав на него!']],done),900)}})}
 
 /* ================= PESTS: birds & bugs (lvl 5) ================= */
 const pestsOn=()=>S.done&&level()>=PEST_LVL;
@@ -51,7 +51,7 @@ function cure(o,anim){if(!o.bug)return;o.bug=null;if(o.pausedF1!=null){const f1=
 function spawnBird(o,scared){const R=rectOf(o);const x=R.x+R.w*(.2+Math.random()*.6),y=R.y+R.h*(o.kind==='bed'?.6:.2)-(o.kind==='tree'?120:o.kind==='bush'?50:0);
  const el=document.createElement('div');el.className='bird';el.dataset.tap='bird:'+o.id;el.innerHTML=BIRDSVG;el.style.left=x+'px';el.style.top=y+'px';$('birds').appendChild(el);
  el.animate([{transform:'translate(-380px,-420px) scale(.7)'},{transform:'translate(0,0)'}],{duration:1400,easing:'cubic-bezier(.2,.7,.3,1)'});SND.caw();
- if(scared){birds[o.id]={el,scared:true};setTimeout(()=>{if(birds[o.id]&&birds[o.id].el===el){floatText(1700,420,'Пугало прогнало ворону!','#fff');shooBird(o.id,false)}},2200)}
+ if(scared){birds[o.id]={el,scared:true};setTimeout(()=>{if(birds[o.id]&&birds[o.id].el===el){floatText(2560,1000,'Пугало прогнало ворону!','#fff');shooBird(o.id,false)}},2200)}
  else{birds[o.id]={el,eatAt:now()+15000};tip('bird',[[4,'Ворона прилетела клевать урожай! Скорее нажми на неё. А лучше поставь пугало — оно сторожит 12 часов, даже когда ты не в игре.']])}}
 function shooBird(id,byTap){const b=birds[id];if(!b)return;delete birds[id];const el=b.el;el.dataset.tap='';el.animate([{transform:'translate(0,0)'},{transform:'translate(420px,-460px) scale(.6)'}],{duration:900,easing:'ease-in',fill:'forwards'}).onfinish=()=>el.remove();
  if(byTap){SND.caw();stat('shoo');const o=objById(id);if(o){const R=rectOf(o);addXp(2,R.x+R.w/2,R.y)}save()}}
@@ -60,7 +60,7 @@ function birdEat(id){const o=objById(id);shooBird(id,false);if(!o)return;const R
  else{const P=PER[o.p];const half=P[5]*500*tm();if(o.ripe){o.ripe=false;o.seg={t0:now()-half,t1:now()+half}}else if(o.seg){o.seg.t1+=half/2}}
  renderObj(o);SND.caw();floatText(R.x+R.w/2,R.y,'Ворона склевала урожай!','#ff8a7a');save()}
 function clearBirds(){for(const k in birds){birds[k].el.remove();delete birds[k]}}
-function renderScare(){let el=$('scarecrow');if(!el){el=document.createElement('div');el.id='scarecrow';el.className='fix';el.dataset.tap='scare';el.style.cssText='left:1745px;top:520px;width:110px;z-index:520';el.innerHTML='<img>';$('objs').appendChild(el)}
+function renderScare(){let el=$('scarecrow');if(!el){el=document.createElement('div');el.id='scarecrow';el.className='fix';el.dataset.tap='scare';el.style.cssText='left:2580px;top:1200px;width:120px;z-index:1200';el.innerHTML='<img>';$('objs').appendChild(el)}
  if(!S.scareEver||!S.done){el.style.display='none';return}el.style.display='';const rem=S.scareUntil-now();const st=rem>4*3600000?0:rem>0?1:2;const src=IMG['p_scare'+st];const im=el.querySelector('img');if(im.getAttribute('src')!==src)im.setAttribute('src',src)}
 
 /* ================= THIEVES (lvl 4) ================= */
@@ -68,7 +68,7 @@ const thieves={};const thiefOn=()=>S.done&&level()>=THIEF_LVL;const thiefRisk=()
 function tickThieves(t){if(!thiefOn())return;for(const k in thieves){if(t>=thieves[k].stealAt)steal(k)}
  if(!S.nextThiefAt){S.nextThiefAt=t+60000;return}if(t<S.nextThiefAt)return;S.nextThiefAt=t+60000+Math.random()*60000;
  const cand=S.objs.filter(o=>o.kind!=='gh'&&isRipe(o)&&o.ripeAt&&t-o.ripeAt>10*60000&&!thieves[o.id]);if(!cand.length||Math.random()>.6)return;const o=pick(cand);
- if(Math.random()>thiefRisk()){floatText(1700,420,S.fence?'Высокий забор остановил воришку!':'Камера спугнула воришку!','#fff');return}spawnThief(o)}
+ if(Math.random()>thiefRisk()){floatText(2560,1000,S.fence?'Высокий забор остановил воришку!':'Камера спугнула воришку!','#fff');return}spawnThief(o)}
 function spawnThief(o){const R=rectOf(o);const el=document.createElement('div');el.className='thief';el.dataset.tap='thief:'+o.id;el.innerHTML=THIEFSVG;el.style.left=(R.x+R.w+20)+'px';el.style.top=(R.y+R.h)+'px';$('thieves').appendChild(el);
  el.animate([{transform:`translate(${2000-R.x}px,-60px)`},{transform:'translate(0,0)'}],{duration:2600,easing:'ease-out'});thieves[o.id]={el,stealAt:now()+14000};SND.fail();toast('Воришка лезет за урожаем! Нажми на него!');
  tip('thief',[[4,'Ой, воришка! Если долго не собирать спелый урожай, соседи-хитрецы его утащат.'],[3,'Нажми на вора, чтобы прогнать. А для надёжности купи камеру и высокий забор во вкладке «Защита».']])}
@@ -81,7 +81,7 @@ function offlineThieves(){if(!thiefOn())return 0;let n=0;const t=now(),since=S.l
  S.objs.forEach(o=>{if(o.kind==='gh'||!isRipe(o)||!o.ripeAt)return;const st=Math.max(o.ripeAt+10*60000,since);const w=Math.min(3,Math.floor((t-st)/(20*60000)));for(let k=0;k<w;k++)if(Math.random()<.3*thiefRisk()){stealFrom(o);n++;break}});return n}
 function renderSecurity(){$('cctv').style.display=S.camera?'':'none';const f=$('hifence');f.style.display=S.fence?'':'none';
  if(S.fence&&!f.innerHTML){let h='';const seg=(x0,y0,x1,y1)=>{for(let x=x0;x<x1;x+=24){const y=y0+(x-x0)*(y1-y0)/(x1-x0);h+=`<rect x="${x}" y="${y-150}" width="22" height="150" fill="${(x/24|0)%2?'#8d5f31':'#a8743f'}" stroke="#4a2c14" stroke-width="2.5"/><path d="M${x} ${y-150}l11-12 11 12" fill="#8d5f31" stroke="#4a2c14" stroke-width="2.5"/>`}h+=`<path d="M${x0} ${y0-110}L${x1} ${y1-110}M${x0} ${y0-40}L${x1} ${y1-40}" stroke="#5b391c" stroke-width="9"/>`};
-  seg(880,405,1770,405);seg(1830,465,2576,465);f.innerHTML=h}}
+  seg(960,395,2230,395);seg(40,1700,980,1700);f.innerHTML=h}}
 
 /* ================= DAY & NIGHT ================= */
 let forcedHour=null;

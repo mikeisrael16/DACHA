@@ -3,33 +3,45 @@
 function levelUp(){const top=level();if(top<=S.seenLvl)return;SND.level();S.seenLvl=top;toast('Новый уровень: '+top+'!');
  for(let i=0;i<maxOrders()-S.orders.length;i++)S.orders.push(genOrder());renderFix();save();featureTips()}
 const FEATURES=[
- {k:'market',lvl:1,cam:[2190,900],lines:[[3,'Это Скупщик. Он покупает любой урожай и заготовки в любое время — чуть дешевле, чем соседи по заказам. Без монет ты никогда не останешься!']]},
+ {k:'market',lvl:1,cam:[3240,900],lines:[[3,'Это Скупщик. Он покупает любой урожай и заготовки в любое время — чуть дешевле, чем соседи по заказам. Без монет ты никогда не останешься!']]},
  {k:'daily',lvl:1,lines:[[2,'Каждый день, когда заходишь на дачу, тебя ждёт подарок — кнопка «Подарок» слева. Заходи 7 дней подряд — на седьмой день сундук с золотом!']]},
  {k:'quests',lvl:1,lines:[[1,'В «Заданиях» всегда три поручения. Выполняй их за монеты и опыт, а скучное задание можно заменить кнопкой ↻.']]},
  {k:'spoil1',lvl:2,lines:[[3,'Запомни: свежие овощи, ягоды, фрукты и молоко хранятся в сарае 6 часов, потом портятся. Продавай вовремя или перерабатывай — заготовки не портятся!']]},
- {k:'kitchen',lvl:4,cam:[600,420],lines:[[5,'Открылась летняя кухня! Нажми на дом — там из овощей делают заготовки: набор для борща, икру, соленья, лечо, а потом и варенье. Стоят они намного дороже!']]},
+ {k:'kitchen',lvl:4,cam:[760,560],lines:[[5,'Открылась летняя кухня! Нажми на дом — там из овощей делают заготовки: набор для борща, икру, соленья, лечо, а потом и варенье. Стоят они намного дороже!']]},
  {k:'thiefI',lvl:4,lines:[[4,'Соседи шепчутся о воришках: если долго не собирать спелый урожай, его могут утащить. Защитят камера и высокий забор во вкладке «Защита».']]},
  {k:'pests',lvl:5,lines:[[4,'Будь начеку: теперь на урожай нападают вороны и жуки! Ворон прогоняй нажатием или пугалом, от тли, жука и слизней есть средства во вкладке «Защита».']]},
  {k:'ghI',lvl:5,lines:[[1,'Теперь можно поставить теплицу (Магазин → Постройки). В ней всё растёт быстрее, без вредителей и воров. Её тоже можно ставить вдоль и поперёк!']]},
- {k:'cat',lvl:5,lines:[[2,'Ой, смотри — к нам на дачу пришёл котик! Похоже, хочет остаться…']],after:()=>askCatName()},
  {k:'garden',lvl:6,lines:[[5,'Теперь можно сажать сад! В магазине на вкладке «Сад» продаются ягодные кусты, а позже и фруктовые деревья.'],[3,'Сажаешь один раз — и собираешь урожай снова и снова. Только поливай после каждого сбора!']]},
- {k:'wellI',lvl:6,cam:[420,880],lines:[[1,'Можно расчистить старый колодец — тогда воды будет сколько угодно. Нажми на него или найди в «Постройках».']]},
- {k:'cows',lvl:7,cam:[2190,620],lines:[[5,'Пора заводить хозяйство! Построй коровник на пастбище за калиткой, купи бурёнку и корми её сеном — она даст молоко.'],[3,'Сено продаётся в магазине на вкладке «Животные», а комбикорм из кукурузы и фасоли готовят на кухне.']]},
- {k:'dairy',lvl:8,cam:[885,460],lines:[[5,'Открылась сыроварня! Из молока там делают сметану, творог, масло и сыр — это очень выгодно.']]},
- {k:'sheep',lvl:9,cam:[2440,700],lines:[[5,'Теперь можно построить овчарню и завести овечек. Корми их, а когда шерсть отрастёт — нажми на овцу, чтобы постричь.']]},
- {k:'spin',lvl:10,cam:[760,900],lines:[[5,'Открылась прядильня! Из шерсти — пряжа, а из пряжи — носки, варежки и тёплые свитеры.']]},
+ {k:'wellI',lvl:6,cam:[480,900],lines:[[1,'Можно расчистить старый колодец — тогда воды будет сколько угодно. Нажми на него или найди в «Постройках».']]},
+ {k:'cows',lvl:7,cam:[2700,700],lines:[[5,'Пора заводить хозяйство! Построй коровник на пастбище справа, купи бурёнку и корми её сеном — она даст молоко.'],[3,'Сено продаётся в магазине на вкладке «Животные», а комбикорм из кукурузы и фасоли готовят на кухне.']]},
+ {k:'dairy',lvl:8,cam:[400,1650],lines:[[5,'Открылась сыроварня! Из молока там делают сметану, творог, масло и сыр — это очень выгодно.']]},
+ {k:'sheep',lvl:9,cam:[3350,650],lines:[[5,'Теперь можно построить овчарню и завести овечек. Корми их, а когда шерсть отрастёт — нажми на овцу, чтобы постричь.']]},
+ {k:'spin',lvl:10,cam:[660,1650],lines:[[5,'Открылась прядильня! Из шерсти — пряжа, а из пряжи — носки, варежки и тёплые свитеры.']]},
+ {k:'wxI',lvl:2,lines:[[6,'Смотри на значок погоды вверху! Дождь сам поливает грядки и сад на улице и наполняет бочку, в жару бочка наполняется медленнее, а когда над рекой радуга — Скупщик платит больше.']]},
+ {k:'wheat',lvl:3,lines:[[5,'В магазине появились семена пшеницы, а потом будут овёс, подсолнечник, рожь и гречиха. Из зерна на мельнице делают муку, масло и корм для птицы!']]},
+ {k:'forest',lvl:FOREST_LVL,cam:[2290,560],lines:[[5,'Открылась тропинка в лес! Нажми на табличку «Лес» у пастбища. Там растут грибы, ягоды, шишки и хворост — собирай бесплатно, новые вырастают каждые 3 часа.'],[4,'Только красные мухоморы не бери — они ядовитые!']]},
+ {k:'fish',lvl:FISH_LVL,cam:[3450,1150],lines:[[5,'У реки есть причал — можно рыбачить! Купи червей в магазине (вкладка «Рыбалка») и нажми на причал.'],[3,'Забрасывай удочку и жди. Как только поплавок нырнёт под воду — жми «Подсечь!». Говорят, тут водится даже золотая рыбка…']]},
+ {k:'coop',lvl:6,cam:[300,1150],lines:[[5,'Можно построить курятник! Куры несут яйца, иногда роняют перья. Кормить их нужно зерносмесью.']]},
+ {k:'mill',lvl:6,cam:[920,1650],lines:[[5,'Открылась мельница! Из пшеницы — мука, из подсолнечника — масло, а из пшеницы с овсом — зерносмесь для птицы.']]},
+ {k:'oven',lvl:7,cam:[1180,1650],lines:[[5,'Русская печь! В ней пекут блины, пирожки, сырники и ватрушки — из муки, яиц, молока и творога.']]},
+ {k:'quail',lvl:8,lines:[[1,'В курятнике можно завести перепёлок. Их маленькие яйца нужны для корзинки яиц на кухне.']]},
+ {k:'apiary',lvl:10,cam:[1970,1650],lines:[[5,'Пасека! Пчёлы делают мёд из цветов подсолнечника и гречихи. Из мёда получается воск, а из воска — свечи.']]},
+ {k:'pyard',lvl:11,cam:[650,1150],lines:[[5,'Птичий двор: утки, гуси и индюки. Гуси дают пух, а из пуха и перьев в прядильне шьют подушки и перины.']]},
+ {k:'bakery',lvl:12,cam:[1440,1650],lines:[[5,'Пекарня! Хлеб, яблочный пирог, каравай и медовик — самые дорогие угощения на всей даче.']]},
+ {k:'fairI',lvl:12,cam:[4300,1750],lines:[[5,'За калиткой у реки можно открыть Ярмарку. Там покупают товары дороже скупщика, а по выходным — ещё дороже! Покупатели меняются каждые 4 часа.']]},
+ {k:'smoke',lvl:13,cam:[1700,1650],lines:[[5,'Коптильня! Копчёная рыба стоит в разы дороже свежей. Нужна рыба с причала и хворост из леса.']]},
  {k:'hard',lvl:10,lines:[[4,'Ты опытный дачник! С 10 уровня всё растёт чуть дольше и стоит немного дороже — зато соседи платят больше. Используй теплицы и удобрения!']]}];
-function featureTips(){if(!S.done)return;
+function featureTips(){if(!S.done)return;catArrival();
  const nc=ANN_IDS.filter(id=>id!=='potato'&&id!=='carrot'&&annUnlocked(id)&&!S.tips['crop_'+id]);if(nc.length){nc.forEach(id=>S.tips['crop_'+id]=1);sayLater([[5,'В магазине новые семена: '+nc.map(id=>ANN[id][0].toLowerCase()).join(', ')+'!']])}
  const np=PER_IDS.filter(id=>perUnlocked(id)&&!S.tips['per_'+id]);if(np.length&&S.tips.garden){np.forEach(id=>S.tips['per_'+id]=1);sayLater([[5,'В саду новинка: '+np.map(id=>PER[id][0].toLowerCase()).join(', ')+'!']])}else np.forEach(id=>S.tips['per_'+id]=1);
- FEATURES.forEach(f=>{if(level()>=f.lvl&&!S.tips[f.k])tip(f.k,f.lines,f.cam?[f.cam[0],f.cam[1],minS()*1.6]:null,()=>{if(f.cam)camHome(true);f.after&&f.after()})});save()}
-const CHANGES=[{v:'1.3',title:'Кнопка заказов',items:['📋 Новая кнопка «Заказы» слева — заказы соседей открываются в один клик. Красная цифра показывает, сколько заказов можно выполнить прямо сейчас','🔘 Все кнопки стали крупнее']},{v:'1.2',title:'Удобнее и понятнее',items:['🍳 Летняя кухня: нажми на рецепт — увидишь, какие продукты нужны, сколько их есть и где их взять. Когда всё собрано, рецепт помечен «Можно готовить»','🐱 Имя коту теперь можно просто выбрать из списка, а своё — написать: клавиатура больше не закрывает окно','🔠 Шрифт стал крупнее во всей игре']},{v:'1.1',title:'Улучшения',items:['🐱 Новый красивый кот: сидит, ходит, ест, пьёт и спит ночью','🥣 Миски стоят рядом с котом: нажми на миску и перетащи в неё корм или воду из лейки','🏠 Теплицы теперь стоят ровно — вдоль или поперёк. Теплицы ставятся справа, грядки — слева','🔠 Текст стал крупнее и не обрезается при приближении и отдалении','🪟 Убрали лишнюю подсветку окон дома']},{v:'1.0',title:'Большое обновление «Новая дача»',items:['🏡 Новый большой участок у Волги — его можно двигать и приближать','🌱 Грядки и теплицы ставишь сам, куда хочешь, вдоль или поперёк. Их можно переставлять','🥕 37 овощей и зелени: кукуруза, фасоль, брокколи, арбуз, дыня, базилик, спаржа и другие','🍓 Сад: 10 ягодных кустов и 10 фруктовых деревьев — сажаешь один раз, собираешь много раз','🐄 Коровы и овцы: молоко и шерсть. Сыроварня и прядильня: сметана, творог, масло, сыр, пряжа, носки, варежки, свитер','🍯 На кухне: варенье, компоты, морс и комбикорм','🐱 На 5 уровне приходит кот — дай ему имя, корми и пои каждый день','🎁 Подарок за вход каждый день, на 7-й день — сундук','💰 Скупщик покупает всё и всегда — без монет не останешься','📋 Задания стали разнообразнее, их можно заменять','⏳ Овощи, фрукты и молоко портятся через 6 часов — продавай вовремя','📈 С 10 уровня игра чуть сложнее: всё дольше и дороже, но и платят больше','ℹ️ Прогресс начинается заново — можно пропустить обучение и сразу начать с 5 уровня']}];
-function whatsNew(done){const list=CHANGES.filter(c=>parseFloat(c.v)>parseFloat(S.seenVer||'0'));if(!list.length){done();return}
+ let nq=0;FEATURES.forEach(f=>{if(level()>=f.lvl&&!S.tips[f.k]&&!tipQ.has(f.k)&&nq<3&&++nq)tip(f.k,f.lines,f.cam?[f.cam[0],f.cam[1],minS()*1.6]:null,()=>{if(f.cam)camHome(true);f.after&&f.after()})});save()}
+const CHANGES=[{v:'2.0',title:'Большая новая дача у реки',items:['🏡 Мы переехали на огромный участок у реки! Его можно листать пальцем во все стороны. Уровень, монеты, сарай, грядки, теплицы, сад и животные — всё переехало с тобой','🌱 Места стало намного больше: до 16 грядок и до 5 теплиц','🌾 Новые культуры: пшеница, овёс, подсолнечник, рожь и гречиха','🐔 Птичник: куры, перепёлки, утки, гуси и индюки — яйца, перья и пух','⚙️ Мельница, русская печь, пекарня, пасека и коптильня: мука, масло, крупа, блины, пирожки, сырники, хлеб, каравай, медовик, мёд, свечи, копчёная рыба','🎣 Рыбалка на причале: 8 видов рыбы, черви и спиннинг. Говорят, в реке водится золотая рыбка!','🍄 Лес: грибы, ягоды, шишки и хворост — бесплатно, каждые 3 часа','🌦 Погода: дождь сам поливает грядки, в жару бочка наполняется медленнее, в радугу Скупщик платит больше','🎃 Праздники по календарю: Праздник урожая, Новый год, Масленица и Пасха — украшения, сундучок с подарком и бонусы','🎪 Ярмарка: покупает дороже скупщика, а по выходным ещё дороже','🐱 Котик наконец пришёл! Дай ему имя, корми и пои каждый день','📋 Новые задания, заказы соседей и подсказки Татьяны для всего нового']},{v:'1.3',title:'Кнопка заказов',items:['📋 Новая кнопка «Заказы» слева — заказы соседей открываются в один клик. Красная цифра показывает, сколько заказов можно выполнить прямо сейчас','🔘 Все кнопки стали крупнее']},{v:'1.2',title:'Удобнее и понятнее',items:['🍳 Летняя кухня: нажми на рецепт — увидишь, какие продукты нужны, сколько их есть и где их взять. Когда всё собрано, рецепт помечен «Можно готовить»','🐱 Имя коту теперь можно просто выбрать из списка, а своё — написать: клавиатура больше не закрывает окно','🔠 Шрифт стал крупнее во всей игре']},{v:'1.1',title:'Улучшения',items:['🐱 Новый красивый кот: сидит, ходит, ест, пьёт и спит ночью','🥣 Миски стоят рядом с котом: нажми на миску и перетащи в неё корм или воду из лейки','🏠 Теплицы теперь стоят ровно — вдоль или поперёк. Теплицы ставятся справа, грядки — слева','🔠 Текст стал крупнее и не обрезается при приближении и отдалении','🪟 Убрали лишнюю подсветку окон дома']},{v:'1.0',title:'Большое обновление «Новая дача»',items:['🏡 Новый большой участок у Волги — его можно двигать и приближать','🌱 Грядки и теплицы ставишь сам, куда хочешь, вдоль или поперёк. Их можно переставлять','🥕 37 овощей и зелени: кукуруза, фасоль, брокколи, арбуз, дыня, базилик, спаржа и другие','🍓 Сад: 10 ягодных кустов и 10 фруктовых деревьев — сажаешь один раз, собираешь много раз','🐄 Коровы и овцы: молоко и шерсть. Сыроварня и прядильня: сметана, творог, масло, сыр, пряжа, носки, варежки, свитер','🍯 На кухне: варенье, компоты, морс и комбикорм','🐱 На 5 уровне приходит кот — дай ему имя, корми и пои каждый день','🎁 Подарок за вход каждый день, на 7-й день — сундук','💰 Скупщик покупает всё и всегда — без монет не останешься','📋 Задания стали разнообразнее, их можно заменять','⏳ Овощи, фрукты и молоко портятся через 6 часов — продавай вовремя','📈 С 10 уровня игра чуть сложнее: всё дольше и дороже, но и платят больше','ℹ️ Прогресс начинается заново — можно пропустить обучение и сразу начать с 5 уровня']}];
+function whatsNew(done){if(!S.done&&S.xp===0&&S.seenVer==='0'){S.seenVer=VERSION;done();return}const list=CHANGES.filter(c=>parseFloat(c.v)>parseFloat(S.seenVer||'0'));if(!list.length){done();return}
  $('newTxt').innerHTML=list.map(c=>`<h3>Версия ${c.v}: ${c.title}</h3><ul>${c.items.map(i=>`<li>${i}</li>`).join('')}</ul>`).join('');modal('mNew');$('newOk').onclick=()=>{S.seenVer=VERSION;save();modal('mNew',false);SND.tap();done()}}
-function startupPopups(){popup(whatsNew);if(S.done&&S.daily.last!==dayKey())popup(d=>showDaily(d));featureTips()}
+function startupPopups(){popup(whatsNew);moveNotice();if(S.done&&S.daily.last!==dayKey())popup(d=>showDaily(d));holidayHello();featureTips()}
 
 /* ================= TICK ================= */
-let tickT=null,lastSpoil=0,lastSlow=0;
+let tickT=null,lastSpoil=0,lastSlow=0,lastFeat=now();
 function tick(){if(!S)return;const t=now();
  const mx=waterMax(),per=D.refill();if(S.water>=mx)S.waterAt=t;else{const n=Math.floor((t-S.waterAt)/per);if(n>0){const add=Math.min(n,mx-S.water);S.water+=add;S.waterAt=S.water>=mx?t:S.waterAt+n*per;renderHUD()}}
  S.objs.forEach(o=>{
@@ -42,7 +54,8 @@ function tick(){if(!S)return;const t=now();
  tickAnimals(t);renderFacBubs();
  if(S.done){if(S.orders.length<maxOrders()&&t>=S.nextOrderAt){S.orders.push(genOrder());S.nextOrderAt=t+30000;renderHUD()}tickPests(t);tickThieves(t)}
  if(t-lastSpoil>10000){lastSpoil=t;spoilCheck();catTick();safetyNet(t);renderScare();renderHUD()}
- if(t-lastSlow>2000){lastSlow=t;renderGauge();if(level()>S.seenLvl)levelUp()}
+ if(t-lastSlow>2000){lastSlow=t;renderGauge();if(level()>S.seenLvl)levelUp();renderWx();if(S.done)rainTick()}
+ if(S.done&&t-lastFeat>120000){lastFeat=t;if(!pqBusy)featureTips();renderSpots()}
  const ripe=S.objs.some(isRipe);document.title=ripe?'🥕 Урожай готов! — Моя дача':'Ярославль: Моя дача';
  if(t-lastSave>3000)save()}
 function safetyNet(t){if(!S.done||t<(S.giftAt||0))return;const growing=S.objs.some(o=>o.busy||(isCropObj(o)&&o.state==='planted'));const seeds=ANN_IDS.some(id=>S.inv['seed_'+id]>0);
@@ -63,11 +76,11 @@ document.addEventListener('fullscreenchange',()=>setTimeout(fit,200));
 let lightT=null;
 function startGame(state){S=state;tutActive=-1;
  fadeTo(()=>{$('title').style.display='none';$('game').style.display='block';closeTray();guide(null);hint(null);
-  ['mOrders','mShop','mStore','mQuest','mMsg','mFac','mMarket','mDaily','mNew','mName'].forEach(i=>modal(i,false));
+  ['mOrders','mShop','mStore','mQuest','mMsg','mFac','mMarket','mDaily','mNew','mName','mFish','mForest','mFair'].forEach(i=>modal(i,false));
   Object.keys(objEls).forEach(removeObjEl);$('objs').innerHTML='';for(const k in fixEls)delete fixEls[k];for(const k in aniEls)delete aniEls[k];for(const k in aBub){aBub[k].remove();delete aBub[k]}$('pets').innerHTML='';$('kbubs').innerHTML='';for(const k in kbKey)delete kbKey[k];
-  clearBirds();clearThieves();fixLayout();fit();
+  clearBirds();clearThieves();if(S.loc!==2)relocate();fixLayout();fit();wxCur=null;$('rainbowArc')&&$('rainbowArc').remove();
   const away=now()-(S.lastSeen||now());const w0=S.water;tick();const stolen=S.done?offlineThieves():0;const spoiled=spoilCheck(true);
-  renderAllObjs();renderFix();renderAnimals();renderCat();renderSecurity();renderHUD();startTick();updateLighting();clearInterval(lightT);lightT=setInterval(()=>{updateLighting();renderAnimals()},30000);
+  renderAllObjs();renderFix();renderAnimals();renderCat();renderSecurity();renderHUD();renderWx();startTick();updateLighting();clearInterval(lightT);lightT=setInterval(()=>{updateLighting();renderAnimals()},30000);
   if(!S.done){camHome();whatsNew(()=>setTimeout(tutRun,500))}
   else{camHome();setTimeout(()=>{const m=[];if(S.objs.some(isRipe))m.push('урожай созрел');if(stolen)m.push('воришки утащили урожай: '+stolen);if(spoiled.length)m.push('испортилось: '+spoiled.join(', '));
    if(away>60000)toast(greeting()+' '+(m.length?'Пока тебя не было: '+m.join('; ')+'.':'С возвращением на дачу!'));refillQuests();startupPopups()},700)}})}
@@ -83,7 +96,7 @@ $('hotCont').addEventListener('click',()=>{ac();SND.tap();const s=loadSave();if(
 $('hMenu').addEventListener('pointerdown',e=>{e.stopPropagation();ac();SND.tap();msg('Меню','Прогресс сохраняется сам, а грядки растут, даже когда ты не в игре.',[{t:'Выйти в меню',cls:'orange',f:()=>{save();clearInterval(tickT);fadeTo(()=>{$('game').style.display='none';$('title').style.display='block';hint(null);guide(null);$('dlg').classList.remove('on')})}},{t:'Что нового',f:()=>{S.seenVer='0';whatsNew(()=>{})}},{t:'Продолжить'}])});
 document.addEventListener('visibilitychange',()=>{if(document.hidden)save();else if(S){tick();updateLighting()}});
 addEventListener('pagehide',()=>save());
-$('bgImg').src=IMG.bg;$('canImg').src=IMG.i_can;$('storeImg').src=IMG.i_basket;$('dailyImg').src=IMG.d7;
+$('bgImg').src=IMG.bg;$('fFloat').src=IMG.fd_float;$('fWormImg').src=IMG.worms;$('forestImg').src=IMG.forestpic;$('canImg').src=IMG.i_can;$('storeImg').src=IMG.i_basket;$('dailyImg').src=IMG.d7;
 fit();
-window.__dacha={get S(){return S},set S(v){S=v},fromStage,tick,cam,camTo,minS,rectOf,objById,setHour:h=>{forcedHour=h;updateLighting();renderAnimals();renderCat()},spawnBird,spawnThief,infest,birds,startGame,skipState,renderAllObjs,renderFix,renderAnimals,renderCat,openFac,openShop,openMarket,showDaily,featureTips,PQ};
+window.__dacha={get S(){return S},set S(v){S=v},fromStage,tick,cam,camTo,minS,rectOf,objById,setHour:h=>{forcedHour=h;updateLighting();renderAnimals();renderCat()},spawnBird,spawnThief,infest,birds,startGame,openFishing,openForest,openFair,weather,holiday,relocate,hook,bite,castFish,get fishSt(){return fishSt},setWx:w=>{forcedWx=w;renderWx()},renderSpots,genForest,genFair,skipState,renderAllObjs,renderFix,renderAnimals,renderCat,openFac,openShop,openMarket,showDaily,featureTips,PQ};
 })();

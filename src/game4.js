@@ -12,7 +12,8 @@ function nextLine(){const l=dlgQ.shift();if(!l){$('dlg').classList.remove('on');
  typing=setInterval(()=>{i+=2;txt.textContent=l[1].slice(0,i);if(i%6===0)tone(700+Math.random()*200,.03,'triangle',.03);if(i>=l[1].length){clearInterval(typing);typedFull=true}},20);
  txt.dataset.full=l[1]}
 $('dlg').addEventListener('pointerdown',e=>{e.stopPropagation();ac();if(!typedFull){clearInterval(typing);$('dlgTxt').textContent=$('dlgTxt').dataset.full;typedFull=true;return}SND.tap();nextLine()});
-function tip(key,lines,camPos,after){if(S.tips[key])return;S.tips[key]=1;save();sayLater(lines,camPos,after)}
+const tipQ=new Set();
+function tip(key,lines,camPos,after){if(S.tips[key]||tipQ.has(key))return;tipQ.add(key);popup(done=>{tipQ.delete(key);if(S.tips[key]){done();return}S.tips[key]=1;save();if(camPos)camTo(camPos[0],camPos[1],camPos[2]||minS()*1.5,true);setTimeout(()=>dialog(lines,()=>{after&&after();done()}),camPos?900:0)})}
 function modal(id,on){$(id).classList.toggle('on',on!==false)}
 function msg(title,text,btns){$('msgTitle').textContent=title;$('msgText').textContent=text;const b=$('msgBtns');b.innerHTML='';btns.forEach(o=>{const d=document.createElement('div');d.className='btn '+(o.cls||'');d.textContent=o.t;d.onclick=()=>{modal('mMsg',false);SND.tap();o.f&&o.f()};b.appendChild(d)});modal('mMsg')}
 document.querySelectorAll('.modal').forEach(m=>m.addEventListener('pointerdown',e=>e.stopPropagation()));

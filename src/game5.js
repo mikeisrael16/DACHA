@@ -13,11 +13,11 @@ const STEPS=[
  {id:'grow',wait:'ripe',hint:'Картошка растёт — следи за шкалой над грядкой'},
  {id:'ripeSay',say:[[1,'Ты только посмотри, какая ботва вымахала! Скорее собирай!']]},
  {id:'harvest',wait:'harvest',hint:'Нажми на кусты картошки, чтобы собрать урожай'},
- {id:'sellSay',say:[[2,'Урожай на загляденье! Соседи уже спрашивают свежую картошку.'],[0,'Их заказы висят на доске у калитки. Открыть их можно в любой момент кнопкой «Заказы» слева. Давай продадим!']],cam:[1860,470]},
+ {id:'sellSay',say:[[2,'Урожай на загляденье! Соседи уже спрашивают свежую картошку.'],[0,'Их заказы висят на доске у калитки. Открыть их можно в любой момент кнопкой «Заказы» слева. Давай продадим!']],cam:[2776,960]},
  {id:'sell',wait:'sell',hint:'Нажми кнопку «Заказы» слева'},
  {id:'shopSay',say:[[5,'Первая прибыль! Теперь заглянем в дачный магазин — там семена, саженцы, постройки и улучшения.'],[1,'Давай возьмём семена сладкой морковки!']]},
  {id:'shop',wait:'buy',hint:'Открой магазин и купи семена моркови'},
- {id:'finalSay',say:[[7,'Вот теперь ты настоящий дачник! Перед новой посадкой грядку надо снова вскопать. Морковку поливают дважды.'],[3,'Внизу справа — Скупщик. Он покупает всё и всегда, так что без денег ты не останешься. А ещё каждый день за вход — подарок!'],[1,'Участок можно двигать пальцем и приближать. Новые грядки покупаются в магазине и ставятся куда угодно — хоть вдоль, хоть поперёк!']]}];
+ {id:'finalSay',say:[[7,'Вот теперь ты настоящий дачник! Перед новой посадкой грядку надо снова вскопать. Морковку поливают дважды.'],[3,'Справа, у пастбища, стоит палатка Скупщика. Он покупает всё и всегда, так что без денег ты не останешься. А ещё каждый день за вход — подарок!'],[1,'Участок можно двигать пальцем и приближать. Новые грядки покупаются в магазине и ставятся куда угодно — хоть вдоль, хоть поперёк!']]}];
 const TI={};STEPS.forEach((s,i)=>TI[s.id]=i);
 const tutBed=()=>S.objs[0];
 const curStep=()=>S.done?null:STEPS[S.tut];
@@ -31,9 +31,9 @@ function tutRun(){if(S.done)return;if(tutActive===S.tut)return;tutActive=S.tut;c
  else{hint(s.hint);const b=tutBed();
   if(s.wait==='ripe'&&isRipe(b)){tutEvent('ripe');return}
   if(s.wait==='harvest'&&b.state!=='planted'&&S.inv.potato>0){tutEvent('harvest');return}
-  if(['dig','plant','water','fert','ripe','harvest'].includes(s.wait)){const R=rectOf(b);camTo(R.x+R.w/2-200,R.y+R.h/2-60,minS()*1.35,true)}
-  if(s.wait==='barrel')camTo(600,650,minS()*1.35,true);
-  if(s.wait==='sell')camTo(1700,600,minS()*1.35,true);
+  if(['dig','plant','water','fert','ripe','harvest'].includes(s.wait)){const R=rectOf(b);camTo(R.x+R.w/2-200,R.y+R.h/2-60,Math.max(minS(),.8),true)}
+  if(s.wait==='barrel')camTo(700,760,Math.max(minS(),.8),true);
+  if(s.wait==='sell')camTo(2500,900,Math.max(minS(),.75),true);
   setTimeout(updateGuide,1300)}}
 function tutEvent(name){if(S.done)return;const s=curStep();if(s&&s.wait===name){S.tut++;guide(null);save();setTimeout(tutRun,name==='fert'?900:500)}}
 function finishTutorial(){S.done=true;Object.assign(S.ui,{quest:true,board:true,shop:true,coins:true,xp:true,store:true});S.firstPotato=false;S.tips.market=1;genOrders();refillQuests();hint(null);guide(null);renderHUD();renderAllObjs();save();
@@ -49,7 +49,7 @@ function updateGuide(){const w=tutWait();if(!w||!S||S.done){guide(null);return}c
  if(['dig','plant','water','fert'].includes(w)){if(b.busy){guide(null);return}
   if(trayOpen){const it=$('tray').querySelector('.titem:not(.dim)');if(it){const c=elWorld(it);guide({drag:{img:it.querySelector('img').src,from:c,to:C},ring:[c[0],c[1],116]});return}}
   guide({arrow:[C[0],R.y-20],ring:[C[0],C[1],300]});return}
- if(w==='barrel')guide({arrow:[235,600],ring:[235,710,170]});
+ if(w==='barrel')guide({arrow:[545,600],ring:[545,735,170]});
  if(w==='ripe')guide(null);
  if(w==='harvest')guide({arrow:[C[0],R.y-30],ring:[C[0],C[1]-20,320]});
  if(w==='sell'){const c=s2w(elStage($('hOrders')));guide({arrow:[c[0],c[1]-70/cam.s],ring:[c[0],c[1],170/cam.s]})}
@@ -68,10 +68,10 @@ function trayItems(T){const w=tutWait(),it=[];
    if(S.done&&(o.state!=='planted')&&!o.busy)it.push({k:'move',img:IMG.move,lbl:'Переставить'})}
   else{if(needsWater(o))it.push({k:'can',img:IMG.i_can,lbl:S.can?'Лейка':'Пустая',dim:!S.can});if(!o.busy)it.push({k:'move',img:IMG.move,lbl:'Переставить'})}}
  if(T.t==='bowl'){if(T.b==='catfood')it.push({k:'catfood',img:IMG.catfood,cnt:S.inv.catfood||null,lbl:S.inv.catfood?'Корм':'Нет корма',dim:!S.inv.catfood});else{const ok=S.can>0||S.water>0||S.build.well;it.push({k:'catwater',img:IMG.i_can,lbl:S.can?'Лейка':ok?'Из бочки':'Нет воды',dim:!ok})}return it}
- if(T.t==='ani'){const a=S[T.a][T.i];if(a.state==='hungry'){it.push({k:'feed:hay',img:IMG.hay,cnt:S.inv.hay||null,lbl:'Сено',dim:!S.inv.hay});it.push({k:'feed:feed',img:IMG.feed,cnt:S.inv.feed||null,lbl:'Комбикорм',dim:!S.inv.feed})}}
+ if(T.t==='ani'){const a=S.ani[T.a][T.i];if(a.state==='hungry')ANIM[T.a].feeds.forEach(f=>it.push({k:'feed:'+f,img:IMG[f],cnt:S.inv[f]||null,lbl:iName(f),dim:!S.inv[f]}))}
  if(w==='dig')return it.filter(i=>i.k==='shovel');if(w==='plant')return it.filter(i=>i.k==='seed:potato');if(w==='water')return it.filter(i=>i.k==='can');if(w==='fert')return it.filter(i=>i.k==='fert');
  return it}
-function trayPos(T){if(T.t==='bowl'){const p=T.b==='catfood'?BOWLF:BOWLW;return[p[0],p[1]-70]}if(T.t==='obj'){const o=objById(T.id);const p=topOf(o);return[p[0],p[1]-6]}const a=ANIM[T.a==='cows'?'cow':'sheep'].pos[T.i];return[a[0],a[1]-120]}
+function trayPos(T){if(T.t==='bowl'){const p=T.b==='catfood'?BOWLF:BOWLW;return[p[0],p[1]-70]}if(T.t==='obj'){const o=objById(T.id);const p=topOf(o);return[p[0],p[1]-6]}const A=ANIM[T.a],a=A.pos[T.i];return[a[0],a[1]-A.w*.75]}
 function openTray(T){const it=trayItems(T);const t=$('tray');if(!it.length){closeTray();return false}
  closeTray();trayT=T;t.innerHTML='';it.forEach(o=>{const d=document.createElement('div');d.className='titem'+(o.dim?' dim':'');d.dataset.k=o.k;d.innerHTML=`<img src="${o.img}">${o.cnt?`<div class="cnt">${o.cnt}</div>`:''}<div class="lbl">${o.lbl}</div>`;d.addEventListener('pointerdown',e=>startDrag(e,o,d));t.appendChild(d)});
  const p=trayPos(T);t.style.left=Math.max(240,Math.min(WW-240,p[0]))+'px';t.style.top=p[1]+'px';t.style.zIndex=6000;t.classList.remove('on');void t.offsetWidth;t.classList.add('on');trayOpen=true;SND.pop();
@@ -80,7 +80,7 @@ function closeTray(){$('tray').classList.remove('on');if(trayT&&trayT.t==='obj'&
 $('tray').addEventListener('pointerdown',e=>e.stopPropagation());
 let drag=null;
 function startDrag(e,o,el){e.preventDefault();e.stopPropagation();ac();
- if(o.dim){SND.fail();if(o.k==='can')toast('Лейка пустая — набери воду в бочке'+(S.build.well?' или колодце':''));else if(o.k.startsWith('poison'))toast('Этого средства нет — купи в магазине, вкладка «Защита»');else if(o.k==='catfood')toast('Нет кошачьего корма — купи в магазине (вкладка «Животные»)');else if(o.k==='catwater')toast('Нет воды — подожди, пока наполнится бочка');else if(o.k.startsWith('feed'))toast('Нет корма — сено продаётся в магазине, комбикорм готовят на кухне');return}
+ if(o.dim){SND.fail();if(o.k==='can')toast('Лейка пустая — набери воду в бочке'+(S.build.well?' или колодце':''));else if(o.k.startsWith('poison'))toast('Этого средства нет — купи в магазине, вкладка «Защита»');else if(o.k==='catfood')toast('Нет кошачьего корма — купи в магазине (вкладка «Животные»)');else if(o.k==='catwater')toast('Нет воды — подожди, пока наполнится бочка');else if(o.k.startsWith('feed'))toast(o.k==='feed:grain'?'Нет зерносмеси — купи в магазине (Животные) или сделай на мельнице':o.k==='feed:hay'?'Нет сена — купи в магазине (вкладка «Животные»)':'Нет комбикорма — его готовят на кухне из кукурузы и фасоли');return}
  drag={o,el,sx:e.clientX,sy:e.clientY,moved:false,T:trayT};el.classList.add('drag');const g=$('ghost');g.querySelector('img').src=o.img;g.style.display='block';moveGhost(e.clientX,e.clientY);if(handAnim)$('hand').style.opacity=0}
 function moveGhost(cx,cy){const[x,y]=toStage(cx,cy);const g=$('ghost');g.style.left=x+'px';g.style.top=(y-40)+'px'}
 addEventListener('pointermove',e=>{if(!drag)return;moveGhost(e.clientX,e.clientY);if(Math.hypot(e.clientX-drag.sx,e.clientY-drag.sy)>10*SC)drag.moved=true},{passive:false});
@@ -140,7 +140,8 @@ function handleTap(target,wp){if(placing){placeAt(wp);return}
  if(tap.startsWith('fix:'))return tapFix(tap.slice(4));
  if(tap==='house')return openFac('kitchen');
  if(tap==='scare')return toast(S.scareUntil>now()?'Пугало сторожит ещё '+fmt(S.scareUntil-now()):'Пугало развалилось — поставь новое (Магазин → Защита)');
- if(tap==='cat')return petCat();if(tap==='catfood'||tap==='catwater')return tapBowl(tap)}
+ if(tap==='cat')return petCat();if(tap==='catfood'||tap==='catwater')return tapBowl(tap);
+ if(tap==='fish')return openFishing();if(tap==='forest')return openForest();if(tap==='chest')return openChest();if(tap==='rainbow')return toast('Радуга! Скупщик сегодня платит на 20% больше')}
 function tapObj(o){if(!o)return;const w=tutWait();
  if(!S.done&&o!==tutBed())return;
  if(o.busy){toast('Работа идёт — осталось '+fmt(o.busy.t1-now()));return}
@@ -153,10 +154,10 @@ function tapObj(o){if(!o)return;const w=tutWait();
  openTray({t:'obj',id:o.id})}
 function tapWater(src){if(!S.done&&tutWait()!=='barrel'){SND.fail();return}
  const cm=canMax();if(S.can>=cm){toast('Лейка уже полная — полей грядку');return}
- if(src==='well'||S.build.well){S.can=cm;SND.fill();renderHUD();burst(src==='well'?420:235,src==='well'?880:640,10,['#7fd3ff','#c6ecff'],40,[5,10],.6);tutEvent('barrel');save();return}
+ if(src==='well'||S.build.well){S.can=cm;SND.fill();renderHUD();burst(src==='well'?FIX.well.x:545,src==='well'?FIX.well.y-120:700,10,['#7fd3ff','#c6ecff'],40,[5,10],.6);tutEvent('barrel');save();return}
  if(S.water<1){toast('Бочка пуста. +1 воды через '+fmt(S.waterAt+D.refill()-now()));SND.fail();return}
  if(S.water>=waterMax())S.waterAt=now();const n=Math.min(S.water,cm-S.can);S.water-=n;S.can+=n;SND.fill();renderHUD();
- burst(235,640,10,['#7fd3ff','#c6ecff'],40,[5,10],.6);tutEvent('barrel');save()}
+ burst(545,700,10,['#7fd3ff','#c6ecff'],40,[5,10],.6);tutEvent('barrel');save()}
 function tapBoard(){if(!S.ui.board){SND.fail();return}if(!S.done&&tutWait()!=='sell'){SND.fail();return}SND.tap();openOrders()}
 
 /* particles */
