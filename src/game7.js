@@ -21,9 +21,9 @@ const SHOP={
   for(const k in FIX){if(k==='market')continue;const F=FIX[k];a.push({k:'fix_'+k,name:F.n,desc:S.build[k]?'Построено':level()<F.lvl?'Откроется на уровне '+F.lvl:FIXDESC[k],img:IMG['b_'+k],cost:cost(F.cost),lock:level()<F.lvl,maxed:!!S.build[k],btn:S.build[k]?'Есть ✔':null,place:true,act:()=>{shopClose();buildFix(k);const F=FIX[k];camTo(F.x,F.y-120,Math.max(minS(),.9),true)}})}
   return a}},
  fish:{name:'Рыбалка',items:()=>{const L=level();return[
-  {k:'worms5',name:'Черви ×5',desc:'Наживка: одна заброска — один червяк',img:IMG.worms,cost:cost(12),own:S.inv.worms,lock:L<FISH_LVL,act:()=>{addItem('worms',5);SND.buy()}},
+  {k:'worms5',name:'Черви ×5',desc:'Наживка: одна удочка — один червяк',img:IMG.worms,cost:cost(12),own:S.inv.worms,lock:L<FISH_LVL,act:()=>{addItem('worms',5);SND.buy()}},
   {k:'worms20',name:'Черви ×20',desc:'Большая банка — выгоднее',img:IMG.worms,cost:cost(40),lock:L<FISH_LVL,act:()=>{addItem('worms',20);SND.buy()}},
-  {k:'rod2',name:'Спиннинг',desc:L<10?'Откроется на уровне 10':'Чаще клюёт крупная рыба: щука, судак, сом',img:IMG.rod2,cost:cost(600),lock:L<10,maxed:S.rod2,btn:S.rod2?'Есть ✔':null,act:()=>{S.rod2=true;toast('Новый спиннинг! Крупная рыба клюёт чаще')}}]}},
+  {k:'rod2',name:'Спиннинг',desc:L<24?'Откроется на уровне 24':'2 рыбы за раз, быстрее и чаще крупная рыба',img:IMG.rod2,cost:cost(600),lock:L<24,maxed:S.rod2,btn:S.rod2?'Есть ✔':null,act:()=>{S.rod2=true;toast('Новый спиннинг! Крупная рыба клюёт чаще')}}]}},
  upg:{name:'Улучшения',items:()=>['shovel','can','soil','gutter','cap'].map(upgItem).concat([{k:'fert',name:'Удобрение',desc:'Урожай растёт на 40% быстрее',img:IMG.i_fert,cost:cost(8),own:S.inv.fert,act:()=>{addItem('fert',1);SND.buy()}}])},
  protect:{name:'Защита',items:()=>{const L=level();return[
   {k:'camera',name:'Камера',desc:'Спугивает половину воришек',img:IMG.cam,cost:cost(150),lock:L<THIEF_LVL,maxed:S.camera,btn:S.camera?'Есть ✔':null,act:()=>{S.camera=true;renderSecurity()}},

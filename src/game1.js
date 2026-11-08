@@ -2,7 +2,7 @@
 'use strict';
 const $=id=>document.getElementById(id);
 const IMG=__IMGMAP__;
-const VERSION='2.0';
+const VERSION='2.1';
 const WW=4637,WH=1967;
 const now=()=>Date.now();
 const SPOIL=6*3600000;
@@ -57,7 +57,7 @@ const FOREST={m_porcini:['Белый гриб',45,3],m_boletus:['Подберё�
 Object.keys(FISH).forEach(k=>PROD[k]=[FISH[k][0],FISH[k][2],k]);Object.keys(FOREST).forEach(k=>{if(k!=='m_fly')PROD[k]=[FOREST[k][0],FOREST[k][1],k]});
 IMG.m_fly='data:image/svg+xml,'+encodeURIComponent('<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 100 110"><ellipse cx="50" cy="104" rx="30" ry="5" fill="rgba(0,0,0,.25)"/><path d="M38 56q-4 30 2 46h20q6-16 2-46z" fill="#fbf6ea" stroke="#6b4a2a" stroke-width="3"/><path d="M36 72q14 6 28 0" fill="none" stroke="#6b4a2a" stroke-width="3"/><path d="M6 58Q10 8 50 8t44 50q-44 10-88 0z" fill="#e53935" stroke="#7f1d1d" stroke-width="3.5"/><g fill="#fff"><circle cx="30" cy="34" r="6"/><circle cx="52" cy="22" r="5"/><circle cx="70" cy="38" r="6"/><circle cx="44" cy="46" r="4"/><circle cx="20" cy="50" r="3.5"/><circle cx="80" cy="52" r="3.5"/></g></svg>');
 const RAW=new Set(['milk','wool','hay','feed','egg','egg_quail','egg_duck','egg_goose','egg_turkey','feather','down','grain',...Object.keys(FISH),...Object.keys(FOREST)]);
-const FISH_LVL=5,FOREST_LVL=4;
+const FISH_LVL=19,FOREST_LVL=23;
 const FAC={
  kitchen:{name:'Летняя кухня',lvl:4,img:'i_house',rec:{borsch:[4,{beet:1,cabbage:1,potato:1,carrot:1,onion:1},600,1],caviar:[5,{zucchini:1,carrot:1,onion:1},360,1],salad:[5,{radish:1,cucumber:1,dill:1},180,1],pickles:[6,{cucumber:1,dill:1,garlic:1},480,1],lecho:[7,{tomato:1,eggplant:1,garlic:1},900,1],
    feed:[7,{corn:1,beans:1},120,3],friedeggs:[6,{egg:2},180,1],mushsoup:[5,{m_chanterelle:2,potato:1,onion:1},420,1],eggbasket:[8,{egg:3,egg_quail:3},120,1],sjam:[7,{strawberry:3},360,1],rjam:[8,{raspberry:3},420,1],mors:[9,{bcurrant:3},360,1],acomp:[10,{apple:3},480,1],pjam:[11,{pear:3},540,1],ccomp:[13,{cherry:3},540,1]}},
@@ -83,6 +83,16 @@ const FIX={market:{n:'Скупщик',x:3240,y:985,w:170,h:230,lvl:1,cost:0,hid:
  dairy:{n:'Сыроварня',x:400,y:1800,w:250,lvl:8,cost:700},spinnery:{n:'Прядильня',x:660,y:1800,w:240,lvl:10,cost:900},mill:{n:'Мельница',x:920,y:1800,w:250,lvl:6,cost:500},
  oven:{n:'Русская печь',x:1180,y:1800,w:250,lvl:7,cost:600},bakery:{n:'Пекарня',x:1440,y:1800,w:250,lvl:12,cost:1500},smokehouse:{n:'Коптильня',x:1700,y:1800,w:240,lvl:13,cost:1600},apiary:{n:'Пасека',x:1970,y:1800,w:260,lvl:10,cost:900},
  cowshed:{n:'Коровник',x:2570,y:680,w:270,lvl:7,cost:500},sheeppen:{n:'Овчарня',x:3470,y:640,w:260,lvl:9,cost:700},fair:{n:'Ярмарка',x:4450,y:1930,w:330,lvl:12,cost:1200}};
+// v2.1: everything new from v2.0 opens from level 19, one novelty per level
+(()=>{const A=(o,v)=>o[0]=v;
+ ['wheat','oats'].forEach(k=>ANN[k][1]=21);['sunflower','rye','buckwheat'].forEach(k=>ANN[k][1]=26);
+ Object.entries({f_crucian:19,f_roach:19,f_perch:19,f_gold:19,f_bream:21,f_pike:23,f_zander:25,f_catfish:27}).forEach(([k,v])=>FISH[k][1]=v);
+ const R={kitchen:{friedeggs:20,mushsoup:23,eggbasket:25},spinnery:{pillow:31,perina:32},mill:{flour:22,grain:22,oil:26,ryeflour:26,groats:26},oven:{blini:24,pirozhki:25,syrniki:26,vatrushka:27},
+  apiary:{honey:27,wax:28,candle:29},bakery:{bread:30,ryebread:30,applepie:31,karavai:32,medovik:33},smokehouse:{smoked_perch:32,smoked_bream:32,smoked_pike:33,smoked_catfish:34}};
+ for(const f in R)for(const id in R[f])A(FAC[f].rec[id],R[f][id]);
+ Object.assign(FAC.mill,{lvl:22});Object.assign(FAC.oven,{lvl:24});Object.assign(FAC.apiary,{lvl:27});Object.assign(FAC.bakery,{lvl:30});Object.assign(FAC.smokehouse,{lvl:32});
+ Object.entries({chicken:20,quail:25,duck:28,goose:31,turkey:33}).forEach(([k,v])=>ANIM[k].lvl=v);
+ Object.entries({coop:20,mill:22,oven:24,apiary:27,pyard:28,fair:29,bakery:30,smokehouse:32}).forEach(([k,v])=>FIX[k].lvl=v)})();
 const FIXDESC={well:'Вода без ограничений',dairy:'Сметана, творог, масло, сыр',spinnery:'Пряжа, носки, варежки, свитер, подушки',cowshed:'До 3 коров',sheeppen:'До 4 овец',coop:'Куры и перепёлки',pyard:'Утки, гуси, индюки',mill:'Мука, масло, крупа, зерносмесь',oven:'Блины, пирожки, сырники',bakery:'Хлеб, пироги, каравай, медовик',apiary:'Мёд, воск, свечи',smokehouse:'Копчёная рыба',fair:'Покупает дороже скупщика'};
 const ITEMS={worms:['Черви','worms'],fert:['Удобрение','i_fert'],catfood:['Кошачий корм','catfood'],p_aphid:['Средство от тли','p_aphid'],p_beetle:['От колорадского жука','p_beetle'],p_slug:['Гранулы от слизней','p_slug']};
 ANN_IDS.forEach(id=>{ITEMS['seed_'+id]=['Семена: '+ANN[id][0].toLowerCase(),id+'_seed'];ITEMS[id]=[ANN[id][0],id+'_crop']});

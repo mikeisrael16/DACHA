@@ -39,7 +39,7 @@ function newPerObj(p,z,c,r){return{id:'o'+(uid++)+'_'+Math.floor(Math.random()*1
 function blankInv(){const inv={};Object.keys(ITEMS).forEach(k=>inv[k]=0);return inv}
 function newState(){const inv=blankInv();const fac={},ani={};Object.keys(FAC).forEach(f=>fac[f]={cap:1,slots:[]});ANI_IDS.forEach(k=>ani[k]=[]);inv.seed_potato=1;inv.fert=1;
  return{ver:VERSION,seenVer:'0',coins:0,xp:0,water:1,waterAt:now(),can:0,inv,lots:{},objs:[newCropObj('bed',0,1,2,0)],
- upg:{shovel:0,can:0,soil:0,gutter:0,cap:0},ghLvl:1,build:{market:true},loc:2,rod2:false,forest:null,fair:null,holGift:{},
+ upg:{shovel:0,can:0,soil:0,gutter:0,cap:0},ghLvl:1,build:{market:true},loc:2,rod2:false,fishing:null,forest:null,fair:null,holGift:{},
 
  firstPotato:true,seenLvl:1,tut:0,done:false,orders:[],nextOrderAt:0,giftAt:0,
  scareUntil:0,scareEver:false,proUntil:0,camera:false,fence:false,lastSeen:now(),nextPestAt:0,nextThiefAt:0,tips:{},
