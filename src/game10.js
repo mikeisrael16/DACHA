@@ -17,10 +17,10 @@ function renderSpots(){for(const k in SPOTS){const P=SPOTS[k];let el=$('sp_'+k);
 /* ================= WEATHER ================= */
 const WX={sun:['Ясно','w_sun','Хорошая погода для дачи!'],rain:['Дождь','w_rain','Дождь сам поливает грядки и сад на улице и наполняет бочку'],heat:['Жара','w_sun','В жару бочка наполняется медленнее — поливай с умом'],rainbow:['Радуга','w_rainbow','Радуга! Скупщик платит на 20% больше']};
 let forcedWx=null;
-function weather(){if(forcedWx)return forcedWx;if(!S||!S.done)return'sun';const sl=Math.floor(now()/10800000),r=rnd(sl),pr=rnd(sl-1);if(r<.22)return'rain';if(pr<.22&&r<.6)return'rainbow';if(r<.36)return'heat';return'sun'}
+function weather(){if(forcedWx)return forcedWx;if(!S||!S.done||level()<WX_LVL)return'sun';const sl=Math.floor(now()/10800000),r=rnd(sl),pr=rnd(sl-1);if(r<.22)return'rain';if(pr<.22&&r<.6)return'rainbow';if(r<.36)return'heat';return'sun'}
 const wxMult=()=>weather()==='rainbow'?1.2:1;
 let wxCur=null;
-function renderWx(){const w=weather(),W=WX[w];$('hWx').classList.toggle('hide',!S.done);if(!S.done)return;
+function renderWx(){const w=weather(),W=WX[w],on=S.done&&(level()>=WX_LVL||!!forcedWx);$('hWx').classList.toggle('hide',!on);if(!on){if(wxCur!=='off'){wxCur='off';$('wxfx').className='';$('wxfx').innerHTML='';$('rainbowArc')&&$('rainbowArc').remove()}return}
  if(wxCur!==w){const prev=wxCur;wxCur=w;$('wxImg').src=IMG[W[1]];$('wxTxt').textContent=W[0];const fx=$('wxfx');fx.className=w;fx.innerHTML=w==='rain'?Array.from({length:70},()=>`<i style="left:${Math.random()*112}%;animation-duration:${(.55+Math.random()*.45).toFixed(2)}s;animation-delay:-${(Math.random()*1.2).toFixed(2)}s;opacity:${(.5+Math.random()*.5).toFixed(2)}"></i>`).join(''):'';
   let rb=$('rainbowArc');if(w==='rainbow'&&!rb){rb=document.createElement('div');rb.id='rainbowArc';rb.dataset.tap='rainbow';rb.innerHTML='<svg viewBox="0 0 1000 520" width="1400" height="728">'+['#e53935','#fb8c00','#fdd835','#43a047','#1e88e5','#5e35b1'].map((c,i)=>`<path d="M${40+i*26} 520A${460-i*26} ${460-i*26} 0 0 1 ${960-i*26} 520" fill="none" stroke="${c}" stroke-width="26" opacity=".55"/>`).join('')+'</svg>';$('world').insertBefore(rb,$('objs'))}
   if(w!=='rainbow'&&rb)rb.remove();
@@ -37,17 +37,18 @@ const HOL={harvest:{n:'Праздник урожая',ico:'h_pumpkin',bonus:'с�
  ny:{n:'Новый год',ico:'h_tree',bonus:'подарок за вход — двойной',dec:[['hd_tree',1300,712,170],['hd_snowman',250,990,130],['hd_gift',1400,712,110]]},
  masl:{n:'Масленица',ico:'h_masl',bonus:'блины продаются в 1,5 раза дороже',dec:[['hd_masl',1300,712,130],['hd_samovar',1430,520,110]]},
  easter:{n:'Пасха',ico:'h_kulich',bonus:'яйца продаются в 1,5 раза дороже',dec:[['hd_kulich',1300,712,130],['hd_samovar',1430,520,110]]}};
-function holMult(kind,id){const h=holiday();if(!h)return 1;if(kind==='orders'&&h==='harvest')return 1.2;if(kind==='sell'){if(h==='masl'&&id==='blini')return 1.5;if(h==='easter'&&/^egg/.test(id))return 1.5}return 1}
+const holOn=()=>S&&S.done&&level()>=HOL_LVL?holiday():null;
+function holMult(kind,id){const h=holOn();if(!h)return 1;if(kind==='orders'&&h==='harvest')return 1.2;if(kind==='sell'){if(h==='masl'&&id==='blini')return 1.5;if(h==='easter'&&/^egg/.test(id))return 1.5}return 1}
 const holKey=()=>holiday()+new Date().getFullYear()+(holiday()==='ny'&&new Date().getMonth()===0?-1:0);
-function renderDecor(){const h=S.done?holiday():null;document.querySelectorAll('.deco').forEach(e=>{if(e.dataset.h!==h)e.remove()});$('hHol').classList.toggle('hide',!h);if(!h)return;
+function renderDecor(){const h=holOn();document.querySelectorAll('.deco').forEach(e=>{if(e.dataset.h!==h)e.remove()});$('hHol').classList.toggle('hide',!h);if(!h)return;
  const H=HOL[h];$('holImg').src=IMG[H.ico];$('holTxt').textContent=H.n;
  H.dec.forEach((d,i)=>{if($('dec'+i+h))return;const el=document.createElement('div');el.id='dec'+i+h;el.className='fix deco';el.dataset.h=h;el.style.cssText=`left:${d[1]}px;top:${d[2]}px;width:${d[3]}px;z-index:${d[2]};pointer-events:none`;el.innerHTML=`<img src="${IMG[d[0]]}">`;$('objs').appendChild(el)});
  let ch=$('holChest');const got=S.holGift[holKey()];if(got&&ch){ch.remove();ch=null}
  if(!got&&!ch){ch=document.createElement('div');ch.id='holChest';ch.className='fix deco';ch.dataset.h=h;ch.dataset.tap='chest';ch.style.cssText='left:1160px;top:712px;width:110px;z-index:712';ch.innerHTML=`<img src="${IMG.hd_chest}" style="animation:bob 1.2s ease-in-out infinite"><div class="lk sign" style="bottom:auto;top:-36px">🎁</div>`;$('objs').appendChild(ch)}}
-function holidayHello(){const h=S.done?holiday():null;if(!h)return;const H=HOL[h];tip('hol_'+holKey(),[[7,`У нас праздник — ${H.n}! Я украсила дачу.`],[5,`Пока идёт праздник, ${H.bonus}. А у крыльца стоит праздничный сундучок — открой его!`]],[1300,640,.95])}
-function openChest(){const h=holiday();if(!h||S.holGift[holKey()])return;S.holGift[holKey()]=1;const c=50+15*level();const c0=coinPos();addCoins(c,c0[0],c0[1]);addItem('fert',2);addItem('worms',5);
+function holidayHello(){const h=holOn();if(!h)return;const H=HOL[h];tip('hol_'+holKey(),[[7,`У нас праздник — ${H.n}! Я украсила дачу.`],[5,`Пока идёт праздник, ${H.bonus}. А у крыльца стоит праздничный сундучок — открой его!`]],[1300,640,.95])}
+function openChest(){const h=holOn();if(!h||S.holGift[holKey()])return;S.holGift[holKey()]=1;const c=50+15*level();const c0=coinPos();addCoins(c,c0[0],c0[1]);addItem('fert',2);addItem('worms',5);
  SND.magic();burst(1160,640,26,['#ffd23f','#ff7aa8','#7fd3ff','#9be36d'],140);toast(HOL[h].n+': '+c+' монет, 2 удобрения и 5 червей!');renderDecor();save()}
-$('hHol').addEventListener('pointerdown',e=>{e.stopPropagation();SND.tap();const h=holiday();if(h)toast(HOL[h].n+': '+HOL[h].bonus)});
+$('hHol').addEventListener('pointerdown',e=>{e.stopPropagation();SND.tap();const h=holOn();if(h)toast(HOL[h].n+': '+HOL[h].bonus)});
 
 /* ================= FISHING ================= */
 const FISH_TIME=5*60000;
@@ -119,5 +120,4 @@ function catArrival(){if(!S.done||level()<CAT_LVL||catQ)return;if(S.cat&&!S.cat.
  sayLater([[2,old?`Смотри, кто пришёл — ${old}! Он нашёл нас на новой даче и хочет остаться.`:'Ой, смотри — к нам на дачу пришёл котик! Похоже, хочет остаться…'],[1,'Давай дадим ему имя! Его нужно кормить и поить каждый день.']],[CATP[0]+150,CATP[1]-80,1.1],()=>askCatName(old))}
 function moveNotice(){if(!S.moved||!S.done)return;S.moved=0;save();
  sayLater([[0,'Сюрприз! Мы переехали на новую большую дачу у реки! Твой уровень, монеты, сарай, грядки, теплицы, сад и животные — всё переехало с нами.'],[1,'Участок огромный — двигай его пальцем во все стороны. Кнопка с прицелом справа вернёт тебя к грядкам. Места теперь хватит на 16 грядок и 5 теплиц!']],[1560,960,.62]);
- sayLater([[5,'Слева — место для курятника и птичьего двора. Внизу — мельница, русская печь, пекарня, коптильня, пасека и мастерские.']],[700,1450,.62]);
- sayLater([[3,'А справа — пастбище, палатка Скупщика, причал для рыбалки и тропинка в лес. Скорее осваивайся!']],[3300,1000,.62],()=>camHome(true))}
+ sayLater([[5,'Места тут хватит на всё, что откроется потом. Начиная с 19 уровня на участке будут появляться новинки — по одной за уровень. Я расскажу о каждой!']],null,()=>camHome(true))}

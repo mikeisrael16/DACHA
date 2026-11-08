@@ -2,7 +2,7 @@
 'use strict';
 const $=id=>document.getElementById(id);
 const IMG=__IMGMAP__;
-const VERSION='2.1';
+const VERSION='2.2';
 const WW=4637,WH=1967;
 const now=()=>Date.now();
 const SPOIL=6*3600000;
@@ -57,7 +57,8 @@ const FOREST={m_porcini:['Белый гриб',45,3],m_boletus:['Подберё�
 Object.keys(FISH).forEach(k=>PROD[k]=[FISH[k][0],FISH[k][2],k]);Object.keys(FOREST).forEach(k=>{if(k!=='m_fly')PROD[k]=[FOREST[k][0],FOREST[k][1],k]});
 IMG.m_fly='data:image/svg+xml,'+encodeURIComponent('<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 100 110"><ellipse cx="50" cy="104" rx="30" ry="5" fill="rgba(0,0,0,.25)"/><path d="M38 56q-4 30 2 46h20q6-16 2-46z" fill="#fbf6ea" stroke="#6b4a2a" stroke-width="3"/><path d="M36 72q14 6 28 0" fill="none" stroke="#6b4a2a" stroke-width="3"/><path d="M6 58Q10 8 50 8t44 50q-44 10-88 0z" fill="#e53935" stroke="#7f1d1d" stroke-width="3.5"/><g fill="#fff"><circle cx="30" cy="34" r="6"/><circle cx="52" cy="22" r="5"/><circle cx="70" cy="38" r="6"/><circle cx="44" cy="46" r="4"/><circle cx="20" cy="50" r="3.5"/><circle cx="80" cy="52" r="3.5"/></g></svg>');
 const RAW=new Set(['milk','wool','hay','feed','egg','egg_quail','egg_duck','egg_goose','egg_turkey','feather','down','grain',...Object.keys(FISH),...Object.keys(FOREST)]);
-const FISH_LVL=19,FOREST_LVL=23;
+const FISH_LVL=19,FOREST_LVL=23,NEWL=19,WX_LVL=34,HOL_LVL=35;
+const vis=l=>l<NEWL||level()>=l-1; // v2 content is hidden until one level before it opens
 const FAC={
  kitchen:{name:'Летняя кухня',lvl:4,img:'i_house',rec:{borsch:[4,{beet:1,cabbage:1,potato:1,carrot:1,onion:1},600,1],caviar:[5,{zucchini:1,carrot:1,onion:1},360,1],salad:[5,{radish:1,cucumber:1,dill:1},180,1],pickles:[6,{cucumber:1,dill:1,garlic:1},480,1],lecho:[7,{tomato:1,eggplant:1,garlic:1},900,1],
    feed:[7,{corn:1,beans:1},120,3],friedeggs:[6,{egg:2},180,1],mushsoup:[5,{m_chanterelle:2,potato:1,onion:1},420,1],eggbasket:[8,{egg:3,egg_quail:3},120,1],sjam:[7,{strawberry:3},360,1],rjam:[8,{raspberry:3},420,1],mors:[9,{bcurrant:3},360,1],acomp:[10,{apple:3},480,1],pjam:[11,{pear:3},540,1],ccomp:[13,{cherry:3},540,1]}},

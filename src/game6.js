@@ -2,7 +2,7 @@
 /* ================= FIXED BUILDINGS & ANIMALS ================= */
 const fixEls={};
 function renderFix(){for(const k in FIX){const F=FIX[k];let el=fixEls[k];if(!el){el=document.createElement('div');el.className='fix';el.dataset.tap='fix:'+k;el.innerHTML=F.hid?`<div style="width:${F.w}px;height:${F.h}px"></div><div class="lk sign" style="top:auto;bottom:-40px">💰 ${F.n}</div>`:`<img src="${IMG['b_'+k]}"><div class="lk"></div>`+(k==='fair'?`<div class="lk sign fairlbl">🎪 Ярмарка</div>`:'');el.style.left=F.x+'px';el.style.top=F.y+'px';el.style.width=F.w+'px';el.style.zIndex=F.y;$('objs').appendChild(el);fixEls[k]=el}
-  const built=!!S.build[k];if(k==='fair')el.querySelector('.fairlbl').style.display=built?'':'none';if(F.hid){el.style.display=S.done||S.tut>=TI.finalSay?'':'none';continue}el.classList.toggle('locked',!built);const lk=el.querySelector('.lk');lk.style.display=built?'none':'';lk.textContent=level()>=F.lvl?'Построить · '+cost(F.cost):'🔒 уровень '+F.lvl;el.style.display=S.done||k==='market'?'':'none'}
+  const built=!!S.build[k];if(!built&&!vis(F.lvl)){el.style.display='none';continue}if(k==='fair')el.querySelector('.fairlbl').style.display=built?'':'none';if(F.hid){el.style.display=S.done||S.tut>=TI.finalSay?'':'none';continue}el.classList.toggle('locked',!built);const lk=el.querySelector('.lk');lk.style.display=built?'none':'';lk.textContent=level()>=F.lvl?'Построить · '+cost(F.cost):'🔒 уровень '+F.lvl;el.style.display=S.done||k==='market'?'':'none'}
  renderScare();renderSpots()}
 function tapFix(k){const F=FIX[k];
  if(!S.build[k]){if(level()<F.lvl){toast(F.n+' откроется на уровне '+F.lvl);SND.fail();return}msg(F.n,'Построить за '+cost(F.cost)+' монет?',[{t:'Построить',f:()=>buildFix(k)},{t:'Позже',cls:'orange'}]);return}
@@ -50,7 +50,7 @@ function renderFacUI(){const f=curFac,F=S.fac[f];const box=document.createElemen
  if(F.cap<3){const pr=cost(F.cap===1?250:600);const d=document.createElement('div');d.className='kslot';d.innerHTML=`<div style="flex:1">Ещё одно место<br><span style="font-size:14px">готовить больше сразу</span></div><div class="btn orange ${S.coins<pr?'off':''}">${pr} ${coinSvg}</div>`;d.querySelector('.btn').onclick=()=>{if(!spend(pr))return;F.cap++;SND.level();save();renderFacUI()};box.appendChild(d)}
  $('kSlots').innerHTML='';$('kSlots').appendChild(box);
  const cards=$('kCards');cards.innerHTML='';const free=F.slots.filter(Boolean).length<F.cap;
- Object.entries(FAC[f].rec).forEach(([id,r])=>{const ok=level()>=r[0],can=canCook(f,id);
+ Object.entries(FAC[f].rec).forEach(([id,r])=>{if(!vis(r[0]))return;const ok=level()>=r[0],can=canCook(f,id);
   const need=Object.entries(r[1]).map(([k,n])=>`<span class="${(S.inv[k]||0)>=n?'':'miss'}"><img src="${iImg(k)}">${S.inv[k]||0}/${n}</span>`).join('');
   const d=document.createElement('div');d.className='card'+(ok?'':' locked');d.style.width='200px';
   d.innerHTML=`${ok?'':'<div class="soon">🔒 ур. '+r[0]+'</div>'}${S.inv[id]?`<div class="own">${S.inv[id]}</div>`:''}<img src="${IMG[PROD[id][2]]}" style="width:120px;height:120px"><div class="cn" style="min-height:30px;font-size:17px">${PROD[id][0]}${r[3]>1?' ×'+r[3]:''}</div><div class="need">${need}</div><div class="cd">⏱ ${fmt(r[2]*1000*tm())} · цена ~${PROD[id][1]}</div><div class="btn ${ok&&can&&free?'':'off'}">Готовить</div>`;
