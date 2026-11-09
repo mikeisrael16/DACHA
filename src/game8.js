@@ -79,8 +79,8 @@ function steal(id){const o=objById(id);shooThief(id,false);if(!o||!isRipe(o))ret
 function clearThieves(){for(const k in thieves){thieves[k].el.remove();delete thieves[k]}}
 function offlineThieves(){if(!thiefOn())return 0;let n=0;const t=now(),since=S.lastSeen||t;
  S.objs.forEach(o=>{if(o.kind==='gh'||!isRipe(o)||!o.ripeAt)return;const st=Math.max(o.ripeAt+10*60000,since);const w=Math.min(3,Math.floor((t-st)/(20*60000)));for(let k=0;k<w;k++)if(Math.random()<.3*thiefRisk()){stealFrom(o);n++;break}});return n}
-function renderSecurity(){$('cctv').style.display=S.camera?'':'none';const f=$('hifence');f.style.display=S.fence?'':'none';
- if(S.fence&&!f.innerHTML){let h='';const seg=(x0,y0,x1,y1)=>{for(let x=x0;x<x1;x+=24){const y=y0+(x-x0)*(y1-y0)/(x1-x0);h+=`<rect x="${x}" y="${y-150}" width="22" height="150" fill="${(x/24|0)%2?'#8d5f31':'#a8743f'}" stroke="#4a2c14" stroke-width="2.5"/><path d="M${x} ${y-150}l11-12 11 12" fill="#8d5f31" stroke="#4a2c14" stroke-width="2.5"/>`}h+=`<path d="M${x0} ${y0-110}L${x1} ${y1-110}M${x0} ${y0-40}L${x1} ${y1-40}" stroke="#5b391c" stroke-width="9"/>`};
+function renderSecurity(){$('cctv').style.display=S.camera?'':'none';const f=$('hifence');f.style.display='none';f.innerHTML='';
+ if(false){let h='';const seg=(x0,y0,x1,y1)=>{for(let x=x0;x<x1;x+=24){const y=y0+(x-x0)*(y1-y0)/(x1-x0);h+=`<rect x="${x}" y="${y-150}" width="22" height="150" fill="${(x/24|0)%2?'#8d5f31':'#a8743f'}" stroke="#4a2c14" stroke-width="2.5"/><path d="M${x} ${y-150}l11-12 11 12" fill="#8d5f31" stroke="#4a2c14" stroke-width="2.5"/>`}h+=`<path d="M${x0} ${y0-110}L${x1} ${y1-110}M${x0} ${y0-40}L${x1} ${y1-40}" stroke="#5b391c" stroke-width="9"/>`};
   seg(960,395,2230,395);seg(40,1700,980,1700);f.innerHTML=h}}
 
 /* ================= DAY & NIGHT ================= */

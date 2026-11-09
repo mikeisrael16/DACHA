@@ -2,7 +2,7 @@
 'use strict';
 const $=id=>document.getElementById(id);
 const IMG=__IMGMAP__;
-const VERSION='2.2';
+const VERSION='2.3';
 const WW=4637,WH=1967;
 const now=()=>Date.now();
 const SPOIL=6*3600000;
@@ -106,7 +106,7 @@ function baseSell(id){return ANN[id]?ANN[id][5]:PER[id]?PER[id][7]:PROD[id]?PROD
 const aniCount=k=>(S.ani[k]||[]).length,hasAni=()=>ANI_IDS.some(k=>aniCount(k));
 // grid
 const CW=80,CH=56;
-const ZONES=[{x0:1080,y0:720,cols:10,rows:8,k:'bed'},{x0:1580,y0:400,cols:8,rows:3,k:'per'},{x0:1920,y0:760,cols:5,rows:9,k:'gh'},{x0:1360,y0:1168,cols:7,rows:3,k:'bed'}];
+const ZONES=[{x0:1080,y0:720,cols:10,rows:8,k:'bed'},{x0:1580,y0:400,cols:8,rows:3,k:'per'},{x0:1920,y0:760,cols:5,rows:9,k:'gh'},{x0:1360,y0:1168,cols:7,rows:3,k:'bed'},{x0:1960,y0:1284,cols:5,rows:3,k:'per'},{x0:1080,y0:1176,cols:3,rows:3,k:'per'}];
 const zoneOk=(kind,z)=>kind==='bush'||kind==='tree'?true:ZONES[z].k===(kind==='bed'?'bed':'gh');
 const SIZE={bedh:[3,2],bedv:[2,3],bush:[1,1],tree:[2,1]};
 const BED_COST=[0,40,90,160,250,380,550,750,1000,1300,1700,2200,2600,3000,3400,3800,4200];

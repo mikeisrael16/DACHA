@@ -101,7 +101,7 @@ function startPlace(o,isNew,price,onDone){closeTray();placing={o,isNew,price,onD
  drawGrid(true);renderGhost();$('placeBar').classList.add('on');$('placeTip').textContent='Нажми на свободное место · ↻ повернуть';$('placeTip').classList.add('on');
  const R=rectOf(o);camTo(R.x+R.w/2,R.y+R.h/2,Math.max(cam.s,minS()*1.3),true);
  $('pRot').style.display=(o.kind==='bed'||o.kind==='gh')?'':'none'}
-function zoneOrder(k){return k==='bed'?[0,3]:k==='gh'?[2]:[1,0,2,3]}
+function zoneOrder(k){return k==='bed'?[0,3]:k==='gh'?[2]:[1,4,5,0,2,3]}
 function findSpot(o){for(const rot of (o.kind==='bed'||o.kind==='gh')?[o.rot,o.rot?0:1]:[o.rot])for(const z of zoneOrder(o.kind)){const Z=ZONES[z];for(let r=0;r<Z.rows;r++)for(let c=0;c<Z.cols;c++){const t={...o,z,c,r,rot};if(fits(t,o.id))return{z,c,r,rot}}}return null}
 function fixLayout(){const all=S.objs.slice(),kept=[];S.objs=kept;all.forEach(o=>{if(!fits(o,o.id)){const s=findSpot(o);if(s)Object.assign(o,s)}kept.push(o)})}
 let ghostEl=null;
