@@ -24,7 +24,7 @@ const SHOP={
   {k:'worms5',name:'Черви ×5',desc:'Наживка: одна удочка — один червяк',img:IMG.worms,cost:cost(12),own:S.inv.worms,lock:L<FISH_LVL,act:()=>{addItem('worms',5);SND.buy()}},
   {k:'worms20',name:'Черви ×20',desc:'Большая банка — выгоднее',img:IMG.worms,cost:cost(40),lock:L<FISH_LVL,act:()=>{addItem('worms',20);SND.buy()}},
   {k:'rod2',name:'Спиннинг',desc:L<24?'Откроется на уровне 24':'2 рыбы за раз, быстрее и чаще крупная рыба',img:IMG.rod2,cost:cost(600),lock:L<24,maxed:S.rod2,btn:S.rod2?'Есть ✔':null,act:()=>{S.rod2=true;toast('Новый спиннинг! Крупная рыба клюёт чаще')}}]}},
- upg:{name:'Улучшения',items:()=>['shovel','can','soil','gutter','cap'].map(upgItem).concat(dripItem()).concat([{k:'fert',name:'Удобрение',desc:'Урожай растёт на 40% быстрее',img:IMG.i_fert,cost:cost(8),own:S.inv.fert,act:()=>{addItem('fert',1);SND.buy()}}])},
+ upg:{name:'Улучшения',items:()=>['shovel','can','soil','gutter','cap'].map(upgItem).concat(dripItem()).concat(toolItems()).concat([{k:'fert',name:'Удобрение',desc:'Урожай растёт на 40% быстрее',img:IMG.i_fert,cost:cost(8),own:S.inv.fert,act:()=>{addItem('fert',1);SND.buy()}}])},
  protect:{name:'Защита',items:()=>{const L=level();return[
   {k:'camera',name:'Камера',desc:'Спугивает половину воришек',img:IMG.cam,cost:cost(150),lock:L<THIEF_LVL,maxed:S.camera,btn:S.camera?'Есть ✔':null,act:()=>{S.camera=true;renderSecurity()}},
   {k:'fence',name:'Высокий забор',desc:'Останавливает 2 из 3 воришек',img:IMG.fenceI,cost:cost(250),lock:L<THIEF_LVL,maxed:S.fence,btn:S.fence?'Есть ✔':null,act:()=>{S.fence=true;renderSecurity()}},

@@ -65,7 +65,7 @@ function renderFish(){const st=fishState(),b=$('fBtn'),fl=$('fFloat');$('fWorms'
  if(st==='wait')$('fMsg').textContent='Удочка стоит, рыба ловится. Можно закрыть окно и заниматься дачей — улов подождёт!';
  if(st==='ready')$('fMsg').textContent='Поплавок дёргается — улов готов! Забирай.';
  if(st==='idle'&&!$('fRes').innerHTML)$('fMsg').textContent=S.inv.worms?`Закинь удочку (1 червяк) — через ${fmt(fishDur())} будет улов${S.rod2?' из 2 рыб':''}.`:'Нет червей — купи их в магазине (вкладка «Рыбалка»)'}
-const fishDur=()=>FISH_TIME*(S.rod2?.8:1);
+const fishDur=()=>FISH_TIME*(S.rod2?.8:1)*(ilOn()?2:1);
 function castFish(){const st=fishState();if(st==='ready'){collectFish();return}if(st==='wait')return;
  if(!S.inv.worms){toast('Нет червей — купи в магазине, вкладка «Рыбалка»');SND.fail();modal('mFish',false);openShop('fish');return}
  takeItem('worms',1);S.fishing={t0:now(),t1:now()+fishDur()};$('fRes').innerHTML='';SND.pop();toast('Удочка заброшена! Улов через '+fmt(fishDur()));renderFish();renderFishBub();save()}

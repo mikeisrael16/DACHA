@@ -62,6 +62,7 @@ function trayItems(T){const w=tutWait(),it=[];
  if(T.t==='obj'){const o=objById(T.id);
   if(o.bug){Object.keys(BUGS).forEach(k=>{const p=BUGS[k][1],n=S.inv[p]||0;it.push({k:'poison:'+p,img:IMG[p],cnt:n||null,lbl:n?'есть':'нет',dim:!n})});return it}
   if(isCropObj(o)){
+   if(o.state==='wild')it.push({k:'weed',img:IMG[wtImg()],lbl:S.wt?WT[S.wt][0]:'Нет инструмента',dim:!S.wt});
    if(o.state==='weeds'||o.state==='used')it.push({k:'shovel',img:IMG.i_shovel,lbl:'Лопата'});
    else if(o.state==='dug')ANN_IDS.forEach(c=>{if(S.inv['seed_'+c]>0)it.push({k:'seed:'+c,img:IMG[c+'_seed'],cnt:S.inv['seed_'+c],lbl:ANN[c][0]})});
    else if(o.state==='planted'&&!isRipe(o)){if(needsWater(o))it.push({k:'can',img:IMG.i_can,lbl:S.can?'Лейка':'Пустая',dim:!S.can});if(!o.fert&&S.inv.fert>0)it.push({k:'fert',img:IMG.i_fert,cnt:S.inv.fert,lbl:'Удобрение'})}
@@ -98,6 +99,7 @@ function busyFx(o){if(!o.busy)return;const t=now();if(t-(o.busy.fx||0)<500)retur
  if(o.busy.type==='plant'){burst(x,y,4,['#5a3a1e','#3b2412'],40,[5,9]);tone(500+Math.random()*300,.06,'triangle',.05)}}
 function finishBusy(o){const k=o.busy.type,data=o.busy.data;o.busy=null;const R=rectOf(o),cx=R.x+R.w/2;
  if(isCropObj(o)){
+  if(k==='weed'){o.state='used';SND.pop();addXp(2,cx,R.y);stat('weed');burst(cx,R.y+R.h/2,14,['#5f8f37','#8bc34a','#c9e265'],90,[6,12]);tip('il_weed_done',[[2,'Отлично, сорняков нет! Теперь вскопай грядку лопатой — и можно сажать.']])}
   if(k==='dig'){o.state='dug';SND.pop();addXp(2,cx,R.y);if(o===tutBed())tutEvent('dig')}
   if(k==='plant'){Object.assign(o,{state:'planted',crop:data,fert:false,frac:0,waterIdx:0,seg:null,speed:1,ripeAt:0,total:D.grow(data)*(o.kind==='gh'?GHL[S.ghLvl].mult:1)});SND.plant();addXp(2,cx,R.y);if(o===tutBed())tutEvent('plant')}
   if(k==='water'){o.waterIdx++;startSeg(o);SND.pop();addXp(1,cx,R.y);stat('water');if(o===tutBed())tutEvent('water');if(!S.done&&tutWait()==='fert')setTimeout(()=>openTray({t:'obj',id:o.id}),600)}}
@@ -110,6 +112,7 @@ function applyTool(k,T){closeTray();if(!T)return;
  if(!S.done&&o!==tutBed())return;
  if(k==='move'){startPlace(o,false,0);return}
  if(k.startsWith('poison:')&&o.bug){const pk=k.slice(7);if(BUGS[o.bug][1]!==pk){SND.fail();toast('Не помогло — это средство от других вредителей!');return}takeItem(pk,1);cure(o,true);return}
+ if(k==='weed'&&o.state==='wild'){if(!S.wt){SND.fail();toast('Сначала купи инструмент для прополки: Магазин → Улучшения');return}SND.dig();startBusy(o,'weed');return}
  if(k==='shovel'&&(o.state==='weeds'||o.state==='used')){SND.dig();startBusy(o,'dig');return}
  if(k.startsWith('seed:')&&o.state==='dug'){const c=k.slice(5);if(S.inv['seed_'+c]<1)return;takeItem('seed_'+c,1);SND.plant();startBusy(o,'plant',c);return}
  if(k==='can'&&needsWater(o)){if(!S.can){toast('Лейка пустая — набери воду в бочке');return}S.can--;renderHUD();SND.water();startBusy(o,'water');return}
@@ -117,7 +120,7 @@ function applyTool(k,T){closeTray();if(!T)return;
   if(o.seg){const f=curFrac(o),rem=o.seg.t1-now();o.seg={f0:f,f1:o.seg.f1,t0:now(),t1:now()+rem*.6}}SND.magic();sparkles(o,26);renderObj(o);if(o===tutBed())tutEvent('fert');save();return}
  SND.fail()}
 function harvest(o){const R=rectOf(o);let id,qty,xp;
- if(isCropObj(o)){id=o.crop;qty=(o.kind==='gh'&&S.ghLvl>=3)?2:1;xp=ANN[id][6];Object.assign(o,{state:'used',crop:null,fert:false,frac:0,waterIdx:0,seg:null,speed:1,total:0,ripeAt:0});if(id==='potato')S.firstPotato=false}
+ if(isCropObj(o)){id=o.crop;qty=(o.kind==='gh'&&S.ghLvl>=3)?2:1;xp=ANN[id][6];Object.assign(o,{state:'used',crop:null,fert:false,frac:0,waterIdx:0,seg:null,speed:1,total:0,ripeAt:0});if(ilOn()&&o.kind==='bed'&&Math.random()<.25)o.state='wild';if(id==='potato')S.firstPotato=false}
  else{id=o.p;qty=PER[id][6];xp=PER[id][8];o.ripe=false;o.ripeAt=0;o.seg=null;stat('fruit')}
  closeTray();SND.harvest();addItem(id,qty);stat('harv_'+id);stat('harvest');S.ui.store=true;S.ui.xp=true;
  const dest=elWorld($('hStore'));for(let j=0;j<Math.min(6,qty*3);j++){const x=R.x+Math.random()*R.w,y=R.y+R.h/2;const f=document.createElement('div');f.className='fly';f.innerHTML=`<img src="${IMG[id+'_crop']}">`;f.style.left=x+'px';f.style.top=y+'px';$('world').appendChild(f);
@@ -140,7 +143,7 @@ function handleTap(target,wp){if(placing){placeAt(wp);return}
  if(tap.startsWith('fix:'))return tapFix(tap.slice(4));
  if(tap==='house')return openFac('kitchen');
  if(tap==='scare')return toast(S.scareUntil>now()?'Пугало сторожит ещё '+fmt(S.scareUntil-now()):'Пугало развалилось — поставь новое (Магазин → Защита)');
- if(tap==='david')return tapDavid();if(tap==='cat')return petCat();if(tap==='catfood'||tap==='catwater')return tapBowl(tap);
+ if(tap==='david')return tapDavid();if(tap==='tractor'){SND.tap();return toast('Трактор сам вскапывает все свободные грядки')}if(tap==='cat')return petCat();if(tap==='catfood'||tap==='catwater')return tapBowl(tap);
  if(tap==='fish')return openFishing();if(tap==='forest')return openForest();if(tap==='chest')return openChest();if(tap==='rainbow')return toast('Радуга! Скупщик сегодня платит на 20% больше')}
 function tapObj(o){if(!o)return;const w=tutWait();
  if(!S.done&&o!==tutBed())return;

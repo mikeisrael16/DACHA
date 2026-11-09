@@ -216,3 +216,9 @@ input.nameIn{width:100%!important;margin-bottom:14px!important}
 #flight .cl:before{width:90px;height:90px;left:30px;top:-45px}#flight .cl:after{width:70px;height:70px;left:100px;top:-30px}
 #flight .c1{width:230px;top:15%;left:80%}#flight .c2{width:300px;top:55%;left:60%;animation-duration:3s}#flight .c3{width:200px;top:70%;left:100%}
 @keyframes cld{to{transform:translateX(-1400px)}}
+.obj.wild .soil{background:#4f7d2c}
+.wtuft{position:absolute;transform:translate(-50%,-100%);pointer-events:none;animation:sway 2.6s ease-in-out infinite;transform-origin:50% 100%}
+.wtuft:nth-child(2n){animation-delay:-1.2s}
+@keyframes sway{0%,100%{transform:translate(-50%,-100%) rotate(-4deg)}50%{transform:translate(-50%,-100%) rotate(4deg)}}
+#tractor{position:absolute;transform:translate(-50%,-100%);width:170px;pointer-events:auto;cursor:pointer;transition:left 1.6s ease-in-out,top 1.6s ease-in-out}
+#tractor img{width:100%;display:block;filter:drop-shadow(0 6px 6px rgba(0,0,0,.3))}

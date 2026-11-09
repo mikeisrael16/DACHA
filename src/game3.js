@@ -34,7 +34,7 @@ view.addEventListener('wheel',e=>{e.preventDefault();const p=toStage(e.clientX,e
 
 /* ================= STATE ================= */
 let uid=1;
-function newCropObj(kind,z,c,r,rot){return{id:'o'+(uid++)+'_'+Math.floor(Math.random()*1e4),kind,z,c,r,rot:rot||0,state:'weeds',crop:null,fert:false,frac:0,waterIdx:0,total:0,speed:1,seg:null,busy:null,bug:null,bugDmgAt:0,pausedF1:null,ripeAt:0}}
+function newCropObj(kind,z,c,r,rot){return{id:'o'+(uid++)+'_'+Math.floor(Math.random()*1e4),kind,z,c,r,rot:rot||0,state:(typeof ilOn==='function'&&ilOn())?'wild':'weeds',crop:null,fert:false,frac:0,waterIdx:0,total:0,speed:1,seg:null,busy:null,bug:null,bugDmgAt:0,pausedF1:null,ripeAt:0}}
 function newPerObj(p,z,c,r){return{id:'o'+(uid++)+'_'+Math.floor(Math.random()*1e4),kind:PER[p][1],p,z,c,r,rot:0,stage:0,seg:null,ripe:false,ripeAt:0,busy:null}}
 function blankInv(){const inv={};Object.keys(ITEMS).forEach(k=>inv[k]=0);return inv}
 function newState(){const inv=blankInv();const fac={},ani={};Object.keys(FAC).forEach(f=>fac[f]={cap:1,slots:[]});ANI_IDS.forEach(k=>ani[k]=[]);inv.seed_potato=1;inv.fert=1;
@@ -59,10 +59,11 @@ function level0(xp){let n=1;while(xp>=xpFor(n+1))n++;return n}
 const level=()=>level0(S.xp);
 const hard=()=>level()>=10?1.25+0.04*(level()-10):1;      // time multiplier from level 10
 const pricey=()=>level()>=10?1.2+0.03*(level()-10):1;     // cost multiplier from level 10
-const tm=()=>(1+0.03*(level()-1))*hard();
+const tm=()=>(1+0.03*(level()-1))*hard()*(typeof ilOn==='function'&&ilOn()?2:1);
 const cost=c=>Math.round(c*pricey());
 const tutOn=()=>!S.done;
 const D={
+ weed:()=>WT[S.wt||1][2]*tm()*1000,
  dig:()=>(tutOn()?3:6)*Math.pow(.8,S.upg.shovel)*tm()*1000,
  plant:()=>(tutOn()?2:3)*Math.pow(.85,S.upg.shovel)*tm()*1000,
  water:()=>(tutOn()?2:3)*tm()*1000,

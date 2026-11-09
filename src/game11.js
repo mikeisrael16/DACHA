@@ -84,6 +84,7 @@ const IL_STEPS=[
 let DRIP_LVL=999;
 function setLvl(id,L){if(ANN[id])ANN[id][1]=L;if(PER[id])PER[id][2]=L;for(const f in FAC)if(FAC[f].rec[id])FAC[f].rec[id][0]=L;if(ANIM[id]&&ANIM[id].loc==='il')ANIM[id].lvl=L;if(id==='drip')DRIP_LVL=L}
 function ilSetup(){const on=ilOn(),B=on?(S.ilBase||level()):0;
+ if(on&&!S.wildFix){S.wildFix=1;S.wt=S.wt||0;S.objs.forEach(o=>{if(isCropObj(o)&&(o.state==='weeds'||o.state==='used'))o.state='wild'})}
  IL_STEPS.forEach(([st,ids])=>ids.forEach(id=>{if(id==='coop'||id==='chicken')return;setLvl(id,on?B+st:999)}));
  ANIM.chicken.lvl=on?B+4:20;if(FIX.coop)FIX.coop.lvl=on?B+4:20}
 function ilFeatures(){const B=S.ilBase,out=[];
@@ -99,7 +100,7 @@ function makeIL(old){const L=lvlOfXp(old.xp),s=newState();const ru=JSON.parse(JS
   stats:old.stats||s.stats,daily:old.daily||s.daily,seenVer:old.seenVer,rod2:!!old.rod2,holGift:old.holGift||{},loc:'il',ilBase:L,orch:1,moved:0,orchMoved:0,catFixed:1,ilArrive:1,ru,firstPotato:false,lastSeen:now()});
  Object.assign(s.ui,{coins:true,xp:true,store:true,shop:true,board:true,quest:true});
  if(old.cat&&!old.cat.gone)s.cat=Object.assign({},old.cat,{food:now()+864e5,water:now()+864e5});else s.cat=old.cat||null;
- s.objs=[newCropObj('bed',0,0,0,0),newCropObj('bed',0,3,0,0),newCropObj('bed',0,0,2,0),newCropObj('bed',0,3,2,0),newCropObj('gh',7,0,0,0)];
+ s.objs=[newCropObj('bed',0,0,0,0),newCropObj('bed',0,3,0,0),newCropObj('bed',0,0,2,0),newCropObj('bed',0,3,2,0),newCropObj('gh',7,0,0,0)];s.objs.forEach(o=>o.state='wild');s.wt=0;s.wildFix=1;s.tips.il_slow=1;
  ANN_IDS.forEach(id=>{if(!isIL(id)&&L>=ANN[id][1])s.tips['crop_'+id]=1});PER_IDS.forEach(id=>{if(!isIL(id)&&L>=PER[id][2])s.tips['per_'+id]=1});
  Object.assign(s.inv,{seed_il_tomato:2,seed_il_cucumber:2,seed_il_mint:2});s.orders=[];s.quests=[];return s}
 
@@ -111,13 +112,15 @@ function flyToIsrael(){const f=$('flight');f.classList.add('on');f.querySelector
  setTimeout(()=>{const s=makeIL(S);S=s;save();startGame(s);setTimeout(()=>f.classList.remove('on'),900)},3600)}
 
 /* ---------- Arrival & Svetlana ---------- */
-function ilArrival(){if(!S.ilArrive)return;S.ilArrive=0;save();placeDavid(0);
+function ilArrival(){if(!S.ilArrive){if(!S.tips.il_slow){S.tips.il_slow=1;save();sayLater([[8,'Мама, ты заметила? В Израиле всё делается не спеша. Теперь всё растёт, готовится и делается примерно в два раза дольше — савланут!'],[6,'А ещё на грядках снова вылезли сорняки. Прополи их инструментом из магазина (вкладка «Улучшения»): рыхлитель, грабли или тяпка — каждый следующий быстрее.'],[5,'А если накопишь 10 000 монет — купи трактор. Он сам будет вскапывать все грядки!']],[2370,1000,.55])}return}S.ilArrive=0;save();placeDavid(0);
  sayLater([[0,'Мама, ты приехала! Как я рада! Добро пожаловать в Израиль — на нашу дачу в мошаве, в Галилее.'],
   [6,'Честно, я совсем всё запустила: работа, Давид… Остались всего четыре заросшие грядки и одна старая теплица.'],
   [1,'Зато места тут очень много! Большое поле — для грядок, каменный двор — для теплиц, луг справа — для сада, а внизу — место для мастерских.']],[2370,1050,.55]);
  sayLater([[3,'Только запомни главное: тут бывает засуха. Тогда над грядками, которые ждут полива, загорается красная капля с таймером.'],
   [6,'Не успеешь полить за 20 минут — урожай засохнет! В теплицах засухи не бывает, а позже мы проведём капельный полив.']],[1980,860,.85]);
- sayLater([[2,'Вот тебе 200 монет и немного семян: черри-томаты, огурчики и мята. Из них на кухне делают израильский салат и лимонад!'],
+ sayLater([[8,'И ещё: в Израиле всё делается не спеша. Всё растёт, готовится и делается примерно в два раза дольше, чем дома. Савланут — терпение!'],
+  [6,'А грядки совсем заросли сорняками. Сначала их надо прополоть: купи в магазине ручной рыхлитель (вкладка «Улучшения»), а потом вскопай лопатой.'],
+  [2,'Вот тебе 200 монет и немного семян: черри-томаты, огурчики и мята. Из них на кухне делают израильский салат и лимонад!'],
   [5,'С каждым новым уровнем я буду показывать что-то новое: местные овощи, деревья, животных и рецепты.']]);
  sayLater([[2,'А вот и Давид! Он целыми днями играет во дворе, а ночью уходит спать в дом. Нажми на него — он так ждал бабушку!']],[DAV.x,DAV.y-120,1],()=>{S.tips.il_intro=1;save();camHome(true)})}
 
@@ -157,3 +160,20 @@ function wither(o){const n=ANN[o.crop]?ANN[o.crop][0]:'урожай';Object.assi
 function dripItem(){if(!ilOn()||!vis(DRIP_LVL))return[];const ok=level()>=DRIP_LVL;
  return[{k:'drip',name:'Капельный полив',desc:ok?'Грядки на улице больше не сохнут в засуху и растут как обычно':'Откроется на уровне '+DRIP_LVL,img:IMG.i_can,cost:cost(900),lock:!ok,maxed:!!S.upg.drip,btn:S.upg.drip?'Есть ✔':null,
   act:()=>{S.upg.drip=1;SND.level();toast('Капельный полив проведён! Засуха грядкам больше не страшна');renderAllObjs();save()}}]}
+
+/* ---------- v3.1: weeding tools & tractor ---------- */
+const WT=[null,['Ручной рыхлитель',120,40,'t_cult'],['Грабли',600,20,'t_rake'],['Тяпка',1800,8,'t_hoe']];
+const wtImg=()=>WT[S&&S.wt?S.wt:1][3];
+function wildHTML(rot){const pts=rot?[[.25,.2],[.7,.18],[.3,.48],[.75,.5],[.25,.8],[.7,.82],[.5,.65]]:[[.12,.35],[.4,.3],[.68,.35],[.9,.4],[.2,.85],[.5,.82],[.8,.88],[.32,.6]];
+ return pts.map(([u,v],i)=>`<div class="wtuft" style="left:${u*100}%;top:${v*100}%"><svg viewBox="0 0 40 46" width="${i%2?42:52}"><path d="M20 44 C18 30 8 24 4 14 M20 44 C20 28 16 12 18 2 M20 44 C22 30 30 22 36 12 M20 44 C24 34 34 32 38 26 M20 44 C16 36 6 34 2 30" stroke="#3d6e1f" stroke-width="3.2" fill="none" stroke-linecap="round"/>${i%3===0?'<circle cx="18" cy="4" r="4.5" fill="#f4d03f" stroke="#b7950b" stroke-width="1.2"/>':''}</svg></div>`).join('')}
+function toolItems(){if(!ilOn())return[];const a=[1,2,3].map(n=>{const W=WT[n],own=(S.wt||0)>=n;return{k:'wt'+n,name:W[0],desc:`Прополка сорняков: ~${fmt(W[2]*tm()*1000)} на грядку`+(n>1?' · быстрее':''),img:IMG[W[3]],cost:cost(W[1]),maxed:own,btn:own?'Есть ✔':null,lock:n>(S.wt||0)+1,
+  act:()=>{S.wt=n;SND.level();toast(W[0]+' куплен! Нажми на заросшую грядку, чтобы прополоть');renderAllObjs();save()}}});
+ a.push({k:'tractor',name:'Трактор',desc:'Сам вскапывает все свободные грядки на поле',img:IMG.t_tractor,cost:10000,maxed:!!S.tractor,btn:S.tractor?'Есть ✔':null,act:()=>{S.tractor=1;SND.level();toast('Трактор куплен! Теперь он сам вскапывает грядки');tractorTick(now());save()}});return a}
+const TRP=[1640,1190];const TR={target:null,doneAt:0,idleAt:0,home:true};
+function trEl(){let el=$('tractor');if(!el){el=document.createElement('div');el.id='tractor';el.dataset.tap='tractor';el.innerHTML=`<img src="${IMG.t_tractor}">`;el.style.left=TRP[0]+'px';el.style.top=TRP[1]+'px';el.style.zIndex=TRP[1];$('objs').appendChild(el);TR.home=true;TR.target=null}return el}
+function tractorTick(t){if(!ilOn()||!S.tractor)return;const el=trEl();
+ if(TR.target){if(t<TR.doneAt)return;const o=objById(TR.target);TR.target=null;TR.idleAt=t;
+  if(o&&!o.busy&&(o.state==='used'||o.state==='weeds')){o.state='dug';renderObj(o);const R=rectOf(o);burst(R.x+R.w/2,R.y+R.h/2,14,['#a8743f','#7a4e26','#c49a6c'],100,[6,12]);SND.dig();addXp(1,R.x+R.w/2,R.y);stat('dig');save()}}
+ const nx=S.objs.find(o=>o.kind==='bed'&&!o.busy&&(o.state==='used'||o.state==='weeds'));
+ if(nx){const R=rectOf(nx);TR.target=nx.id;TR.doneAt=t+2600;TR.home=false;el.style.left=(R.x+R.w/2)+'px';el.style.top=(R.y+R.h*.8)+'px';el.style.zIndex=Math.round(R.y+R.h+5);return}
+ if(!TR.home&&t-TR.idleAt>4000){TR.home=true;el.style.left=TRP[0]+'px';el.style.top=TRP[1]+'px';el.style.zIndex=TRP[1]}}

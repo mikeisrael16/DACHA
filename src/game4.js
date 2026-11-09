@@ -61,8 +61,8 @@ const objEls={};
 function renderObj(o,anim){let d=objEls[o.id];if(!d){d=buildObjEl(o);objEls[o.id]=d;$('objs').appendChild(d)}
  const R=rectOf(o);d.style.left=R.x+'px';d.style.top=R.y+'px';d.style.width=R.w+'px';d.style.height=R.h+'px';d.style.zIndex=Math.round(R.y+R.h);
  if(o.kind==='gh'){const k=o.rot+':'+S.ghLvl+':'+R.w;if(d.dataset.gk!==k){d.dataset.gk=k;const ov=d.querySelector('.ghov');if(ov)ov.outerHTML=ghSVG(R.w,R.h,o.rot,S.ghLvl);else d.insertAdjacentHTML('beforeend',ghSVG(R.w,R.h,o.rot,S.ghLvl))}}
- if(o.kind==='bed'||o.kind==='gh'){d.className='obj '+(o.kind==='gh'?'gh ':'')+(o.rot?'v':'h')+(o.state==='weeds'?' weeds':o.state==='used'?' used':'')+((o.state==='planted'&&(o.seg||isRipe(o)))?' wet':'')+(ilOn()&&S.upg.drip&&o.kind==='bed'?' drip':'');
-  const pl=d.querySelector('.pls');pl.innerHTML='';const st=stageOf(o);
+ if(o.kind==='bed'||o.kind==='gh'){d.className='obj '+(o.kind==='gh'?'gh ':'')+(o.rot?'v':'h')+(o.state==='weeds'?' weeds':o.state==='wild'?' weeds wild':o.state==='used'?' used':'')+((o.state==='planted'&&(o.seg||isRipe(o)))?' wet':'')+(ilOn()&&S.upg.drip&&o.kind==='bed'?' drip':'');
+  const pl=d.querySelector('.pls');pl.innerHTML='';const st=stageOf(o);if(o.state==='wild')pl.innerHTML=wildHTML(o.rot);
   if(o.state==='planted'){const sp=o.rot?[[.28,.3],[.72,.3],[.28,.62],[.72,.62],[.28,.94],[.72,.94]]:[[.18,.45],[.5,.45],[.82,.45],[.18,.92],[.5,.92],[.82,.92]];
    const pw=o.rot?66:72;
    sp.forEach(([u,v],j)=>{const e=document.createElement('div');e.className='pl'+(st===3?' ripe':'')+(anim?' pop':'');e.style.left=u*R.w+'px';e.style.top=v*R.h+'px';e.style.animationDelay=(j*.15)+'s';
@@ -78,8 +78,8 @@ function renderStatus(o,force){let el=bubEls[o.id];if(!el){el=document.createEle
  const t=now(),pct=x=>Math.round(Math.min(1,Math.max(0,x))*100);let key,html;
  const name=isCropObj(o)?(o.crop?ANN[o.crop][0]:''):PER[o.p][0];
  if(o.bug&&!o.busy){key='bug';html=`<div class="pbar bugbar" style="border-color:#c0392b"><div class="bugico" style="width:46px;height:40px">${BUGSVG[o.bug]}</div><div><div class="lb" style="color:#c0392b">${BUGS[o.bug][0]}!</div><div class="lb" style="font-size:13px">Нажми и примени средство</div></div></div>`}
- else if(o.busy){const f=(t-o.busy.t0)/(o.busy.t1-o.busy.t0);const icon={dig:IMG.i_shovel,plant:o.busy.data?IMG[o.busy.data+'_seed']:IMG.i_shovel,water:IMG.i_can}[o.busy.type];
-  key='busy';html=`<div class="pbar act"><img src="${icon}"><div><div class="lb">${{dig:'Вскапываем…',plant:'Сажаем…',water:'Поливаем…'}[o.busy.type]}</div><div class="track"><div class="fill" style="width:${pct(f)}%"></div></div></div><div class="tm">${fmt(o.busy.t1-t)}</div></div>`}
+ else if(o.busy){const f=(t-o.busy.t0)/(o.busy.t1-o.busy.t0);const icon={weed:IMG[wtImg()],dig:IMG.i_shovel,plant:o.busy.data?IMG[o.busy.data+'_seed']:IMG.i_shovel,water:IMG.i_can}[o.busy.type];
+  key='busy';html=`<div class="pbar act"><img src="${icon}"><div><div class="lb">${{weed:'Пропалываем…',dig:'Вскапываем…',plant:'Сажаем…',water:'Поливаем…'}[o.busy.type]}</div><div class="track"><div class="fill" style="width:${pct(f)}%"></div></div></div><div class="tm">${fmt(o.busy.t1-t)}</div></div>`}
  else if(isRipe(o)){key='ripe';html=`<div class="b"><img src="${IMG[(o.crop||o.p)+'_crop']}"></div>`;el.classList.add('ready')}
  else if((isCropObj(o)&&o.state==='planted')||!isCropObj(o)){
   if(needsWater(o)&&dryLeft(o)!=null){key='dry';html=`<div class="pbar drybar"><svg viewBox="0 0 24 24" width="40" height="40"><path d="M12 2C9 7 5 11 5 15a7 7 0 0014 0c0-4-4-8-7-13z" fill="#e74c3c"/></svg><div><div class="lb" style="color:#c0392b">Засуха! Полей</div><div class="lb" style="font-size:14px">иначе засохнет через</div></div><div class="tm">${fmt(dryLeft(o))}</div></div>`}
@@ -87,6 +87,7 @@ function renderStatus(o,force){let el=bubEls[o.id];if(!el){el=document.createEle
   else if(o.seg){const f=isCropObj(o)?curFrac(o):(t-o.seg.t0)/(o.seg.t1-o.seg.t0);const lab=isCropObj(o)?(o.seg.f1>=1?'созреет через':'полив через'):(o.stage===0?'вырастет через':'урожай через');
    key='grow';html=`<div class="pbar"><img src="${isCropObj(o)?IMG['p_'+o.crop+'_plant']:IMG[o.p+'_crop']}"><div><div class="lb">${name}${o.fert?' ✨':''} · ${lab}</div><div class="track"><div class="fill" style="width:${pct(f)}%"></div></div></div><div class="tm">${fmt(o.seg.t1-t)}</div></div>`}
   else{key='none';html=''}}
+ else if(o.state==='wild'){key='wild';html=S.done?`<div class="b" style="border-color:#6a8f2a"><img src="${IMG[wtImg()]}"></div>`:''}
  else if(o.state==='used'||o.state==='weeds'){key='dig';html=S.done?`<div class="b" style="border-color:#a8743f"><img src="${IMG.i_shovel}"></div>`:''}
  else{key='seed';html=S.done?`<div class="b" style="border-color:#5fb53a"><img src="${IMG.potato_seed}"></div>`:''}
  if(key!=='ripe')el.classList.remove('ready');
