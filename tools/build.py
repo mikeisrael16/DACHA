@@ -16,7 +16,7 @@ head='''<!DOCTYPE html>
 <link href="https://fonts.googleapis.com/css2?family=Rubik:wght@500;700;800;900&display=swap" rel="stylesheet">
 '''
 css=open(S+'old_style.css').read()+open(S+'new.css').read()
-js=''.join(open(S+f).read() for f in ['game1.js','game2.js','old_audio.js','game3.js','game4.js','game5.js','game6.js','game7.js','game8.js','game10.js','game9.js'])
+js=''.join(open(S+f).read() for f in ['game1.js','game2.js','old_audio.js','game3.js','game4.js','game5.js','game6.js','game7.js','game8.js','game10.js','game11.js','game9.js'])
 s=head+'<style>'+css+'</style>\n</head>\n<body>\n'+open(S+'body.html').read()+'<script>\n'+js+'\n</script>\n</body>\n</html>\n'
 def uri(n):
     for ext,mt in (('webp','image/webp'),('jpg','image/jpeg')):

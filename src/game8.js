@@ -51,7 +51,7 @@ function cure(o,anim){if(!o.bug)return;o.bug=null;if(o.pausedF1!=null){const f1=
 function spawnBird(o,scared){const R=rectOf(o);const x=R.x+R.w*(.2+Math.random()*.6),y=R.y+R.h*(o.kind==='bed'?.6:.2)-(o.kind==='tree'?120:o.kind==='bush'?50:0);
  const el=document.createElement('div');el.className='bird';el.dataset.tap='bird:'+o.id;el.innerHTML=BIRDSVG;el.style.left=x+'px';el.style.top=y+'px';$('birds').appendChild(el);
  el.animate([{transform:'translate(-380px,-420px) scale(.7)'},{transform:'translate(0,0)'}],{duration:1400,easing:'cubic-bezier(.2,.7,.3,1)'});SND.caw();
- if(scared){birds[o.id]={el,scared:true};setTimeout(()=>{if(birds[o.id]&&birds[o.id].el===el){floatText(2560,1000,'Пугало прогнало ворону!','#fff');shooBird(o.id,false)}},2200)}
+ if(scared){birds[o.id]={el,scared:true};setTimeout(()=>{if(birds[o.id]&&birds[o.id].el===el){floatText(SCAREP[0],SCAREP[1]-200,'Пугало прогнало ворону!','#fff');shooBird(o.id,false)}},2200)}
  else{birds[o.id]={el,eatAt:now()+15000};tip('bird',[[4,'Ворона прилетела клевать урожай! Скорее нажми на неё. А лучше поставь пугало — оно сторожит 12 часов, даже когда ты не в игре.']])}}
 function shooBird(id,byTap){const b=birds[id];if(!b)return;delete birds[id];const el=b.el;el.dataset.tap='';el.animate([{transform:'translate(0,0)'},{transform:'translate(420px,-460px) scale(.6)'}],{duration:900,easing:'ease-in',fill:'forwards'}).onfinish=()=>el.remove();
  if(byTap){SND.caw();stat('shoo');const o=objById(id);if(o){const R=rectOf(o);addXp(2,R.x+R.w/2,R.y)}save()}}
@@ -60,7 +60,7 @@ function birdEat(id){const o=objById(id);shooBird(id,false);if(!o)return;const R
  else{const P=PER[o.p];const half=P[5]*500*tm();if(o.ripe){o.ripe=false;o.seg={t0:now()-half,t1:now()+half}}else if(o.seg){o.seg.t1+=half/2}}
  renderObj(o);SND.caw();floatText(R.x+R.w/2,R.y,'Ворона склевала урожай!','#ff8a7a');save()}
 function clearBirds(){for(const k in birds){birds[k].el.remove();delete birds[k]}}
-function renderScare(){let el=$('scarecrow');if(!el){el=document.createElement('div');el.id='scarecrow';el.className='fix';el.dataset.tap='scare';el.style.cssText='left:2580px;top:1200px;width:120px;z-index:1200';el.innerHTML='<img>';$('objs').appendChild(el)}
+function renderScare(){let el=$('scarecrow');if(!el){el=document.createElement('div');el.id='scarecrow';el.className='fix';el.dataset.tap='scare';el.style.cssText=`left:${SCAREP[0]}px;top:${SCAREP[1]}px;width:120px;z-index:${SCAREP[1]}`;el.innerHTML='<img>';$('objs').appendChild(el)}
  if(!S.scareEver||!S.done){el.style.display='none';return}el.style.display='';const rem=S.scareUntil-now();const st=rem>4*3600000?0:rem>0?1:2;const src=IMG['p_scare'+st];const im=el.querySelector('img');if(im.getAttribute('src')!==src)im.setAttribute('src',src)}
 
 /* ================= THIEVES (lvl 4) ================= */
@@ -68,7 +68,7 @@ const thieves={};const thiefOn=()=>S.done&&level()>=THIEF_LVL;const thiefRisk=()
 function tickThieves(t){if(!thiefOn())return;for(const k in thieves){if(t>=thieves[k].stealAt)steal(k)}
  if(!S.nextThiefAt){S.nextThiefAt=t+60000;return}if(t<S.nextThiefAt)return;S.nextThiefAt=t+60000+Math.random()*60000;
  const cand=S.objs.filter(o=>o.kind!=='gh'&&isRipe(o)&&o.ripeAt&&t-o.ripeAt>10*60000&&!thieves[o.id]);if(!cand.length||Math.random()>.6)return;const o=pick(cand);
- if(Math.random()>thiefRisk()){floatText(2560,1000,S.fence?'Высокий забор остановил воришку!':'Камера спугнула воришку!','#fff');return}spawnThief(o)}
+ if(Math.random()>thiefRisk()){floatText(SCAREP[0],SCAREP[1]-200,S.fence?'Высокий забор остановил воришку!':'Камера спугнула воришку!','#fff');return}spawnThief(o)}
 function spawnThief(o){const R=rectOf(o);const el=document.createElement('div');el.className='thief';el.dataset.tap='thief:'+o.id;el.innerHTML=THIEFSVG;el.style.left=(R.x+R.w+20)+'px';el.style.top=(R.y+R.h)+'px';$('thieves').appendChild(el);
  el.animate([{transform:`translate(${2000-R.x}px,-60px)`},{transform:'translate(0,0)'}],{duration:2600,easing:'ease-out'});thieves[o.id]={el,stealAt:now()+14000};SND.fail();toast('Воришка лезет за урожаем! Нажми на него!');
  tip('thief',[[4,'Ой, воришка! Если долго не собирать спелый урожай, соседи-хитрецы его утащат.'],[3,'Нажми на вора, чтобы прогнать. А для надёжности купи камеру и высокий забор во вкладке «Защита».']])}

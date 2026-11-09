@@ -140,7 +140,7 @@ function handleTap(target,wp){if(placing){placeAt(wp);return}
  if(tap.startsWith('fix:'))return tapFix(tap.slice(4));
  if(tap==='house')return openFac('kitchen');
  if(tap==='scare')return toast(S.scareUntil>now()?'Пугало сторожит ещё '+fmt(S.scareUntil-now()):'Пугало развалилось — поставь новое (Магазин → Защита)');
- if(tap==='cat')return petCat();if(tap==='catfood'||tap==='catwater')return tapBowl(tap);
+ if(tap==='david')return tapDavid();if(tap==='cat')return petCat();if(tap==='catfood'||tap==='catwater')return tapBowl(tap);
  if(tap==='fish')return openFishing();if(tap==='forest')return openForest();if(tap==='chest')return openChest();if(tap==='rainbow')return toast('Радуга! Скупщик сегодня платит на 20% больше')}
 function tapObj(o){if(!o)return;const w=tutWait();
  if(!S.done&&o!==tutBed())return;

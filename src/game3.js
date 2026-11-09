@@ -8,7 +8,7 @@ let guideRaf=0;
 function applyCam(anim){const rel=cam.s/minS();$('world').style.setProperty('--bz',Math.max(.8,Math.min(1.35,1.3/Math.pow(rel,.7))).toFixed(3));for(const el of [$('world'),$('guideL')]){el.classList.toggle('anim',!!anim);el.style.transform=`translate(${cam.x}px,${cam.y}px) scale(${cam.s})`}
  if(!guideRaf)guideRaf=requestAnimationFrame(()=>{guideRaf=0;if(S&&!S.done)updateGuide()})}
 function camTo(wx,wy,s,anim){cam.s=s;cam.x=SW/2-wx*s;cam.y=SH/2-wy*s;clampCam();applyCam(anim)}
-function camHome(anim){camTo(1560,960,Math.max(minS(),.78),anim)}
+function camHome(anim){camTo(HOMEC[0],HOMEC[1],Math.max(minS(),HOMEC[2]),anim)}
 function zoomAt(sx,sy,ns){const wx=(sx-cam.x)/cam.s,wy=(sy-cam.y)/cam.s;cam.s=Math.min(maxS(),Math.max(minS(),ns));cam.x=sx-wx*cam.s;cam.y=sy-wy*cam.s;clampCam();applyCam(false)}
 const s2w=([x,y])=>[(x-cam.x)/cam.s,(y-cam.y)/cam.s];
 function elStage(el){const r=el.getBoundingClientRect();return toStage(r.left+r.width/2,r.top+r.height/2)}
@@ -67,7 +67,7 @@ const D={
  plant:()=>(tutOn()?2:3)*Math.pow(.85,S.upg.shovel)*tm()*1000,
  water:()=>(tutOn()?2:3)*tm()*1000,
  grow:c=>((c==='potato'&&S.firstPotato)?50:ANN[c][2]*tm()*Math.pow(.88,S.upg.soil))*1000,
- refill:()=>60000*Math.pow(.75,S.upg.gutter)*(weather()==='heat'?1.4:1)};
+ refill:()=>60000*Math.pow(.75,S.upg.gutter)*(weather()==='heat'?1.4:weather()==='drought'?2:1)};
 const waterMax=()=>3+3*S.upg.cap;
 const canMax=()=>1+S.upg.can;
 function fmt(ms){let s=Math.max(0,Math.ceil(ms/1000));const h=Math.floor(s/3600);s-=h*3600;const m=Math.floor(s/60);return(h?h+':'+String(m).padStart(2,'0'):m)+':'+String(s%60).padStart(2,'0')}

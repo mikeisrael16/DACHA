@@ -1,7 +1,7 @@
 
 /* ================= FIXED BUILDINGS & ANIMALS ================= */
 const fixEls={};
-function renderFix(){for(const k in FIX){const F=FIX[k];let el=fixEls[k];if(!el){el=document.createElement('div');el.className='fix';el.dataset.tap='fix:'+k;el.innerHTML=F.hid?`<div style="width:${F.w}px;height:${F.h}px"></div><div class="lk sign" style="top:auto;bottom:-40px">💰 ${F.n}</div>`:`<img src="${IMG['b_'+k]}"><div class="lk"></div>`+(k==='fair'?`<div class="lk sign fairlbl">🎪 Ярмарка</div>`:'');el.style.left=F.x+'px';el.style.top=F.y+'px';el.style.width=F.w+'px';el.style.zIndex=F.y;$('objs').appendChild(el);fixEls[k]=el}
+function renderFix(){for(const k in FIX){const F=FIX[k];let el=fixEls[k];if(!el){el=document.createElement('div');el.className='fix';el.dataset.tap='fix:'+k;el.innerHTML=F.hid?`<div style="width:${F.w}px;height:${F.h}px"></div><div class="lk sign" style="${F.lt?'':'top:auto;bottom:-40px'}">💰 ${F.n}</div>`:`<img src="${IMG['b_'+k]}"><div class="lk"></div>`+(k==='fair'?`<div class="lk sign fairlbl">🎪 Ярмарка</div>`:'');el.style.left=F.x+'px';el.style.top=F.y+'px';el.style.width=F.w+'px';el.style.zIndex=F.y;$('objs').appendChild(el);fixEls[k]=el}
   const built=!!S.build[k];if(!built&&!vis(F.lvl)){el.style.display='none';continue}if(k==='fair')el.querySelector('.fairlbl').style.display=built?'':'none';if(F.hid){el.style.display=S.done||S.tut>=TI.finalSay?'':'none';continue}el.classList.toggle('locked',!built);const lk=el.querySelector('.lk');lk.style.display=built?'none':'';lk.textContent=level()>=F.lvl?'Построить · '+cost(F.cost):'🔒 уровень '+F.lvl;el.style.display=S.done||k==='market'?'':'none'}
  renderScare();renderSpots()}
 function tapFix(k){const F=FIX[k];
@@ -21,8 +21,8 @@ function renderAnimals(){ANI_IDS.forEach(a=>{const A=ANIM[a];(S.ani[a]||[]).forE
 const aBub={};
 function aniStatus(a,i,x){const id=a+i;let el=aBub[id];const A=ANIM[a],p=A.pos[i];if(!el){el=document.createElement('div');el.className='bb';el.style.left=p[0]+'px';el.style.top=(p[1]-A.w*.72)+'px';el.style.transform='translate(-50%,-100%) scale(calc(var(--bz,1)*.9))';$('bubs').appendChild(el);aBub[id]=el}
  let key,html;const t=now();
- if(x.state==='ready'){key='r';html=`<div class="b" style="border-color:#f1c40f"><img src="${IMG[A.prod]}"></div>`}
- else if(x.state==='hungry'){key='h';html=`<div class="b" style="border-color:#e67e22"><img src="${IMG[A.feeds[0]]}"></div>`}
+ if(x.state==='ready'){key='r';html=`<div class="b" style="border-color:#f1c40f"><img src="${iImg(A.prod)}"></div>`}
+ else if(x.state==='hungry'){key='h';html=`<div class="b" style="border-color:#e67e22"><img src="${iImg(A.feeds[0])}"></div>`}
  else{key='e';html=`<div class="pbar"><div class="track" style="width:120px"><div class="fill" style="width:${Math.round(Math.min(1,(t-x.t0)/(x.t1-x.t0))*100)}%"></div></div><div class="tm" style="font-size:20px">${fmt(x.t1-t)}</div></div>`}
  if(el.dataset.k!==key){el.dataset.k=key;el.innerHTML=html}else if(key==='e'){el.querySelector('.fill').style.width=Math.round(Math.min(1,(t-x.t0)/(x.t1-x.t0))*100)+'%';el.querySelector('.tm').textContent=fmt(x.t1-t)}}
 function tapAnimal(a,i){const x=(S.ani[a]||[])[i];if(!x)return;const A=ANIM[a];
@@ -50,7 +50,7 @@ function renderFacUI(){const f=curFac,F=S.fac[f];const box=document.createElemen
  if(F.cap<3){const pr=cost(F.cap===1?250:600);const d=document.createElement('div');d.className='kslot';d.innerHTML=`<div style="flex:1">Ещё одно место<br><span style="font-size:14px">готовить больше сразу</span></div><div class="btn orange ${S.coins<pr?'off':''}">${pr} ${coinSvg}</div>`;d.querySelector('.btn').onclick=()=>{if(!spend(pr))return;F.cap++;SND.level();save();renderFacUI()};box.appendChild(d)}
  $('kSlots').innerHTML='';$('kSlots').appendChild(box);
  const cards=$('kCards');cards.innerHTML='';const free=F.slots.filter(Boolean).length<F.cap;
- Object.entries(FAC[f].rec).forEach(([id,r])=>{if(!vis(r[0]))return;const ok=level()>=r[0],can=canCook(f,id);
+ Object.entries(FAC[f].rec).forEach(([id,r])=>{if(!vis(r[0])||!locOk(id))return;const ok=level()>=r[0],can=canCook(f,id);
   const need=Object.entries(r[1]).map(([k,n])=>`<span class="${(S.inv[k]||0)>=n?'':'miss'}"><img src="${iImg(k)}">${S.inv[k]||0}/${n}</span>`).join('');
   const d=document.createElement('div');d.className='card'+(ok?'':' locked');d.style.width='200px';
   d.innerHTML=`${ok?'':'<div class="soon">🔒 ур. '+r[0]+'</div>'}${S.inv[id]?`<div class="own">${S.inv[id]}</div>`:''}<img src="${IMG[PROD[id][2]]}" style="width:120px;height:120px"><div class="cn" style="min-height:30px;font-size:17px">${PROD[id][0]}${r[3]>1?' ×'+r[3]:''}</div><div class="need">${need}</div><div class="cd">⏱ ${fmt(r[2]*1000*tm())} · цена ~${PROD[id][1]}</div><div class="btn ${ok&&can&&free?'':'off'}">Готовить</div>`;
@@ -70,7 +70,7 @@ function cook(f,id){const r=FAC[f].rec[id],F=S.fac[f];if(level()<r[0]||!canCook(
  Object.entries(r[1]).forEach(([k,n])=>takeItem(k,n));F.slots[i]={r:id,t0:now(),t1:now()+r[2]*1000*tm()};SND.plant();toast('Готовим: '+PROD[id][0]);renderHUD();renderFacUI();save()}
 function collectDish(f,i){const x=S.fac[f].slots[i];if(!x)return;const q=FAC[f].rec[x.r][3];addItem(x.r,q);S.fac[f].slots[i]=null;SND.harvest();stat('cook');stat('cook_'+x.r);
  const c=elStage($('hStore'));floatText(c[0]-40,c[1]+70,'+'+q+' '+PROD[x.r][0],'#fff',true);addXp(Math.round(PROD[x.r][1]/10),fbPos(f)[0],fbPos(f)[1]);bump('hStore');renderFacUI();renderHUD();save()}
-const fbPos=f=>f==='kitchen'?[760,430]:[FIX[f].x,FIX[f].y-FIX[f].w*.95];const kbKey={};
+const fbPos=f=>f==='kitchen'?KITP:[FIX[f].x,FIX[f].y-FIX[f].w*.95];const kbKey={};
 function renderFacBubs(){for(const f in FAC){let el=$('kb_'+f);if(!el){el=document.createElement('div');el.id='kb_'+f;el.className='bb';el.dataset.tap=f==='kitchen'?'house':'fix:'+f;el.style.pointerEvents='auto';el.style.left=fbPos(f)[0]+'px';el.style.top=fbPos(f)[1]+'px';$('kbubs').appendChild(el)}
   if(!facOn(f)){el.style.display='none';continue}el.style.display='';const t=now();const xs=S.fac[f].slots.filter(Boolean);const ready=xs.filter(x=>t>=x.t1);let key,html;
   if(ready.length){key='r';html=`<div class="kb ready"><img src="${IMG[PROD[ready[0].r][2]]}">Готово!</div>`}

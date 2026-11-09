@@ -4,7 +4,7 @@
     <div class="hot" id="hotCont"></div>
     <div class="hot" id="hotNew"></div>
     <div class="note">🌱 Прогресс сохраняется<br>автоматически</div></div>
-    <div class="ver">v2.4</div>
+    <div class="ver">v3.0</div>
     <div class="rbtn" id="tMusic" style="position:absolute;right:20px;top:20px"><svg viewBox="0 0 62 62" id="musIco2"></svg></div>
   </div>
   <div id="game" class="screen">
@@ -57,7 +57,7 @@
       <div id="placeBar"><div class="btn orange" id="pRot">↻ Повернуть</div><div class="btn" id="pOk">✔ Поставить</div><div class="btn orange" id="pNo" style="background:linear-gradient(#ff8a7a,#d63a2a);border-color:#8e1f14">✖</div></div>
       <div id="toast"></div>
     </div>
-    <div id="dlg"><div class="shade"></div><div class="por"><img id="dlgImg" alt=""></div><div class="box"><div class="name">Татьяна</div><div class="txt" id="dlgTxt"></div><div class="next">Далее ▸</div></div></div>
+    <div id="dlg"><div class="shade"></div><div class="por"><img id="dlgImg" alt=""></div><div class="box"><div class="name" id="dlgName">Татьяна</div><div class="txt" id="dlgTxt"></div><div class="next">Далее ▸</div></div></div>
     <div class="modal" id="mOrders"><div class="panel"><div class="ptitle">Доска заказов</div><div class="close" data-close>✕</div><div id="ordersList" class="mlist" style="width:820px"></div></div></div>
     <div class="modal" id="mShop"><div class="panel" style="width:1180px;max-width:96%"><div class="ptitle">Дачный магазин</div><div class="close" data-close id="shopClose">✕</div><div class="tabs" id="shopTabs"></div><div class="cards" id="shopCards"></div></div></div>
     <div class="modal" id="mStore"><div class="panel"><div class="ptitle">Сарай</div><div class="close" data-close>✕</div><div class="inv mlist" id="invList" style="width:800px"></div></div></div>
@@ -73,6 +73,10 @@
     <div class="modal" id="mForest"><div class="panel" style="width:1060px;max-width:96%"><div class="ptitle">Лес</div><div class="close" id="forestClose">✕</div>
       <div id="forestBox"><img id="forestImg" alt=""></div><div class="mtext" id="forestMsg"></div></div></div>
     <div class="modal" id="mFair"><div class="panel"><div class="ptitle">Ярмарка</div><div class="close" data-close>✕</div><div class="qrw" id="fairInfo" style="text-align:center;margin-bottom:10px"></div><div class="mlist" id="fairList"></div></div></div>
+    <div class="modal" id="mLetter"><div class="panel letter"><div class="ptitle">✉️ Письмо из Израиля</div>
+      <div class="lwrap"><img id="letterSv" alt=""><div class="ltxt">Мама, привет!<br><br>Срочно приезжай ко мне в Израиль — мне очень нужна твоя помощь на моей даче. Я совсем не справляюсь: работа, дом, и всё заросло…<br><br>А Давид уже так скучает по бабушке! Каждый день спрашивает, когда ты приедешь.<br><br><b>Целую, твоя Света ❤️</b></div><img id="letterDv" alt=""></div>
+      <div class="row"><div class="btn" id="letterGo" style="font-size:34px;padding:16px 46px">✈️ Отправиться в Израиль</div></div></div></div>
+    <div id="flight"><div class="cl c1"></div><div class="cl c2"></div><div class="cl c3"></div><div class="plane"><svg viewBox="0 0 200 90" width="320" height="144"><path d="M10 52 C40 40 120 36 170 40 C190 42 196 50 180 56 C140 62 60 64 18 60Z" fill="#fff" stroke="#3a6ea5" stroke-width="4"/><path d="M80 44 L118 8 L132 10 L112 46Z" fill="#4a90d9" stroke="#2d5f99" stroke-width="3"/><path d="M84 58 L112 86 L126 84 L112 58Z" fill="#4a90d9" stroke="#2d5f99" stroke-width="3"/><path d="M18 52 L8 26 L22 26 L38 48Z" fill="#4a90d9" stroke="#2d5f99" stroke-width="3"/><g fill="#9fd0ff"><circle cx="132" cy="47" r="4"/><circle cx="118" cy="47" r="4"/><circle cx="104" cy="47" r="4"/><circle cx="90" cy="48" r="4"/><circle cx="76" cy="48" r="4"/></g><path d="M168 44 L182 46 L176 52Z" fill="#3a6ea5"/></svg></div><div class="ftxt">Летим в Израиль к Свете и Давиду…</div></div>
     <div class="modal" id="mMsg"><div class="panel" style="min-width:560px"><div class="ptitle" id="msgTitle">Внимание</div><div class="mtext" id="msgText"></div><div class="row" id="msgBtns"></div></div></div>
   </div>
   <div id="ghost"><img alt=""></div>

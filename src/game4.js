@@ -7,7 +7,7 @@ function sayLater(lines,cam,after){popup(done=>{if(cam)camTo(cam[0],cam[1],cam[2
 let dlgQ=[],dlgCb=null,typing=null,typedFull=false;
 function dialog(lines,cb){dlgQ=lines.slice();dlgCb=cb;$('dlg').classList.add('on');nextLine()}
 function nextLine(){const l=dlgQ.shift();if(!l){$('dlg').classList.remove('on');const c=dlgCb;dlgCb=null;c&&c();return}
- const img=$('dlgImg');if(img.dataset.e!=String(l[0])){img.src=IMG['t'+l[0]];img.dataset.e=l[0];const p=$('dlg').querySelector('.por');p.style.animation='none';void p.offsetWidth;p.style.animation=''}
+ const img=$('dlgImg');if(img.dataset.e!=PORT+l[0]){img.src=IMG[PORT+l[0]]||IMG[PORT+'0'];img.dataset.e=PORT+l[0];const p=$('dlg').querySelector('.por');p.style.animation='none';void p.offsetWidth;p.style.animation=''}
  const txt=$('dlgTxt');txt.textContent='';let i=0;typedFull=false;clearInterval(typing);
  typing=setInterval(()=>{i+=2;txt.textContent=l[1].slice(0,i);if(i%6===0)tone(700+Math.random()*200,.03,'triangle',.03);if(i>=l[1].length){clearInterval(typing);typedFull=true}},20);
  txt.dataset.full=l[1]}
@@ -31,7 +31,7 @@ function curFrac(o){if(!o.seg)return o.frac;const s=o.seg;return s.f0+(s.f1-s.f0
 function isRipe(o){return isCropObj(o)?(o.state==='planted'&&!o.seg&&o.frac>=1&&!o.bug):(o.ripe&&!o.bug)}
 function needsWater(o){return isCropObj(o)?(o.state==='planted'&&!o.seg&&o.frac<1&&!o.busy&&!o.bug):(!o.seg&&!o.ripe&&!o.busy)}
 function stageOf(o){if(!isCropObj(o))return o.ripe?3:o.stage;if(o.state!=='planted')return -1;if(isRipe(o)||(!o.seg&&o.frac>=1))return 3;const f=curFrac(o);return f<.34?0:f<.67?1:2}
-function startSeg(o){const w=WATERS[ANN[o.crop][3]];const f1=w[o.waterIdx-1]!=null?w[o.waterIdx-1]:1;o.seg={f0:o.frac,f1,t0:now(),t1:now()+(f1-o.frac)*o.total*o.speed}}
+function startSeg(o){const w=WATERS[ANN[o.crop][3]];const f1=w[o.waterIdx-1]!=null?w[o.waterIdx-1]:1;o.seg={f0:o.frac,f1,t0:now(),t1:now()+(f1-o.frac)*o.total*o.speed*droughtMul(o)}}
 const WATERS={1:[1],2:[.5,1],3:[.34,.67,1]};
 function sproutSVG(big){return `<svg viewBox="0 0 60 50" width="${big?70:48}" height="${big?58:40}"><ellipse cx="30" cy="46" rx="16" ry="4" fill="rgba(0,0,0,.25)"/><path d="M30 46V24" stroke="#3e8b22" stroke-width="4"/><path d="M30 28q-20-2-22-18q18-2 22 18z" fill="#7cc84a" stroke="#2d6a19" stroke-width="2.5"/><path d="M30 24q16-6 22-20q-18 0-22 20z" fill="#9be36d" stroke="#2d6a19" stroke-width="2.5"/>${big?'<path d="M30 34q-14 4-24-4q12-8 24 4z" fill="#7cc84a" stroke="#2d6a19" stroke-width="2.5"/>':''}</svg>`}
 const PERW={bush:120,tree:200};
@@ -61,7 +61,7 @@ const objEls={};
 function renderObj(o,anim){let d=objEls[o.id];if(!d){d=buildObjEl(o);objEls[o.id]=d;$('objs').appendChild(d)}
  const R=rectOf(o);d.style.left=R.x+'px';d.style.top=R.y+'px';d.style.width=R.w+'px';d.style.height=R.h+'px';d.style.zIndex=Math.round(R.y+R.h);
  if(o.kind==='gh'){const k=o.rot+':'+S.ghLvl+':'+R.w;if(d.dataset.gk!==k){d.dataset.gk=k;const ov=d.querySelector('.ghov');if(ov)ov.outerHTML=ghSVG(R.w,R.h,o.rot,S.ghLvl);else d.insertAdjacentHTML('beforeend',ghSVG(R.w,R.h,o.rot,S.ghLvl))}}
- if(o.kind==='bed'||o.kind==='gh'){d.className='obj '+(o.kind==='gh'?'gh ':'')+(o.rot?'v':'h')+(o.state==='weeds'?' weeds':o.state==='used'?' used':'')+((o.state==='planted'&&(o.seg||isRipe(o)))?' wet':'');
+ if(o.kind==='bed'||o.kind==='gh'){d.className='obj '+(o.kind==='gh'?'gh ':'')+(o.rot?'v':'h')+(o.state==='weeds'?' weeds':o.state==='used'?' used':'')+((o.state==='planted'&&(o.seg||isRipe(o)))?' wet':'')+(ilOn()&&S.upg.drip&&o.kind==='bed'?' drip':'');
   const pl=d.querySelector('.pls');pl.innerHTML='';const st=stageOf(o);
   if(o.state==='planted'){const sp=o.rot?[[.28,.3],[.72,.3],[.28,.62],[.72,.62],[.28,.94],[.72,.94]]:[[.18,.45],[.5,.45],[.82,.45],[.18,.92],[.5,.92],[.82,.92]];
    const pw=o.rot?66:72;
@@ -82,7 +82,8 @@ function renderStatus(o,force){let el=bubEls[o.id];if(!el){el=document.createEle
   key='busy';html=`<div class="pbar act"><img src="${icon}"><div><div class="lb">${{dig:'Вскапываем…',plant:'Сажаем…',water:'Поливаем…'}[o.busy.type]}</div><div class="track"><div class="fill" style="width:${pct(f)}%"></div></div></div><div class="tm">${fmt(o.busy.t1-t)}</div></div>`}
  else if(isRipe(o)){key='ripe';html=`<div class="b"><img src="${IMG[(o.crop||o.p)+'_crop']}"></div>`;el.classList.add('ready')}
  else if((isCropObj(o)&&o.state==='planted')||!isCropObj(o)){
-  if(needsWater(o)){key='thirst';html=`<div class="b"><svg viewBox="0 0 24 24" width="38" height="38"><path d="M12 2C9 7 5 11 5 15a7 7 0 0014 0c0-4-4-8-7-13z" fill="#4aa3df"/></svg></div>`}
+  if(needsWater(o)&&dryLeft(o)!=null){key='dry';html=`<div class="pbar drybar"><svg viewBox="0 0 24 24" width="40" height="40"><path d="M12 2C9 7 5 11 5 15a7 7 0 0014 0c0-4-4-8-7-13z" fill="#e74c3c"/></svg><div><div class="lb" style="color:#c0392b">Засуха! Полей</div><div class="lb" style="font-size:14px">иначе засохнет через</div></div><div class="tm">${fmt(dryLeft(o))}</div></div>`}
+  else if(needsWater(o)){key='thirst';html=`<div class="b"><svg viewBox="0 0 24 24" width="38" height="38"><path d="M12 2C9 7 5 11 5 15a7 7 0 0014 0c0-4-4-8-7-13z" fill="#4aa3df"/></svg></div>`}
   else if(o.seg){const f=isCropObj(o)?curFrac(o):(t-o.seg.t0)/(o.seg.t1-o.seg.t0);const lab=isCropObj(o)?(o.seg.f1>=1?'созреет через':'полив через'):(o.stage===0?'вырастет через':'урожай через');
    key='grow';html=`<div class="pbar"><img src="${isCropObj(o)?IMG['p_'+o.crop+'_plant']:IMG[o.p+'_crop']}"><div><div class="lb">${name}${o.fert?' ✨':''} · ${lab}</div><div class="track"><div class="fill" style="width:${pct(f)}%"></div></div></div><div class="tm">${fmt(o.seg.t1-t)}</div></div>`}
   else{key='none';html=''}}
@@ -90,6 +91,7 @@ function renderStatus(o,force){let el=bubEls[o.id];if(!el){el=document.createEle
  else{key='seed';html=S.done?`<div class="b" style="border-color:#5fb53a"><img src="${IMG.potato_seed}"></div>`:''}
  if(key!=='ripe')el.classList.remove('ready');
  if(force||key!==bubKey[o.id]){bubKey[o.id]=key;el.innerHTML=html;const p=topOf(o);el.style.left=p[0]+'px';el.style.top=p[1]+'px';el.style.transform='translate(-50%,-100%) scale(var(--bz,1))';el.style.visibility=trayOpen&&trayT&&trayT.id===o.id?'hidden':''}
+ else if(key==='dry'){const tm=el.querySelector('.tm');if(tm)tm.textContent=fmt(dryLeft(o))}
  else if(key==='grow'||key==='busy'){const c=el.firstElementChild;if(!c)return;const f=o.busy?(t-o.busy.t0)/(o.busy.t1-o.busy.t0):isCropObj(o)?curFrac(o):(t-o.seg.t0)/(o.seg.t1-o.seg.t0);
   const fi=c.querySelector('.fill');if(fi)fi.style.width=pct(f)+'%';const tmEl=c.querySelector('.tm');if(tmEl)tmEl.textContent=fmt((o.busy||o.seg).t1-t)}}
 
@@ -101,7 +103,7 @@ function startPlace(o,isNew,price,onDone){closeTray();placing={o,isNew,price,onD
  drawGrid(true);renderGhost();$('placeBar').classList.add('on');$('placeTip').textContent='Нажми на свободное место · ↻ повернуть';$('placeTip').classList.add('on');
  const R=rectOf(o);camTo(R.x+R.w/2,R.y+R.h/2,Math.max(cam.s,minS()*1.3),true);
  $('pRot').style.display=(o.kind==='bed'||o.kind==='gh')?'':'none'}
-function zoneOrder(k){return k==='bed'?[0,3]:k==='gh'?[2]:[1,6,4,5,0,3,2]}
+function zoneOrder(k){return ZORD[k]}
 function findSpot(o){for(const rot of (o.kind==='bed'||o.kind==='gh')?[o.rot,o.rot?0:1]:[o.rot])for(const z of zoneOrder(o.kind)){const Z=ZONES[z];for(let r=0;r<Z.rows;r++)for(let c=0;c<Z.cols;c++){const t={...o,z,c,r,rot};if(fits(t,o.id))return{z,c,r,rot}}}return null}
 function fixLayout(){const all=S.objs.slice(),kept=[];S.objs=kept;all.forEach(o=>{if(!fits(o,o.id)){const s=findSpot(o);if(s)Object.assign(o,s)}kept.push(o)})}
 let ghostEl=null;

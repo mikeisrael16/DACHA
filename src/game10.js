@@ -19,15 +19,15 @@ function renderSpots(){for(const k in SPOTS){const P=SPOTS[k];let el=$('sp_'+k);
 /* ================= WEATHER ================= */
 const WX={sun:['Ясно','w_sun','Хорошая погода для дачи!'],rain:['Дождь','w_rain','Дождь сам поливает грядки и сад на улице и наполняет бочку'],heat:['Жара','w_sun','В жару бочка наполняется медленнее — поливай с умом'],rainbow:['Радуга','w_rainbow','Радуга! Скупщик платит на 20% больше']};
 let forcedWx=null;
-function weather(){if(forcedWx)return forcedWx;if(!S||!S.done||level()<WX_LVL)return'sun';const sl=Math.floor(now()/10800000),r=rnd(sl),pr=rnd(sl-1);if(r<.22)return'rain';if(pr<.22&&r<.6)return'rainbow';if(r<.36)return'heat';return'sun'}
+function weather(){if(forcedWx)return forcedWx;if(S&&S.done&&ilOn())return ilWeather();if(!S||!S.done||level()<WX_LVL)return'sun';const sl=Math.floor(now()/10800000),r=rnd(sl),pr=rnd(sl-1);if(r<.22)return'rain';if(pr<.22&&r<.6)return'rainbow';if(r<.36)return'heat';return'sun'}
 const wxMult=()=>weather()==='rainbow'?1.2:1;
 let wxCur=null;
-function renderWx(){const w=weather(),W=WX[w],on=S.done&&(level()>=WX_LVL||!!forcedWx);$('hWx').classList.toggle('hide',!on);if(!on){if(wxCur!=='off'){wxCur='off';$('wxfx').className='';$('wxfx').innerHTML='';$('rainbowArc')&&$('rainbowArc').remove()}return}
- if(wxCur!==w){const prev=wxCur;wxCur=w;$('wxImg').src=IMG[W[1]];$('wxTxt').textContent=W[0];const fx=$('wxfx');fx.className=w;fx.innerHTML=w==='rain'?Array.from({length:70},()=>`<i style="left:${Math.random()*112}%;animation-duration:${(.55+Math.random()*.45).toFixed(2)}s;animation-delay:-${(Math.random()*1.2).toFixed(2)}s;opacity:${(.5+Math.random()*.5).toFixed(2)}"></i>`).join(''):'';
-  let rb=$('rainbowArc');if(w==='rainbow'&&!rb){rb=document.createElement('div');rb.id='rainbowArc';rb.dataset.tap='rainbow';rb.innerHTML='<svg viewBox="0 0 1000 520" width="1400" height="728">'+['#e53935','#fb8c00','#fdd835','#43a047','#1e88e5','#5e35b1'].map((c,i)=>`<path d="M${40+i*26} 520A${460-i*26} ${460-i*26} 0 0 1 ${960-i*26} 520" fill="none" stroke="${c}" stroke-width="26" opacity=".55"/>`).join('')+'</svg>';$('world').insertBefore(rb,$('objs'))}
+function renderWx(){const w=weather(),W=WX[w],on=S.done&&(level()>=WX_LVL||!!forcedWx||ilOn());$('hWx').classList.toggle('hide',!on);if(!on){if(wxCur!=='off'){wxCur='off';$('wxfx').className='';$('wxfx').innerHTML='';$('rainbowArc')&&$('rainbowArc').remove()}return}
+ if(wxCur!==w){const prev=wxCur;wxCur=w;$('wxImg').src=IMG[W[1]];$('wxTxt').textContent=W[0];const fx=$('wxfx');fx.className=w==='drought'?'heat':w;fx.innerHTML=w==='rain'?Array.from({length:70},()=>`<i style="left:${Math.random()*112}%;animation-duration:${(.55+Math.random()*.45).toFixed(2)}s;animation-delay:-${(Math.random()*1.2).toFixed(2)}s;opacity:${(.5+Math.random()*.5).toFixed(2)}"></i>`).join(''):'';
+  let rb=$('rainbowArc');if(w==='rainbow'&&!rb){rb=document.createElement('div');rb.id='rainbowArc';rb.dataset.tap='rainbow';rb.style.left=RAINP[0]+'px';rb.style.top=RAINP[1]+'px';rb.innerHTML='<svg viewBox="0 0 1000 520" width="1400" height="728">'+['#e53935','#fb8c00','#fdd835','#43a047','#1e88e5','#5e35b1'].map((c,i)=>`<path d="M${40+i*26} 520A${460-i*26} ${460-i*26} 0 0 1 ${960-i*26} 520" fill="none" stroke="${c}" stroke-width="26" opacity=".55"/>`).join('')+'</svg>';$('world').insertBefore(rb,$('objs'))}
   if(w!=='rainbow'&&rb)rb.remove();
   if(prev&&w==='rain')toast('Пошёл дождь — он польёт грядки за тебя!');if(prev&&w==='rainbow')toast('Над рекой радуга! Скупщик платит больше');
-  if(w!=='sun'&&S.tips.wxI)tip('wx_'+w,[[w==='rain'?6:w==='heat'?4:7,W[2]+'. Погода меняется каждые 3 часа — смотри значок вверху.']])}}
+  if(w!=='sun'&&(S.tips.wxI||ilOn())&&!(ilOn()&&(w==='drought'||!S.tips.il_intro)))tip('wx_'+w,[[w==='rain'?6:w==='heat'?4:7,W[2]+'. Погода меняется каждые 3 часа — смотри значок вверху.']])}}
 function rainTick(){if(!S.done||weather()!=='rain')return;let n=0;if(!S.build.well&&S.water<waterMax()){S.water=waterMax();S.waterAt=now();renderHUD()}
  S.objs.forEach(o=>{if(o.kind==='gh'||o.busy||o.bug||!needsWater(o))return;if(isCropObj(o)){o.waterIdx++;startSeg(o)}else{const P=PER[o.p];o.seg={t0:now(),t1:now()+(o.stage===0?P[4]:P[5])*1000*tm()}}stat('water');n++;renderObj(o);const R=rectOf(o);rainAt(R.x+R.w/2,R.y+R.h/2)});
  if(n){toast('Дождик полил грядки: '+n);save()}}
@@ -46,10 +46,10 @@ function renderDecor(){const h=holOn();document.querySelectorAll('.deco').forEac
  const H=HOL[h];$('holImg').src=IMG[H.ico];$('holTxt').textContent=H.n;
  H.dec.forEach((d,i)=>{if($('dec'+i+h))return;const el=document.createElement('div');el.id='dec'+i+h;el.className='fix deco';el.dataset.h=h;el.style.cssText=`left:${d[1]}px;top:${d[2]}px;width:${d[3]}px;z-index:${d[2]};pointer-events:none`;el.innerHTML=`<img src="${IMG[d[0]]}">`;$('objs').appendChild(el)});
  let ch=$('holChest');const got=S.holGift[holKey()];if(got&&ch){ch.remove();ch=null}
- if(!got&&!ch){ch=document.createElement('div');ch.id='holChest';ch.className='fix deco';ch.dataset.h=h;ch.dataset.tap='chest';ch.style.cssText='left:1160px;top:712px;width:110px;z-index:712';ch.innerHTML=`<img src="${IMG.hd_chest}" style="animation:bob 1.2s ease-in-out infinite"><div class="lk sign" style="bottom:auto;top:-36px">🎁</div>`;$('objs').appendChild(ch)}}
-function holidayHello(){const h=holOn();if(!h)return;const H=HOL[h];tip('hol_'+holKey(),[[7,`У нас праздник — ${H.n}! Я украсила дачу.`],[5,`Пока идёт праздник, ${H.bonus}. А у крыльца стоит праздничный сундучок — открой его!`]],[1300,640,.95])}
+ if(!got&&!ch){ch=document.createElement('div');ch.id='holChest';ch.className='fix deco';ch.dataset.h=h;ch.dataset.tap='chest';ch.style.cssText=`left:${CHESTP[0]}px;top:${CHESTP[1]}px;width:110px;z-index:${CHESTP[1]}`;ch.innerHTML=`<img src="${IMG.hd_chest}" style="animation:bob 1.2s ease-in-out infinite"><div class="lk sign" style="bottom:auto;top:-36px">🎁</div>`;$('objs').appendChild(ch)}}
+function holidayHello(){const h=holOn();if(!h)return;const H=HOL[h];tip('hol_'+holKey(),[[7,`У нас праздник — ${H.n}! Я украсила дачу.`],[5,`Пока идёт праздник, ${H.bonus}. А у крыльца стоит праздничный сундучок — открой его!`]],HOLCAM)}
 function openChest(){const h=holOn();if(!h||S.holGift[holKey()])return;S.holGift[holKey()]=1;const c=50+15*level();const c0=coinPos();addCoins(c,c0[0],c0[1]);addItem('fert',2);addItem('worms',5);
- SND.magic();burst(1160,640,26,['#ffd23f','#ff7aa8','#7fd3ff','#9be36d'],140);toast(HOL[h].n+': '+c+' монет, 2 удобрения и 5 червей!');renderDecor();save()}
+ SND.magic();burst(CHESTP[0],CHESTP[1]-70,26,['#ffd23f','#ff7aa8','#7fd3ff','#9be36d'],140);toast(HOL[h].n+': '+c+' монет, 2 удобрения и 5 червей!');renderDecor();save()}
 $('hHol').addEventListener('pointerdown',e=>{e.stopPropagation();SND.tap();const h=holOn();if(h)toast(HOL[h].n+': '+HOL[h].bonus)});
 
 /* ================= FISHING ================= */
@@ -77,7 +77,7 @@ function collectFish(){if(fishState()!=='ready')return;S.fishing=null;const n=S.
  $('fRes').animate([{transform:'translateX(-50%) scale(.2)',opacity:0},{transform:'translateX(-50%) scale(1.1)',opacity:1},{transform:'translateX(-50%) scale(1)'}],{duration:600,easing:'ease-out'});
  $('fMsg').textContent='Улов: '+got.map(k=>FISH[k][0].toLowerCase()).join(' и ')+'! Рыба уже в сарае. Закинешь ещё?';renderFish();renderFishBub();renderHUD();save()}
 let fbKey='';
-function renderFishBub(){let el=$('fishBub');if(!el){el=document.createElement('div');el.id='fishBub';el.className='bb';el.dataset.tap='fish';el.style.pointerEvents='auto';el.style.left='3450px';el.style.top='1060px';$('kbubs').appendChild(el);fbKey=''}
+function renderFishBub(){let el=$('fishBub');if(!el){el=document.createElement('div');el.id='fishBub';el.className='bb';el.dataset.tap='fish';el.style.pointerEvents='auto';el.style.left=FISHBUB[0]+'px';el.style.top=FISHBUB[1]+'px';$('kbubs').appendChild(el);fbKey=''}
  const on=S.done&&level()>=FISH_LVL;el.style.display=on?'':'none';if(!on)return;const st=fishState();
  const key=st+(st==='wait'?fmt(S.fishing.t1-now()):'');if(key===fbKey)return;
  if(st==='ready'&&fbKey.startsWith('wait')){SND.harvest();toast('Рыбалка: улов готов!')}fbKey=key;
