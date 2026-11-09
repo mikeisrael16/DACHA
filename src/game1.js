@@ -2,7 +2,7 @@
 'use strict';
 const $=id=>document.getElementById(id);
 const IMG=__IMGMAP__;
-const VERSION='2.3';
+const VERSION='2.4';
 const WW=4637,WH=1967;
 const now=()=>Date.now();
 const SPOIL=6*3600000;
@@ -71,16 +71,16 @@ const FAC={
  smokehouse:{name:'Коптильня',lvl:13,img:'b_smokehouse',rec:{smoked_perch:[13,{f_perch:2,brushwood:1},480,1],smoked_bream:[13,{f_bream:2,brushwood:1},540,1],smoked_pike:[14,{f_pike:2,brushwood:1},600,1],smoked_catfish:[15,{f_catfish:2,brushwood:2},720,1]}}};
 const ANIM={cow:{name:'Корова',lvl:7,house:'cowshed',cost:250,max:3,time:300,prod:'milk',w:165,xp:6,feeds:['hay','feed'],img:['cow_hungry','cow_eat','cow_ready','cow_sleep'],pos:[[2760,650],[2930,710],[3080,655]]},
  sheep:{name:'Овца',lvl:9,house:'sheeppen',cost:300,max:4,time:480,prod:'wool',w:130,xp:9,feeds:['hay','feed'],img:['sheep_hungry','sheep_eat','sheep_wool','sheep_shorn'],pos:[[3220,600],[3360,640],[3160,700],[3300,705]]},
- chicken:{name:'Курица',lvl:6,house:'coop',cost:80,max:4,time:240,prod:'egg',bonus:['feather',.25],w:100,xp:4,feeds:['grain','feed'],pos:[[200,1310],[330,1300],[440,1340],[260,1400]]},
- quail:{name:'Перепёлка',lvl:8,house:'coop',cost:90,max:3,time:200,prod:'egg_quail',w:80,xp:4,feeds:['grain','feed'],pos:[[380,1430],[490,1460],[300,1490]]},
- duck:{name:'Утка',lvl:11,house:'pyard',cost:150,max:3,time:360,prod:'egg_duck',bonus:['feather',.3],w:100,xp:6,feeds:['grain','feed'],pos:[[600,1310],[720,1340],[840,1300]]},
- goose:{name:'Гусь',lvl:12,house:'pyard',cost:220,max:2,time:480,prod:'egg_goose',bonus:['down',.6],w:115,xp:8,feeds:['grain','feed'],pos:[[640,1440],[790,1460]]},
- turkey:{name:'Индюк',lvl:14,house:'pyard',cost:260,max:2,time:540,prod:'egg_turkey',bonus:['feather',.6],w:120,xp:9,feeds:['grain','feed'],pos:[[930,1400],[560,1520]]}};
+ chicken:{name:'Курица',lvl:6,house:'coop',cost:80,max:4,time:240,prod:'egg',bonus:['feather',.25],w:100,xp:4,feeds:['grain','feed'],pos:[[1590,610],[1690,640],[1790,610],[1870,650]]},
+ quail:{name:'Перепёлка',lvl:8,house:'coop',cost:90,max:3,time:200,prod:'egg_quail',w:80,xp:4,feeds:['grain','feed'],pos:[[1620,690],[1720,695],[1820,690]]},
+ duck:{name:'Утка',lvl:11,house:'pyard',cost:150,max:3,time:360,prod:'egg_duck',bonus:['feather',.3],w:100,xp:6,feeds:['grain','feed'],pos:[[1950,610],[2050,640],[2150,610]]},
+ goose:{name:'Гусь',lvl:12,house:'pyard',cost:220,max:2,time:480,prod:'egg_goose',bonus:['down',.6],w:115,xp:8,feeds:['grain','feed'],pos:[[1980,695],[2100,695]]},
+ turkey:{name:'Индюк',lvl:14,house:'pyard',cost:260,max:2,time:540,prod:'egg_turkey',bonus:['feather',.6],w:120,xp:9,feeds:['grain','feed'],pos:[[2210,690],[1900,700]]}};
 ['chicken','quail','duck','goose','turkey'].forEach(k=>ANIM[k].img=[k+'_hungry',k+'_eat',k+'_ready',k+'_sleep']);
 const ANI_IDS=Object.keys(ANIM);
 // fixed buildings: x,y (bottom centre), width, level, cost
 const FIX={market:{n:'Скупщик',x:3240,y:985,w:170,h:230,lvl:1,cost:0,hid:1},well:{n:'Старый колодец',x:480,y:1010,w:170,lvl:6,cost:400},
- coop:{n:'Курятник',x:300,y:1230,w:240,lvl:6,cost:300},pyard:{n:'Птичий двор',x:650,y:1230,w:260,lvl:11,cost:900},
+ coop:{n:'Курятник',x:1700,y:530,w:220,lvl:6,cost:300},pyard:{n:'Птичий двор',x:2040,y:530,w:240,lvl:11,cost:900},
  dairy:{n:'Сыроварня',x:400,y:1800,w:250,lvl:8,cost:700},spinnery:{n:'Прядильня',x:660,y:1800,w:240,lvl:10,cost:900},mill:{n:'Мельница',x:920,y:1800,w:250,lvl:6,cost:500},
  oven:{n:'Русская печь',x:1180,y:1800,w:250,lvl:7,cost:600},bakery:{n:'Пекарня',x:1440,y:1800,w:250,lvl:12,cost:1500},smokehouse:{n:'Коптильня',x:1700,y:1800,w:240,lvl:13,cost:1600},apiary:{n:'Пасека',x:1970,y:1800,w:260,lvl:10,cost:900},
  cowshed:{n:'Коровник',x:2570,y:680,w:270,lvl:7,cost:500},sheeppen:{n:'Овчарня',x:3470,y:640,w:260,lvl:9,cost:700},fair:{n:'Ярмарка',x:4450,y:1930,w:330,lvl:12,cost:1200}};
@@ -106,9 +106,9 @@ function baseSell(id){return ANN[id]?ANN[id][5]:PER[id]?PER[id][7]:PROD[id]?PROD
 const aniCount=k=>(S.ani[k]||[]).length,hasAni=()=>ANI_IDS.some(k=>aniCount(k));
 // grid
 const CW=80,CH=56;
-const ZONES=[{x0:1080,y0:720,cols:10,rows:8,k:'bed'},{x0:1580,y0:400,cols:8,rows:3,k:'per'},{x0:1920,y0:760,cols:5,rows:9,k:'gh'},{x0:1360,y0:1168,cols:7,rows:3,k:'bed'},{x0:1960,y0:1284,cols:5,rows:3,k:'per'},{x0:1080,y0:1176,cols:3,rows:3,k:'per'}];
+const ZONES=[{x0:1080,y0:720,cols:10,rows:8,k:'bed'},{x0:200,y0:1050,cols:6,rows:3,k:'per'},{x0:1920,y0:760,cols:5,rows:9,k:'gh'},{x0:1360,y0:1168,cols:7,rows:3,k:'bed'},{x0:1960,y0:1284,cols:5,rows:3,k:'per'},{x0:1080,y0:1176,cols:3,rows:3,k:'per'},{x0:200,y0:1218,cols:9,rows:6,k:'per'}];
 const zoneOk=(kind,z)=>kind==='bush'||kind==='tree'?true:ZONES[z].k===(kind==='bed'?'bed':'gh');
-const SIZE={bedh:[3,2],bedv:[2,3],bush:[1,1],tree:[2,1]};
+const SIZE={bedh:[3,2],bedv:[2,3],bush:[2,2],tree:[3,3]};
 const BED_COST=[0,40,90,160,250,380,550,750,1000,1300,1700,2200,2600,3000,3400,3800,4200];
 const GH_COST=[250,600,1200,2000,3000],GHL=[null,{n:'Плёночная',lvl:5,cost:0,mult:.75,img:'gh1'},{n:'Поликарбонатная',lvl:7,cost:500,mult:.6,img:'gh2'},{n:'Стеклянная',lvl:9,cost:1000,mult:.45,img:'gh3'}];
 const PEST_LVL=5,THIEF_LVL=4,CAT_LVL=5,SCARE_H=12,BASE_KEY='dacha_v1_save';

@@ -1,5 +1,7 @@
 
 /* ================= v2.0: NEW LOCATION, SPOTS ================= */
+function orchardFix(){if(S.orch)return;const per=S.objs.filter(o=>o.kind==='bush'||o.kind==='tree');S.objs=S.objs.filter(o=>o.kind!=='bush'&&o.kind!=='tree');
+ per.forEach(o=>{const keep={z:o.z,c:o.c,r:o.r};o.rot=0;const sp=findSpot(o);if(sp)Object.assign(o,sp);else Object.assign(o,keep);S.objs.push(o)});S.orch=1;S.orchMoved=per.length}
 function relocate(){const objs=S.objs.slice().sort((a,b)=>(isCropObj(b)?1:0)-(isCropObj(a)?1:0));S.objs=[];let refund=0;
  objs.forEach(o=>{o.z=0;o.c=0;o.r=0;const sp=findSpot(o);if(sp){Object.assign(o,sp);S.objs.push(o)}else refund+=isCropObj(o)?150:PER[o.p][3]});
  if(refund)S.coins+=refund;S.loc=2;S.moved=1;S.catFixed=0}
@@ -118,6 +120,7 @@ let catQ=false;
 function catArrival(){if(!S.done||level()<CAT_LVL||catQ)return;if(S.cat&&!S.cat.gone){S.catFixed=1;return}if(S.catFixed&&S.cat)return;
  const old=S.cat&&S.cat.name;catQ=true;S.tips.cat=1;S.catFixed=1;save();
  sayLater([[2,old?`Смотри, кто пришёл — ${old}! Он нашёл нас на новой даче и хочет остаться.`:'Ой, смотри — к нам на дачу пришёл котик! Похоже, хочет остаться…'],[1,'Давай дадим ему имя! Его нужно кормить и поить каждый день.']],[CATP[0]+150,CATP[1]-80,1.1],()=>askCatName(old))}
+function orchNotice(){if(!S.orchMoved||!S.done)return;S.orchMoved=0;save();sayLater([[0,'Смотри, я пересадила наш сад на большой луг у дома! Теперь у каждого деревца и кустика своё место, они не мешают друг другу и урожай собирать удобно.'],[5,'Курятник и птичий двор теперь будут наверху, у беседки.']],[480,1250,.7])}
 function moveNotice(){if(!S.moved||!S.done)return;S.moved=0;save();
  sayLater([[0,'Сюрприз! Мы переехали на новую большую дачу у реки! Твой уровень, монеты, сарай, грядки, теплицы, сад и животные — всё переехало с нами.'],[1,'Участок огромный — двигай его пальцем во все стороны. Кнопка с прицелом справа вернёт тебя к грядкам. Места теперь хватит на 16 грядок и 5 теплиц!']],[1560,960,.62]);
  sayLater([[5,'Места тут хватит на всё, что откроется потом. Начиная с 19 уровня на участке будут появляться новинки — по одной за уровень. Я расскажу о каждой!']],null,()=>camHome(true))}
