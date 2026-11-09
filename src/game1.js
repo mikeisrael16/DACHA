@@ -2,7 +2,7 @@
 'use strict';
 const $=id=>document.getElementById(id);
 const IMG=__IMGMAP__;
-const VERSION='3.1';
+const VERSION='3.2';
 let WW=4637,WH=1967;
 const now=()=>Date.now();
 const SPOIL=6*3600000;
@@ -84,8 +84,8 @@ const FAC={
  apiary:{name:'Пасека',lvl:10,img:'b_apiary',rec:{honey:[10,{sunflower:1,buckwheat:1},600,2],wax:[11,{honey:1},300,1],candle:[12,{wax:1},360,1]}},
  bakery:{name:'Пекарня',lvl:12,img:'b_bakery',rec:{bread:[12,{flour:2},600,1],ryebread:[12,{ryeflour:2},660,1],applepie:[13,{flour:1,apple:3,egg:2},720,1],karavai:[14,{flour:3,egg:3,butter:1},900,1],medovik:[15,{flour:2,honey:2,egg:2,scream:1},1080,1]}},
  smokehouse:{name:'Коптильня',lvl:13,img:'b_smokehouse',rec:{smoked_perch:[13,{f_perch:2,brushwood:1},480,1],smoked_bream:[13,{f_bream:2,brushwood:1},540,1],smoked_pike:[14,{f_pike:2,brushwood:1},600,1],smoked_catfish:[15,{f_catfish:2,brushwood:2},720,1]}}};
-const ANIM={cow:{name:'Корова',loc:'ru',lvl:7,house:'cowshed',cost:250,max:3,time:300,prod:'milk',w:165,xp:6,feeds:['hay','feed'],img:['cow_hungry','cow_eat','cow_ready','cow_sleep'],pos:[[2760,650],[2930,710],[3080,655]]},
- sheep:{name:'Овца',loc:'ru',lvl:9,house:'sheeppen',cost:300,max:4,time:480,prod:'wool',w:130,xp:9,feeds:['hay','feed'],img:['sheep_hungry','sheep_eat','sheep_wool','sheep_shorn'],pos:[[3220,600],[3360,640],[3160,700],[3300,705]]},
+const ANIM={cow:{name:'Корова',lvl:7,house:'cowshed',cost:250,max:3,time:300,prod:'milk',w:165,xp:6,feeds:['hay','feed'],img:['cow_hungry','cow_eat','cow_ready','cow_sleep'],pos:[[2760,650],[2930,710],[3080,655]]},
+ sheep:{name:'Овца',lvl:9,house:'sheeppen',cost:300,max:4,time:480,prod:'wool',w:130,xp:9,feeds:['hay','feed'],img:['sheep_hungry','sheep_eat','sheep_wool','sheep_shorn'],pos:[[3220,600],[3360,640],[3160,700],[3300,705]]},
  chicken:{name:'Курица',lvl:6,house:'coop',cost:80,max:4,time:240,prod:'egg',bonus:['feather',.25],w:100,xp:4,feeds:['grain','feed'],pos:[[1590,610],[1690,640],[1790,610],[1870,650]]},
  quail:{name:'Перепёлка',lvl:8,house:'coop',cost:90,max:3,time:200,prod:'egg_quail',w:80,xp:4,feeds:['grain','feed'],pos:[[1620,690],[1720,695],[1820,690]]},
  duck:{name:'Утка',lvl:11,house:'pyard',cost:150,max:3,time:360,prod:'egg_duck',bonus:['feather',.3],w:100,xp:6,feeds:['grain','feed'],pos:[[1950,610],[2050,640],[2150,610]]},

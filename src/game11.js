@@ -17,16 +17,17 @@ const RU={WW,WH,ZONES:JSON.parse(JSON.stringify(ZONES)),FIX:JSON.parse(JSON.stri
  HITZ:Object.fromEntries(Object.keys(HITSEL).map(s=>{const e=document.querySelector(s);return[s,e?{left:e.style.left,top:e.style.top,width:e.style.width,height:e.style.height}:{}]}))};
 const ILC={WW:5152,WH:2186,
  ZONES:[{x0:1760,y0:704,cols:15,rows:15,k:'bed'},{x0:3700,y0:768,cols:11,rows:3,k:'per'},{x0:3700,y0:936,cols:11,rows:3,k:'per'},{x0:3788,y0:1104,cols:10,rows:3,k:'per'},{x0:3875,y0:1272,cols:8,rows:3,k:'per'},
-  {x0:340,y0:1812,cols:7,rows:5,k:'per'},{x0:1520,y0:1220,cols:3,rows:6,k:'bed'},
+  {x0:100,y0:1780,cols:11,rows:6,k:'per'},{x0:1520,y0:1220,cols:3,rows:6,k:'bed'},
   {x0:3052,y0:700,cols:4,rows:2,k:'gh'},{x0:3072,y0:812,cols:4,rows:2,k:'gh'},{x0:3092,y0:924,cols:5,rows:2,k:'gh'},{x0:3112,y0:1036,cols:5,rows:2,k:'gh'},{x0:3133,y0:1148,cols:6,rows:2,k:'gh'},{x0:3153,y0:1260,cols:6,rows:2,k:'gh'},{x0:3173,y0:1372,cols:7,rows:2,k:'gh'}],
  ZORD:{bed:[0,6],gh:[7,8,9,10,11,12,13],bush:[1,2,3,4,5,0,6],tree:[1,2,3,4,5,0,6]},
- FIX:{market:{n:'Скупщик',x:1896,y:540,w:230,h:220,lvl:1,cost:0,hid:1,lt:1},well:{n:'Колодец',x:200,y:2110,w:170,lvl:6,cost:400},
+ FIX:{market:{n:'Скупщик',x:1896,y:540,w:230,h:220,lvl:1,cost:0,hid:1,lt:1},well:{n:'Колодец',x:1290,y:1470,w:150,lvl:6,cost:400},
+  cowshed:{n:'Коровник',x:4170,y:500,w:270,lvl:7,cost:500},sheeppen:{n:'Овчарня',x:1520,y:500,w:230,lvl:9,cost:700},
   coop:{n:'Курятник',x:905,y:560,w:230,lvl:20,cost:300},pyard:{n:'Птичий двор',x:4200,y:1960,w:250,lvl:28,cost:900},
   dairy:{n:'Сыроварня',x:1290,y:2090,w:285,lvl:8,cost:700},spinnery:{n:'Прядильня',x:1610,y:2090,w:285,lvl:10,cost:900},mill:{n:'Мельница',x:1930,y:2090,w:285,lvl:22,cost:500},
   oven:{n:'Русская печь',x:2250,y:2090,w:285,lvl:24,cost:600},bakery:{n:'Пекарня',x:2570,y:2090,w:285,lvl:30,cost:1500},smokehouse:{n:'Коптильня',x:2890,y:2090,w:285,lvl:32,cost:1600},
   apiary:{n:'Пасека',x:3210,y:2090,w:285,lvl:27,cost:900},fair:{n:'Ярмарка',x:3640,y:2130,w:300,lvl:29,cost:1200}},
  pos:{goat:[[3560,470],[3660,410],[3620,560]],awassi:[[3800,520],[3910,470],[3760,630]],donkey:[[3470,540]],camel:[[3990,610]],ostrich:[[3720,330],[3870,380]],bees:[[2260,530],[2390,505],[2520,530]],
-  chicken:[[1010,610],[1100,630],[1190,600],[1270,640]],quail:[[1120,520],[1210,540],[1300,560]],duck:[[4420,1880],[4500,1990],[4380,2080]],goose:[[4110,2100],[4250,2120]],turkey:[[4560,2120],[4330,2140]],cow:[],sheep:[]},
+  chicken:[[1010,610],[1100,630],[1190,600],[1270,640]],quail:[[1120,520],[1210,540],[1300,560]],duck:[[4420,1880],[4500,1990],[4380,2080]],goose:[[4110,2100],[4250,2120]],turkey:[[4560,2120],[4330,2140]],cow:[[4010,640],[4190,670],[4370,630]],sheep:[[1340,690],[1460,720],[1590,660],[1250,600]]},
  CATP:[940,1490],BOWLF:[800,1510],BOWLW:[870,1516],
  SPOTS:{fish:{lbl:'🎣 Рыбалка',lvl:FISH_LVL,x:4870,y:1500,hit:[4720,1480,320,330]},forest:{lbl:'🌲 В лес',lvl:FOREST_LVL,x:2950,y:430,sign:1,hit:[2875,240,150,190]}},
  HOL:{harvest:[['hd_pumpkin',1100,1540,130],['hd_pumpkin',420,1610,110],['hd_flags',1260,1000,280]],ny:[['hd_tree',1150,1560,160],['hd_snowman',420,1610,120],['hd_gift',1250,1560,100]],
@@ -57,7 +58,7 @@ const IL_STEPS=[
  [1,['goat'],[[1,'Мама, на пастбище можно завести коз! Козье молоко пригодится для сыра и лабане. Купить — Магазин → Животные, кормить сеном.']],[3700,520]],
  [2,['il_pepper','drip'],[[5,'Новинка: сладкий перец! А ещё в магазине, во вкладке «Улучшения», появился капельный полив — с ним грядкам не страшна засуха.']]],
  [3,['il_olive'],[[1,'Пора сажать сад! Олива — главное дерево Израиля, из оливок потом сделаем масло. Сад — на большом лугу справа, за каменным двором с теплицами.']],[4100,1100]],
- [4,['chicken','coop','il_shakshuka'],[[5,'Построй курятник во дворе за домом — куры дадут яйца. А из яиц, черри и перца на кухне получится настоящая шакшука!']],[905,500]],
+ [4,['il_shakshuka'],[[5,'Новый рецепт! Из яиц, черри и перца на кухне получится настоящая шакшука. Курятник можно построить в птичьем дворе за домом.']],[905,560]],
  [5,['il_eggplant','il_parsley'],[[1,'Новые семена: баклажаны и петрушка!']]],
  [6,['il_date','il_silan'],[[2,'Финиковая пальма! Из фиников на кухне варят сладкий сироп силан.']]],
  [7,['il_chickpea','il_coriander','il_falafel'],[[5,'Нут и кинза! Из нута, петрушки и кинзы на кухне делают фалафель — Давид его обожает.']]],
@@ -84,9 +85,12 @@ const IL_STEPS=[
 let DRIP_LVL=999;
 function setLvl(id,L){if(ANN[id])ANN[id][1]=L;if(PER[id])PER[id][2]=L;for(const f in FAC)if(FAC[f].rec[id])FAC[f].rec[id][0]=L;if(ANIM[id]&&ANIM[id].loc==='il')ANIM[id].lvl=L;if(id==='drip')DRIP_LVL=L}
 function ilSetup(){const on=ilOn(),B=on?(S.ilBase||level()):0;
+ if(on&&!S.dry20){S.dry20=1;const t0=now();S.objs.forEach(o=>{delete o.dryAt;if(isCropObj(o)&&o.ripeAt&&t0-o.ripeAt>DRY_MS/2)o.ripeAt=t0})}
  if(on&&!S.wildFix){S.wildFix=1;S.wt=S.wt||0;S.objs.forEach(o=>{if(isCropObj(o)&&(o.state==='weeds'||o.state==='used'))o.state='wild'})}
- IL_STEPS.forEach(([st,ids])=>ids.forEach(id=>{if(id==='coop'||id==='chicken')return;setLvl(id,on?B+st:999)}));
- ANIM.chicken.lvl=on?B+4:20;if(FIX.coop)FIX.coop.lvl=on?B+4:20}
+ IL_STEPS.forEach(([st,ids])=>ids.forEach(id=>setLvl(id,on?B+st:999)));
+ ANIM.chicken.lvl=20;if(FIX.coop)FIX.coop.lvl=20;orchSigns(on)}
+function orchSigns(on){document.querySelectorAll('.orchLbl').forEach(e=>e.remove());if(!on)return;
+ [[4170,1500],[540,1760]].forEach(([x,y])=>{const d=document.createElement('div');d.className='orchLbl';d.textContent='🌳 Сад — место для деревьев';d.style.left=x+'px';d.style.top=y+'px';$('world').appendChild(d)})}
 function ilFeatures(){const B=S.ilBase,out=[];
  IL_STEPS.forEach(([st,ids,lines,cam])=>{if(st&&lines)out.push({k:'il_'+st,lvl:B+st,lines,cam:cam||null})});
  const CM={market:'market',wellI:'well',dairy:'dairy',spin:'spinnery',mill:'mill',oven:'oven',apiary:'apiary',pyard:'pyard',bakery:'bakery',fairI:'fair',smoke:'smokehouse'};
@@ -100,7 +104,7 @@ function makeIL(old){const L=lvlOfXp(old.xp),s=newState();const ru=JSON.parse(JS
   stats:old.stats||s.stats,daily:old.daily||s.daily,seenVer:old.seenVer,rod2:!!old.rod2,holGift:old.holGift||{},loc:'il',ilBase:L,orch:1,moved:0,orchMoved:0,catFixed:1,ilArrive:1,ru,firstPotato:false,lastSeen:now()});
  Object.assign(s.ui,{coins:true,xp:true,store:true,shop:true,board:true,quest:true});
  if(old.cat&&!old.cat.gone)s.cat=Object.assign({},old.cat,{food:now()+864e5,water:now()+864e5});else s.cat=old.cat||null;
- s.objs=[newCropObj('bed',0,0,0,0),newCropObj('bed',0,3,0,0),newCropObj('bed',0,0,2,0),newCropObj('bed',0,3,2,0),newCropObj('gh',7,0,0,0)];s.objs.forEach(o=>o.state='wild');s.wt=0;s.wildFix=1;s.tips.il_slow=1;
+ s.objs=[newCropObj('bed',0,0,0,0),newCropObj('bed',0,3,0,0),newCropObj('bed',0,0,2,0),newCropObj('bed',0,3,2,0),newCropObj('gh',7,0,0,0)];s.objs.forEach(o=>o.state='wild');s.wt=0;s.wildFix=1;s.tips.il_slow=1;s.tips.il_v32=1;
  ANN_IDS.forEach(id=>{if(!isIL(id)&&L>=ANN[id][1])s.tips['crop_'+id]=1});PER_IDS.forEach(id=>{if(!isIL(id)&&L>=PER[id][2])s.tips['per_'+id]=1});
  Object.assign(s.inv,{seed_il_tomato:2,seed_il_cucumber:2,seed_il_mint:2});s.orders=[];s.quests=[];return s}
 
@@ -112,12 +116,12 @@ function flyToIsrael(){const f=$('flight');f.classList.add('on');f.querySelector
  setTimeout(()=>{const s=makeIL(S);S=s;save();startGame(s);setTimeout(()=>f.classList.remove('on'),900)},3600)}
 
 /* ---------- Arrival & Svetlana ---------- */
-function ilArrival(){if(!S.ilArrive){if(!S.tips.il_slow){S.tips.il_slow=1;save();sayLater([[8,'Мама, ты заметила? В Израиле всё делается не спеша. Теперь всё растёт, готовится и делается примерно в два раза дольше — савланут!'],[6,'А ещё на грядках снова вылезли сорняки. Прополи их инструментом из магазина (вкладка «Улучшения»): рыхлитель, грабли или тяпка — каждый следующий быстрее.'],[5,'А если накопишь 10 000 монет — купи трактор. Он сам будет вскапывать все грядки!']],[2370,1000,.55])}return}S.ilArrive=0;save();placeDavid(0);
+function ilArrival(){if(!S.ilArrive){if(!S.tips.il_slow){S.tips.il_slow=1;save();sayLater([[8,'Мама, ты заметила? В Израиле всё делается не спеша. Теперь всё растёт, готовится и делается примерно в два раза дольше — савланут!'],[6,'А ещё на грядках снова вылезли сорняки. Прополи их инструментом из магазина (вкладка «Улучшения»): рыхлитель, грабли или тяпка — каждый следующий быстрее.'],[5,'А если накопишь 10 000 монет — купи трактор. Он сам будет вскапывать все грядки!']],[2370,1000,.55])}else if(!S.tips.il_v32){S.tips.il_v32=1;save();sayLater([[9,'Мама, хорошие новости! Поливать грядки каждые 20 минут больше не нужно.'],[3,'Но здесь жарко: если созревший урожай пролежит на грядке 20 часов — он засохнет. За 4 часа до этого над грядкой загорится красная табличка с таймером.'],[5,'А ещё к нам переехали коровы и овцы! Коровник стоит на пастбище, овчарня — во дворе рядом с курятником. Купить их можно в магазине.'],[1,'Сад — на лугу у пастбища и на участке за домом, там стоят таблички «Сад». Места хватит на 17 деревьев!']],[3300,1000,.5])}return}S.ilArrive=0;save();placeDavid(0);
  sayLater([[0,'Мама, ты приехала! Как я рада! Добро пожаловать в Израиль — на нашу дачу в мошаве, в Галилее.'],
   [6,'Честно, я совсем всё запустила: работа, Давид… Остались всего четыре заросшие грядки и одна старая теплица.'],
   [1,'Зато места тут очень много! Большое поле — для грядок, каменный двор — для теплиц, луг справа — для сада, а внизу — место для мастерских.']],[2370,1050,.55]);
- sayLater([[3,'Только запомни главное: тут бывает засуха. Тогда над грядками, которые ждут полива, загорается красная капля с таймером.'],
-  [6,'Не успеешь полить за 20 минут — урожай засохнет! В теплицах засухи не бывает, а позже мы проведём капельный полив.']],[1980,860,.85]);
+ sayLater([[3,'Только запомни главное: тут жарко и сухо. Созревший урожай нельзя долго оставлять на грядке — через 20 часов он засохнет.'],
+  [6,'Если созревший урожай пролежит на грядке 20 часов — он засохнет! В теплицах такого не бывает, а позже мы проведём капельный полив.']],[1980,860,.85]);
  sayLater([[8,'И ещё: в Израиле всё делается не спеша. Всё растёт, готовится и делается примерно в два раза дольше, чем дома. Савланут — терпение!'],
   [6,'А грядки совсем заросли сорняками. Сначала их надо прополоть: купи в магазине ручной рыхлитель (вкладка «Улучшения»), а потом вскопай лопатой.'],
   [2,'Вот тебе 200 монет и немного семян: черри-томаты, огурчики и мята. Из них на кухне делают израильский салат и лимонад!'],
@@ -144,21 +148,22 @@ function tapDavid(){const el=$('david');if(!el)return;const s=el.querySelector('
  if(!S.davTap||S.davTap!==dayKey()){S.davTap=dayKey();addXp(5,DAV.x,DAV.y-200);save()}}
 
 /* ---------- Drought ---------- */
-WX.drought=['Засуха','w_sun','Засуха! Грядки на улице, которые ждут полива, засохнут через 20 минут. Бочка наполняется в 2 раза медленнее'];
-const DRY_MS=20*60000;
+WX.drought=['Засуха','w_sun','Засуха! Созревший урожай на грядках погибнет, если не собрать его за 20 часов. Бочка наполняется в 2 раза медленнее'];
+const DRY_MS=20*3600000,DRY_WARN=4*3600000;
 function ilWeather(){const sl=Math.floor(now()/10800000),r=rnd(sl*7+3),pr=rnd(sl*7-4);if(r<.1)return'rain';if(pr<.1&&r<.3)return'rainbow';if(r<.5)return'drought';return'sun'}
 const droughtOn=()=>ilOn()&&!S.upg.drip&&weather()==='drought';
 function droughtMul(o){return o.kind==='bed'&&droughtOn()?1.25:1}
-function dryLeft(o){return o.kind==='bed'&&o.dryAt&&droughtOn()?Math.max(0,o.dryAt+DRY_MS-now()):null}
-function droughtTick(t){const dr=droughtOn();let any=false;
- S.objs.forEach(o=>{if(o.kind!=='bed')return;const th=dr&&isCropObj(o)&&needsWater(o);
-  if(th){any=true;if(!o.dryAt)o.dryAt=t;else if(t-o.dryAt>=DRY_MS){wither(o);return}}else if(o.dryAt)delete o.dryAt;
-  const el=objEls[o.id];if(el)el.classList.toggle('dry',th)});
- if(any)tip('il_drought',[[6,'Мама, началась засуха! Видишь красные капли над грядками? Если не полить их за 20 минут — урожай засохнет.'],[3,'В теплице засухи не бывает, а капельный полив защитит все грядки.']])}
+const dryRisk=o=>ilOn()&&!S.upg.drip&&o.kind==='bed'&&isCropObj(o)&&isRipe(o)&&o.ripeAt>0;
+function dryLeft(o){return dryRisk(o)?Math.max(0,o.ripeAt+DRY_MS-now()):null}
+function dryWarn(o){const l=dryLeft(o);return l!=null&&l<DRY_WARN}
+function droughtTick(t){let any=false;
+ S.objs.forEach(o=>{if(o.dryAt)delete o.dryAt;const el=objEls[o.id];if(el)el.classList.remove('dry');if(!dryRisk(o))return;
+  if(t-o.ripeAt>=DRY_MS){wither(o);return}if(t-o.ripeAt>=DRY_MS-DRY_WARN)any=true});
+ if(any)tip('il_drought2',[[6,'Мама, урожай на грядке созрел, а его никто не собрал! Здесь жарко: если не собрать урожай за 20 часов — он засохнет.'],[3,'Над такой грядкой появится красная надпись с таймером. В теплицах урожай не сохнет, а капельный полив защитит все грядки.']])}
 function wither(o){const n=ANN[o.crop]?ANN[o.crop][0]:'урожай';Object.assign(o,{state:'used',crop:null,fert:false,frac:0,waterIdx:0,seg:null,speed:1,total:0,ripeAt:0});delete o.dryAt;
- const el=objEls[o.id];if(el)el.classList.remove('dry');renderObj(o,false);const R=rectOf(o);burst(R.x+R.w/2,R.y+R.h/2,14,['#a0712c','#c9a15a','#7a5a2a'],90,[6,12]);SND.fail();toast('Засуха погубила урожай: '+n.toLowerCase()+'. Поливай вовремя!');stat('wither');save()}
+ const el=objEls[o.id];if(el)el.classList.remove('dry');renderObj(o,false);const R=rectOf(o);burst(R.x+R.w/2,R.y+R.h/2,14,['#a0712c','#c9a15a','#7a5a2a'],90,[6,12]);SND.fail();toast('Засуха погубила урожай: '+n.toLowerCase()+'. Собирай урожай вовремя!');stat('wither');save()}
 function dripItem(){if(!ilOn()||!vis(DRIP_LVL))return[];const ok=level()>=DRIP_LVL;
- return[{k:'drip',name:'Капельный полив',desc:ok?'Грядки на улице больше не сохнут в засуху и растут как обычно':'Откроется на уровне '+DRIP_LVL,img:IMG.i_can,cost:cost(900),lock:!ok,maxed:!!S.upg.drip,btn:S.upg.drip?'Есть ✔':null,
+ return[{k:'drip',name:'Капельный полив',desc:ok?'Урожай на грядках больше не засыхает, а в засуху растёт как обычно':'Откроется на уровне '+DRIP_LVL,img:IMG.i_can,cost:cost(900),lock:!ok,maxed:!!S.upg.drip,btn:S.upg.drip?'Есть ✔':null,
   act:()=>{S.upg.drip=1;SND.level();toast('Капельный полив проведён! Засуха грядкам больше не страшна');renderAllObjs();save()}}]}
 
 /* ---------- v3.1: weeding tools & tractor ---------- */

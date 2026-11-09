@@ -222,3 +222,5 @@ input.nameIn{width:100%!important;margin-bottom:14px!important}
 @keyframes sway{0%,100%{transform:translate(-50%,-100%) rotate(-4deg)}50%{transform:translate(-50%,-100%) rotate(4deg)}}
 #tractor{position:absolute;transform:translate(-50%,-100%);width:170px;pointer-events:auto;cursor:pointer;transition:left 1.6s ease-in-out,top 1.6s ease-in-out}
 #tractor img{width:100%;display:block;filter:drop-shadow(0 6px 6px rgba(0,0,0,.3))}
+
+.orchLbl{position:absolute;transform:translate(-50%,-100%);background:rgba(255,248,225,.92);border:3px solid #6d9b3a;color:#3d5f1c;font-weight:800;font-size:26px;line-height:1.2;padding:6px 14px;border-radius:14px;white-space:nowrap;pointer-events:none;z-index:5;box-shadow:0 3px 0 rgba(0,0,0,.18)}
