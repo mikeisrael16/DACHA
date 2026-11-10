@@ -34,29 +34,29 @@ function askCatName(pre){popup(done=>{$('nameCat').src=IMG.cat_sit;$('nameIn').v
 
 /* ================= PESTS: birds & bugs (lvl 5) ================= */
 const pestsOn=()=>S.done&&level()>=PEST_LVL;
-const birds={};
+const birds={};const BUG_STEP=120000,BUG_CAP=.24,BUG_SAFE=3600000;let pestBoot=0;
 function birdEligible(o){if(o.kind==='gh'||o.busy)return false;return isCropObj(o)?(o.state==='planted'&&(isRipe(o)||curFrac(o)>.15)):(o.ripe||(o.stage===1&&o.seg))}
 function tickPests(t){if(!pestsOn())return;
  for(const k in birds){const b=birds[k];if(!b.scared&&t>=b.eatAt)birdEat(k)}
- S.objs.forEach(o=>{if(o.bug&&t>=o.bugDmgAt){o.bugDmgAt=t+60000;if(o.frac>0){o.frac=Math.max(0,o.frac-.08);renderObj(o);const R=rectOf(o);floatText(R.x+R.w/2,R.y,'−8% урожая','#ff8a7a');save()}}});
- if(!S.nextPestAt){S.nextPestAt=t+40000;return}if(t<S.nextPestAt)return;S.nextPestAt=t+45000+Math.random()*60000;
+ S.objs.forEach(o=>{if(o.bug&&t>=o.bugDmgAt){o.bugDmgAt=t+BUG_STEP;if(o.frac>0&&(o.bugLost||0)<BUG_CAP){const d=Math.min(.04,o.frac,BUG_CAP-(o.bugLost||0));o.frac-=d;o.bugLost=(o.bugLost||0)+d;renderObj(o);const R=rectOf(o);floatText(R.x+R.w/2,R.y,'−4% урожая','#ff8a7a');save()}}});
+ if(!pestBoot){pestBoot=1;S.nextPestAt=Math.max(S.nextPestAt||0,t+180000);return}if(t<S.nextPestAt)return;S.nextPestAt=t+240000+Math.random()*180000;
  const cand=S.objs.filter(o=>birdEligible(o)&&!birds[o.id]);if(!cand.length)return;const o=pick(cand);
- if(Math.random()<.6)spawnBird(o,S.scareUntil>t);
- else if(o.kind==='bed'&&!o.bug&&S.proUntil<t)infest(o,pick(Object.keys(BUGS)))}
+ if(Math.random()<.65)spawnBird(o,S.scareUntil>t);
+ else if(o.kind==='bed'&&!o.bug&&S.proUntil<t&&!(o.bugSafe>t)&&S.objs.filter(x=>x.bug).length<2)infest(o,pick(Object.keys(BUGS)))}
 function infest(o,type,silent){if(o.bug)return;if(o.seg){o.frac=curFrac(o);o.pausedF1=o.seg.f1;o.seg=null}else o.pausedF1=o.frac>=1?1:null;
- o.bug=type;o.bugDmgAt=now()+60000;renderObj(o);save();
- if(!silent){SND.fail();toast(BUGS[type][0]+' напали на грядку!');tip('bug',[[4,`Беда — ${BUGS[type][0].toLowerCase()} на грядке! Пока они там, ничего не растёт, а урожай портится.`],[3,'Купи нужное средство во вкладке «Защита», нажми на грядку и перетащи его. От тли, жуков и слизней — разные средства!']])}}
-function cure(o,anim){if(!o.bug)return;o.bug=null;if(o.pausedF1!=null){const f1=o.pausedF1;o.pausedF1=null;if(o.frac<f1)o.seg={f0:o.frac,f1,t0:now(),t1:now()+(f1-o.frac)*o.total*o.speed};else o.frac=f1}
+ o.bug=type;o.bugLost=0;o.bugDmgAt=now()+BUG_STEP;renderObj(o);save();
+ if(!silent){SND.fail();toast(BUGS[type][0]+' напали на грядку!');tip('bug',[[4,`Беда — ${BUGS[type][0].toLowerCase()} на грядке! Пока они там, ничего не растёт, а урожай понемногу портится — но больше четверти они не съедят.`],[3,'Купи нужное средство во вкладке «Защита», нажми на грядку и перетащи его. От тли, жуков и слизней — разные средства!']])}}
+function cure(o,anim){if(!o.bug)return;o.bug=null;o.bugLost=0;o.bugSafe=now()+BUG_SAFE;if(o.pausedF1!=null){const f1=o.pausedF1;o.pausedF1=null;if(o.frac<f1)o.seg={f0:o.frac,f1,t0:now(),t1:now()+(f1-o.frac)*o.total*o.speed};else o.frac=f1}
  renderObj(o);if(anim){const R=rectOf(o);SND.magic();burst(R.x+R.w/2,R.y+R.h/2,16,['#9be36d','#e8ffd0','#fff'],90,[6,12]);addXp(3,R.x+R.w/2,R.y);toast('Вредители уничтожены!')}save()}
 function spawnBird(o,scared){const R=rectOf(o);const x=R.x+R.w*(.2+Math.random()*.6),y=R.y+R.h*(o.kind==='bed'?.6:.2)-(o.kind==='tree'?120:o.kind==='bush'?50:0);
  const el=document.createElement('div');el.className='bird';el.dataset.tap='bird:'+o.id;el.innerHTML=BIRDSVG;el.style.left=x+'px';el.style.top=y+'px';$('birds').appendChild(el);
  el.animate([{transform:'translate(-380px,-420px) scale(.7)'},{transform:'translate(0,0)'}],{duration:1400,easing:'cubic-bezier(.2,.7,.3,1)'});SND.caw();
  if(scared){birds[o.id]={el,scared:true};setTimeout(()=>{if(birds[o.id]&&birds[o.id].el===el){floatText(SCAREP[0],SCAREP[1]-200,'Пугало прогнало ворону!','#fff');shooBird(o.id,false)}},2200)}
- else{birds[o.id]={el,eatAt:now()+15000};tip('bird',[[4,'Ворона прилетела клевать урожай! Скорее нажми на неё. А лучше поставь пугало — оно сторожит 12 часов, даже когда ты не в игре.']])}}
+ else{birds[o.id]={el,eatAt:now()+25000};tip('bird',[[4,'Ворона прилетела клевать урожай! Скорее нажми на неё. А лучше поставь пугало — оно сторожит 12 часов, даже когда ты не в игре.']])}}
 function shooBird(id,byTap){const b=birds[id];if(!b)return;delete birds[id];const el=b.el;el.dataset.tap='';el.animate([{transform:'translate(0,0)'},{transform:'translate(420px,-460px) scale(.6)'}],{duration:900,easing:'ease-in',fill:'forwards'}).onfinish=()=>el.remove();
  if(byTap){SND.caw();stat('shoo');const o=objById(id);if(o){const R=rectOf(o);addXp(2,R.x+R.w/2,R.y)}save()}}
 function birdEat(id){const o=objById(id);shooBird(id,false);if(!o)return;const R=rectOf(o);
- if(isCropObj(o)){if(o.seg){const cur=curFrac(o),nf=Math.max(0,cur-.25);o.seg={f0:nf,f1:o.seg.f1,t0:now(),t1:now()+(o.seg.f1-nf)*o.total*o.speed}}else if(o.frac>=1&&!o.bug){o.frac=.75;o.seg={f0:.75,f1:1,t0:now(),t1:now()+.25*o.total*o.speed}}else o.frac=Math.max(0,o.frac-.25)}
+ if(isCropObj(o)){if(o.seg){const cur=curFrac(o),nf=Math.max(0,cur-.15);o.seg={f0:nf,f1:o.seg.f1,t0:now(),t1:now()+(o.seg.f1-nf)*o.total*o.speed}}else if(o.frac>=1&&!o.bug){o.frac=.85;o.seg={f0:.85,f1:1,t0:now(),t1:now()+.15*o.total*o.speed}}else o.frac=Math.max(0,o.frac-.15)}
  else{const P=PER[o.p];const half=P[5]*500*tm();if(o.ripe){o.ripe=false;o.seg={t0:now()-half,t1:now()+half}}else if(o.seg){o.seg.t1+=half/2}}
  renderObj(o);SND.caw();floatText(R.x+R.w/2,R.y,'Ворона склевала урожай!','#ff8a7a');save()}
 function clearBirds(){for(const k in birds){birds[k].el.remove();delete birds[k]}}

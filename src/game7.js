@@ -90,7 +90,7 @@ $('hQuest').addEventListener('pointerdown',e=>{e.stopPropagation();ac();SND.tap(
 
 /* ================= DAILY BONUS ================= */
 function dayKey(d=new Date()){return d.getFullYear()+'-'+(d.getMonth()+1)+'-'+d.getDate()}
-function dailyReward(day){const m=(1+0.15*(level()-1))*(holOn()==='ny'?2:1);return[{c:Math.round(30*m)},{c:Math.round(50*m)},{c:Math.round(80*m)},{fert:3,c:Math.round(20*m)},{c:Math.round(150*m)},{seeds:6,c:Math.round(30*m)},{c:Math.round(300*m),fert:2}][day-1]}
+function dailyReward(day){const m=(1+0.15*(level()-1))*(holOn()==='ny'?2:1);return[{c:Math.round(50*m)},{c:Math.round(75*m)},{c:Math.round(120*m)},{fert:4,c:Math.round(40*m)},{c:Math.round(220*m)},{seeds:8,c:Math.round(50*m)},{c:Math.round(450*m),fert:3}][day-1]}
 function rewardText(r){return[r.c?r.c+' монет':'',r.fert?r.fert+' удобр.':'',r.seeds?r.seeds+' пакетов семян':''].filter(Boolean).join(' + ')}
 function showDaily(done){const today=dayKey(),y=new Date();y.setDate(y.getDate()-1);const claimed=S.daily.last===today;
  const day=claimed?S.daily.streak:(S.daily.last===dayKey(y)?S.daily.streak%7+1:1);const row=$('dailyRow');row.innerHTML='';
