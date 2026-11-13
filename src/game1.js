@@ -2,7 +2,7 @@
 'use strict';
 const $=id=>document.getElementById(id);
 const IMG=__IMGMAP__;
-const VERSION='3.3';
+const VERSION='3.4';
 let WW=4637,WH=1967;
 const now=()=>Date.now();
 const SPOIL=6*3600000;
@@ -64,7 +64,7 @@ Object.assign(PROD,{cmilk:['Верблюжье молоко',95,'milk'],oegg:['�
  il_salad:['Израильский салат',0,'il_salad'],il_lemonade:['Лимонад с мятой',0,'il_lemonade'],il_shakshuka:['Шакшука',0,'il_shakshuka'],il_silan:['Финиковый сироп силан',0,'il_silan'],
  il_falafel:['Фалафель',0,'il_falafel'],il_oliveoil:['Оливковое масло',0,'il_oliveoil'],il_olivesjar:['Оливки в банке',0,'il_olivesjar'],il_hummus:['Хумус',0,'il_hummus'],
  il_pomjuice:['Гранатовый сок',0,'il_pomjuice'],il_figjam:['Инжирное варенье',0,'il_figjam'],il_zaatarmix:['Специя заатар',0,'il_zaatarmix'],il_labneh:['Лабане',0,'il_labneh'],
- il_goatcheese:['Козий сыр',0,'il_goatcheese'],il_pita:['Пита',0,'il_pita'],il_challah:['Хала',0,'il_challah'],il_jachnun:['Джахнун',0,'il_jachnun'],il_sabich:['Сабих',0,'il_sabich'],il_malabi:['Малаби',0,'il_malabi']});
+ il_goatcheese:['Козий сыр',0,'il_goatcheese'],il_evoil:['Масло Extra Virgin',0,'il_evoil'],il_zpita:['Пита с заатаром',0,'il_zpita'],il_falspice:['Специи для фалафеля',0,'il_falspice'],il_wine:['Вино Галилеи',0,'il_wine'],il_lavash:['Лаваш',0,'il_lavash'],il_pita:['Пита',0,'il_pita'],il_challah:['Хала',0,'il_challah'],il_jachnun:['Джахнун',0,'il_jachnun'],il_sabich:['Сабих',0,'il_sabich'],il_malabi:['Малаби',0,'il_malabi']});
 // fish: name, level, sell, weight
 const FISH={f_crucian:['Карась',5,25,40],f_roach:['Плотва',5,22,40],f_perch:['Окунь',6,35,30],f_bream:['Лещ',8,50,22],f_pike:['Щука',10,80,14],f_zander:['Судак',12,95,10],f_catfish:['Сом',14,150,6],f_gold:['Золотая рыбка',5,500,1]};
 // forest: name, sell, weight
@@ -76,9 +76,13 @@ const FISH_LVL=19,FOREST_LVL=23,NEWL=19,WX_LVL=34,HOL_LVL=35;
 const vis=l=>l<NEWL||level()>=l-1; // v2 content is hidden until one level before it opens
 const FAC={
  kitchen:{name:'Летняя кухня',lvl:4,img:'i_house',rec:{borsch:[4,{beet:1,cabbage:1,potato:1,carrot:1,onion:1},600,1],caviar:[5,{zucchini:1,carrot:1,onion:1},360,1],salad:[5,{radish:1,cucumber:1,dill:1},180,1],pickles:[6,{cucumber:1,dill:1,garlic:1},480,1],lecho:[7,{tomato:1,eggplant:1,garlic:1},900,1],
-   feed:[7,{corn:1,beans:1},120,3],il_salad:[999,{il_tomato:2,il_cucumber:2},180,1],il_lemonade:[999,{il_mint:3},120,1],il_shakshuka:[999,{il_tomato:2,il_pepper:1,egg:2},300,1],il_silan:[999,{il_date:3},360,1],il_falafel:[999,{il_chickpea:2,il_parsley:1,il_coriander:1},360,1],il_oliveoil:[999,{il_olive:3},420,1],il_olivesjar:[999,{il_olive:4},300,1],il_hummus:[999,{il_chickpea:2,il_oliveoil:1},300,1],il_pomjuice:[999,{il_pomeg:3},300,1],il_figjam:[999,{il_fig:3},420,1],il_zaatarmix:[999,{il_zaatar:2,il_oliveoil:1},300,1],il_pita:[999,{flour:1},240,2],il_challah:[999,{flour:2,egg:2},420,1],il_jachnun:[999,{flour:2,butter:1},480,1],il_sabich:[999,{il_eggplant:1,egg:1,il_pita:1},300,1],il_malabi:[999,{milk:1,il_pomjuice:1},300,1],friedeggs:[6,{egg:2},180,1],mushsoup:[5,{m_chanterelle:2,potato:1,onion:1},420,1],eggbasket:[8,{egg:3,egg_quail:3},120,1],sjam:[7,{strawberry:3},360,1],rjam:[8,{raspberry:3},420,1],mors:[9,{bcurrant:3},360,1],acomp:[10,{apple:3},480,1],pjam:[11,{pear:3},540,1],ccomp:[13,{cherry:3},540,1]}},
+   feed:[7,{corn:1,beans:1},120,3],il_salad:[999,{il_tomato:2,il_cucumber:2},180,1],il_lemonade:[999,{il_mint:3},120,1],il_shakshuka:[999,{il_tomato:2,il_pepper:1,egg:2},300,1],il_silan:[999,{il_date:3},360,1],il_falafel:[999,{il_chickpea:2,il_parsley:1,il_coriander:1},360,1],il_hummus:[999,{il_chickpea:2,il_oliveoil:1},300,1],il_pomjuice:[999,{il_pomeg:3},300,1],il_figjam:[999,{il_fig:3},420,1],il_jachnun:[999,{flour:2,butter:1},480,1],il_sabich:[999,{il_eggplant:1,egg:1,il_pita:1},300,1],il_malabi:[999,{milk:1,il_pomjuice:1},300,1],friedeggs:[6,{egg:2},180,1],mushsoup:[5,{m_chanterelle:2,potato:1,onion:1},420,1],eggbasket:[8,{egg:3,egg_quail:3},120,1],sjam:[7,{strawberry:3},360,1],rjam:[8,{raspberry:3},420,1],mors:[9,{bcurrant:3},360,1],acomp:[10,{apple:3},480,1],pjam:[11,{pear:3},540,1],ccomp:[13,{cherry:3},540,1]}},
  dairy:{name:'Сыроварня',lvl:8,img:'b_dairy',rec:{il_labneh:[999,{milk:2,il_zaatarmix:1},420,1],il_goatcheese:[999,{milk:3},600,1],scream:[8,{milk:2},300,1],cottage:[8,{milk:2},360,1],butter:[9,{milk:3},480,1],cheese:[10,{milk:4},720,1]}},
  spinnery:{name:'Прядильня',lvl:10,img:'b_spinnery',rec:{yarn:[10,{wool:2},300,1],socks:[10,{yarn:1},360,1],mittens:[11,{yarn:2},480,1],sweater:[12,{yarn:4},900,1],pillow:[12,{down:3,feather:4},600,1],perina:[14,{down:6,feather:6},900,1]}},
+ olivepress:{name:'Маслобойня',lvl:999,img:'b_olivepress',rec:{il_oliveoil:[999,{il_olive:3},420,1],il_olivesjar:[999,{il_olive:4},300,1],il_evoil:[999,{il_olive:6},900,1]}},
+ spice:{name:'Цех специй',lvl:999,img:'b_spice',rec:{il_zaatarmix:[999,{il_zaatar:2,il_oliveoil:1},300,1],il_falspice:[999,{il_coriander:2,il_parsley:1},240,1]}},
+ winery:{name:'Винодельня',lvl:999,img:'b_winery',rec:{il_wine:[999,{il_grape:5},1200,1]}},
+ tabun:{name:'Табун',lvl:999,img:'b_tabun',rec:{il_pita:[999,{flour:1},240,2],il_lavash:[999,{flour:1},200,2],il_zpita:[999,{flour:1,il_oliveoil:1,il_zaatarmix:1},300,2],il_challah:[999,{flour:2,egg:2,honey:1},420,1]}},
  mill:{name:'Мельница',lvl:6,img:'b_mill',rec:{flour:[6,{wheat:2},240,1],grain:[6,{wheat:1,oats:1},120,3],oil:[7,{sunflower:3},480,1],ryeflour:[8,{rye:2},300,1],groats:[9,{buckwheat:2},360,1]}},
  oven:{name:'Русская печь',lvl:7,img:'b_oven',rec:{blini:[8,{flour:1,egg:2,milk:1},420,1],pirozhki:[9,{flour:1,egg:1,cabbage:1},480,1],syrniki:[10,{cottage:1,egg:1,flour:1},420,1],vatrushka:[11,{flour:1,cottage:1,sjam:1},540,1]}},
  apiary:{name:'Пасека',lvl:10,img:'b_apiary',rec:{honey:[10,{sunflower:1,buckwheat:1},600,2],wax:[11,{honey:1},300,1],candle:[12,{wax:1},360,1]}},
@@ -115,7 +119,7 @@ const FIX={market:{n:'Скупщик',x:3240,y:985,w:170,h:230,lvl:1,cost:0,hid:
  Object.assign(FAC.mill,{lvl:22});Object.assign(FAC.oven,{lvl:24});Object.assign(FAC.apiary,{lvl:27});Object.assign(FAC.bakery,{lvl:30});Object.assign(FAC.smokehouse,{lvl:32});
  Object.entries({chicken:20,quail:25,duck:28,goose:31,turkey:33}).forEach(([k,v])=>ANIM[k].lvl=v);
  Object.entries({coop:20,mill:22,oven:24,apiary:27,pyard:28,fair:29,bakery:30,smokehouse:32}).forEach(([k,v])=>FIX[k].lvl=v)})();
-const FIXDESC={well:'Вода без ограничений',dairy:'Сметана, творог, масло, сыр',spinnery:'Пряжа, носки, варежки, свитер, подушки',cowshed:'До 3 коров',sheeppen:'До 4 овец',coop:'Куры и перепёлки',pyard:'Утки, гуси, индюки',mill:'Мука, масло, крупа, зерносмесь',oven:'Блины, пирожки, сырники',bakery:'Хлеб, пироги, каравай, медовик',apiary:'Мёд, воск, свечи',smokehouse:'Копчёная рыба',fair:'Покупает дороже скупщика'};
+const FIXDESC={olivepress:'Оливковое масло, Extra Virgin, оливки',spice:'Заатар и специи для фалафеля',winery:'Вино из галилейского винограда',tabun:'Пита, лаваш, пита с заатаром, хала',well:'Вода без ограничений',dairy:'Сметана, творог, масло, сыр',spinnery:'Пряжа, носки, варежки, свитер, подушки',cowshed:'До 3 коров',sheeppen:'До 4 овец',coop:'Куры и перепёлки',pyard:'Утки, гуси, индюки',mill:'Мука, масло, крупа, зерносмесь',oven:'Блины, пирожки, сырники',bakery:'Хлеб, пироги, каравай, медовик',apiary:'Мёд, воск, свечи',smokehouse:'Копчёная рыба',fair:'Покупает дороже скупщика'};
 const ITEMS={worms:['Черви','worms'],fert:['Удобрение','i_fert'],catfood:['Кошачий корм','catfood'],p_aphid:['Средство от тли','p_aphid'],p_beetle:['От колорадского жука','p_beetle'],p_slug:['Гранулы от слизней','p_slug']};
 ANN_IDS.forEach(id=>{ITEMS['seed_'+id]=['Семена: '+ANN[id][0].toLowerCase(),id+'_seed'];ITEMS[id]=[ANN[id][0],id+'_crop']});
 PER_IDS.forEach(id=>{ITEMS[id]=[PER[id][0],id+'_crop']});

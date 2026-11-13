@@ -44,7 +44,7 @@ function openFac(f){if(!facOn(f)){toast(FAC[f].name+' откроется на у
 function renderFacUI(){const f=curFac,F=S.fac[f];const box=document.createElement('div');box.className='kslots';const t=now();
  for(let i=0;i<F.cap;i++){const x=F.slots[i];const d=document.createElement('div');
   if(!x){d.className='kslot';d.innerHTML='🍳 Свободное место — выбери рецепт'}
-  else{const done=t>=x.t1;d.className='kslot busy';d.innerHTML=`<img src="${IMG[PROD[x.r][2]]}"><div style="flex:1"><div>${PROD[x.r][0]}${FAC[f].rec[x.r][3]>1?' ×'+FAC[f].rec[x.r][3]:''}</div>${done?'':`<div class="track"><div class="fill" style="width:${Math.min(100,(t-x.t0)/(x.t1-x.t0)*100)}%"></div></div><div style="font-size:15px;margin-top:4px">готово через ${fmt(x.t1-t)}</div>`}</div>${done?'<div class="btn">Забрать</div>':''}`;
+  else{const done=t>=x.t1;d.className='kslot busy';d.innerHTML=`<img src="${IMG[PROD[x.r][2]]}"><div style="flex:1"><div>${PROD[x.r][0]}${(recOf(x.r)||[0,0,0,1])[3]>1?' ×'+recOf(x.r)[3]:''}</div>${done?'':`<div class="track"><div class="fill" style="width:${Math.min(100,(t-x.t0)/(x.t1-x.t0)*100)}%"></div></div><div style="font-size:15px;margin-top:4px">готово через ${fmt(x.t1-t)}</div>`}</div>${done?'<div class="btn">Забрать</div>':''}`;
    if(done)d.querySelector('.btn').onclick=()=>collectDish(f,i)}
   box.appendChild(d)}
  if(F.cap<3){const pr=cost(F.cap===1?250:600);const d=document.createElement('div');d.className='kslot';d.innerHTML=`<div style="flex:1">Ещё одно место<br><span style="font-size:14px">готовить больше сразу</span></div><div class="btn orange ${S.coins<pr?'off':''}">${pr} ${coinSvg}</div>`;d.querySelector('.btn').onclick=()=>{if(!spend(pr))return;F.cap++;SND.level();save();renderFacUI()};box.appendChild(d)}
@@ -68,10 +68,11 @@ function showRecipe(f,id){SND.tap();const r=FAC[f].rec[id],F=S.fac[f],ok=level()
  $('rBack').onclick=()=>{SND.tap();renderFacUI()};$('rCook').onclick=()=>{if(ok&&can&&free)cook(f,id)}}
 function cook(f,id){const r=FAC[f].rec[id],F=S.fac[f];if(level()<r[0]||!canCook(f,id))return;let i=0;while(F.slots[i])i++;if(i>=F.cap){toast('Все места заняты');return}
  Object.entries(r[1]).forEach(([k,n])=>takeItem(k,n));F.slots[i]={r:id,t0:now(),t1:now()+r[2]*1000*tm()};SND.plant();toast('Готовим: '+PROD[id][0]);renderHUD();renderFacUI();save()}
-function collectDish(f,i){const x=S.fac[f].slots[i];if(!x)return;const q=FAC[f].rec[x.r][3];addItem(x.r,q);S.fac[f].slots[i]=null;SND.harvest();stat('cook');stat('cook_'+x.r);
+function collectDish(f,i){const x=S.fac[f].slots[i];if(!x)return;const q=(recOf(x.r)||[0,0,0,1])[3];addItem(x.r,q);S.fac[f].slots[i]=null;SND.harvest();stat('cook');stat('cook_'+x.r);
  const c=elStage($('hStore'));floatText(c[0]-40,c[1]+70,'+'+q+' '+PROD[x.r][0],'#fff',true);addXp(Math.round(PROD[x.r][1]/10),fbPos(f)[0],fbPos(f)[1]);bump('hStore');renderFacUI();renderHUD();save()}
 const fbPos=f=>f==='kitchen'?KITP:[FIX[f].x,FIX[f].y-FIX[f].w*.95];const kbKey={};
-function renderFacBubs(){for(const f in FAC){let el=$('kb_'+f);if(!el){el=document.createElement('div');el.id='kb_'+f;el.className='bb';el.dataset.tap=f==='kitchen'?'house':'fix:'+f;el.style.pointerEvents='auto';el.style.left=fbPos(f)[0]+'px';el.style.top=fbPos(f)[1]+'px';$('kbubs').appendChild(el)}
+function recOf(id){for(const f in FAC)if(FAC[f].rec[id])return FAC[f].rec[id];return null}
+function renderFacBubs(){for(const f in FAC){if(f!=='kitchen'&&!FIX[f]){const e0=$('kb_'+f);if(e0)e0.style.display='none';continue}let el=$('kb_'+f);if(!el){el=document.createElement('div');el.id='kb_'+f;el.className='bb';el.dataset.tap=f==='kitchen'?'house':'fix:'+f;el.style.pointerEvents='auto';el.style.left=fbPos(f)[0]+'px';el.style.top=fbPos(f)[1]+'px';$('kbubs').appendChild(el)}
   if(!facOn(f)){el.style.display='none';continue}el.style.display='';const t=now();const xs=S.fac[f].slots.filter(Boolean);const ready=xs.filter(x=>t>=x.t1);let key,html;
   if(ready.length){key='r';html=`<div class="kb ready"><img src="${IMG[PROD[ready[0].r][2]]}">Готово!</div>`}
   else if(xs.length){const x=xs.slice().sort((a,b)=>a.t1-b.t1)[0];key='c'+x.r;html=`<div class="kb"><img src="${IMG[PROD[x.r][2]]}"><span class="kt">${fmt(x.t1-t)}</span></div>`}
@@ -90,12 +91,13 @@ function renderMarket(){const l=$('marketList');l.innerHTML='';const items=sella
 function sellMarket(k,n){if(!n||S.inv[k]<n)return;takeItem(k,n);const c=coinPos();addCoins(buyPrice(k)*n,c[0],c[1]);stat('market',n);renderMarket();save()}
 
 /* ================= ORDERS ================= */
+const ILNEIGH=[['Сосед Ави','👨‍🦱'],['Бабушка Хана','👵'],['Йоси с рынка','🧔'],['Мири из мошава','👩'],['Повар Моше','👨‍🍳'],['Ноа из кафе','👩‍🍳'],['Таксист Ицик','🚕'],['Рав Шломо','🧔‍♂️'],['Тётя Рути','👵'],['Студент Эли','👨‍🎓']];
 const NEIGH=[['Сосед Петрович','👴'],['Тётя Валя','👵'],['Михалыч с лодкой','🎣'],['Внучка Света','👧'],['Дачница Люда','👩‍🌾'],['Председатель СНТ','🧔'],['Батюшка Николай','🧔‍♂️'],['Студентка Аня','👩‍🎓']];
 function orderPool(){const p=ANN_IDS.filter(annUnlocked);PER_IDS.filter(k=>S.objs.some(o=>o.p===k)).forEach(k=>p.push(k));
  for(const f in FAC)if(facOn(f))Object.entries(FAC[f].rec).forEach(([id,r])=>{if(level()>=r[0]&&id!=='feed')p.push(id)});
  ANI_IDS.forEach(a=>{if(aniCount(a))p.push(ANIM[a].prod)});if(S.stats.fish)['f_crucian','f_roach','f_perch'].forEach(k=>{if(level()>=FISH[k][1])p.push(k)});if(S.stats.forest)p.push('m_chanterelle','w_blueberry');return p}
-function genOrder(){const pool=orderPool(),stock=pool.filter(k=>(S.inv[k]||0)>0);const it=(stock.length&&Math.random()<.5)?stock[Math.floor(Math.random()*stock.length)]:pool[Math.floor(Math.random()*pool.length)];
- const big=!!PROD[it]&&!RAW.has(it);const q=big?1:1+Math.floor(Math.random()*(baseSell(it)<60?3:2));const n=NEIGH[Math.floor(Math.random()*NEIGH.length)];
+function genOrder(){let pool=orderPool();if(typeof ilOn==='function'&&ilOn()){const ip=pool.filter(k=>k.startsWith('il_')||k==='milk'||k==='egg'||k==='honey'||k==='cmilk'||k==='oegg'||k==='flour');if(ip.length&&Math.random()<.8)pool=ip}const stock=pool.filter(k=>(S.inv[k]||0)>0);const it=(stock.length&&Math.random()<.5)?stock[Math.floor(Math.random()*stock.length)]:pool[Math.floor(Math.random()*pool.length)];
+ const big=!!PROD[it]&&!RAW.has(it);const q=big?1:1+Math.floor(Math.random()*(baseSell(it)<60?3:2));const NB=typeof ilOn==='function'&&ilOn()?ILNEIGH:NEIGH,n=NB[Math.floor(Math.random()*NB.length)];
  return{who:n[0],ava:n[1],item:it,qty:q,reward:Math.round(baseSell(it)*q*(1+0.06*(level()-1))*(1+Math.random()*.15)*holMult('orders')*holMult('sell',it)),xp:Math.max(3,Math.round(baseSell(it)*q/12))}}
 function maxOrders(){return Math.min(6,3+Math.floor(level()/4))}
 function genOrders(){S.orders=[];for(let i=0;i<maxOrders();i++)S.orders.push(genOrder());S.nextOrderAt=now()+30000}

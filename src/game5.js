@@ -129,7 +129,7 @@ function harvest(o){const R=rectOf(o);let id,qty,xp;
  setTimeout(()=>{bump('hStore');const hs=elStage($('hStore'));floatText(hs[0]-40,hs[1]+70,'+'+qty+' '+iName(id),'#fff',true);addXp(xp,R.x+R.w/2,R.y-20);if(o===tutBed())tutEvent('harvest');save()},1000)}
 
 /* ================= TAPS ================= */
-function handleTap(target,wp){if(placing){placeAt(wp);return}
+function handleTap(target,wp){if(mv){mvTap(target,wp);return}if(placing){placeAt(wp);return}
  const el=target&&target.closest?target.closest('[data-tap]'):null;const tap=el&&el.dataset.tap;
  if(!tap){if(trayOpen){closeTray();updateGuide()}return}
  const w=tutWait();

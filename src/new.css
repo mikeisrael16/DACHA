@@ -224,3 +224,9 @@ input.nameIn{width:100%!important;margin-bottom:14px!important}
 #tractor img{width:100%;display:block;filter:drop-shadow(0 6px 6px rgba(0,0,0,.3))}
 
 .orchLbl{position:absolute;transform:translate(-50%,-100%);background:rgba(255,248,225,.92);border:3px solid #6d9b3a;color:#3d5f1c;font-weight:800;font-size:26px;line-height:1.2;padding:6px 14px;border-radius:14px;white-space:nowrap;pointer-events:none;z-index:5;box-shadow:0 3px 0 rgba(0,0,0,.18)}
+
+#hMove{right:16px!important;top:442px!important}#hMove span{font-size:46px!important;line-height:1}
+body.moving #hMove{background:linear-gradient(#ffe27a,#f1b53a)!important}
+.mvsel{filter:drop-shadow(0 0 6px #fff) drop-shadow(0 0 14px #ffd23f)!important;animation:mvp 1s ease-in-out infinite}
+@keyframes mvp{50%{filter:drop-shadow(0 0 2px #fff) drop-shadow(0 0 22px #ffb300)}}
+body.moving .fix,body.moving .ani{cursor:grab}

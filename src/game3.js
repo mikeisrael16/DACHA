@@ -3,6 +3,7 @@
 const cam={s:1,x:0,y:0};
 const minS=()=>Math.max(SW/WW,SH/WH,.52);
 const maxS=()=>Math.max(1.9,minS()*2.5);
+function pickTarget(e){const t=e.target;if(!t||!t.closest||!t.closest('.hitz'))return t;for(const el of document.elementsFromPoint(e.clientX,e.clientY)){const d=el.closest&&el.closest('[data-tap]');if(d&&/^(ani|fix|obj|bird|thief):/.test(d.dataset.tap))return el}return t}
 function clampCam(){cam.s=Math.min(maxS(),Math.max(minS(),cam.s));cam.x=Math.min(0,Math.max(SW-WW*cam.s,cam.x));cam.y=Math.min(0,Math.max(SH-WH*cam.s,cam.y))}
 let guideRaf=0;
 function applyCam(anim){const rel=cam.s/minS();$('world').style.setProperty('--bz',Math.max(.8,Math.min(1.35,1.3/Math.pow(rel,.7))).toFixed(3));for(const el of [$('world'),$('guideL')]){el.classList.toggle('anim',!!anim);el.style.transform=`translate(${cam.x}px,${cam.y}px) scale(${cam.s})`}
@@ -19,7 +20,7 @@ $('hHome').addEventListener('pointerdown',e=>{e.stopPropagation();SND.tap();camH
 const view=$('view');const ptrs=new Map();let gest=null;
 view.addEventListener('pointerdown',e=>{if(drag)return;ac();try{view.setPointerCapture(e.pointerId)}catch(_){}
  ptrs.set(e.pointerId,toStage(e.clientX,e.clientY));
- if(ptrs.size===1)gest={mode:'tap',start:toStage(e.clientX,e.clientY),cx:e.clientX,cy:e.clientY,cam0:{...cam},target:e.target};
+ if(ptrs.size===1)gest={mode:'tap',start:toStage(e.clientX,e.clientY),cx:e.clientX,cy:e.clientY,cam0:{...cam},target:pickTarget(e)};
  else if(ptrs.size===2){const[a,b]=[...ptrs.values()];const mid=[(a[0]+b[0])/2,(a[1]+b[1])/2];gest={mode:'pinch',d0:Math.hypot(a[0]-b[0],a[1]-b[1]),s0:cam.s,wpt:s2w(mid)}}});
 view.addEventListener('pointermove',e=>{if(!ptrs.has(e.pointerId)||!gest)return;ptrs.set(e.pointerId,toStage(e.clientX,e.clientY));
  if(gest.mode==='tap'&&Math.hypot(e.clientX-gest.cx,e.clientY-gest.cy)>9){gest.mode='pan';closeTray()}
@@ -90,7 +91,7 @@ function sellables(){return Object.keys(S.inv).filter(k=>S.inv[k]>0&&(ANN[k]||PE
 function renderHUD(){if(!S)return;
  $('coinTxt').textContent=S.coins;const lv=level();$('lvTxt').textContent=lv;$('xpBar').style.width=Math.min(100,(S.xp-xpFor(lv))/(xpFor(lv+1)-xpFor(lv))*100)+'%';
  $('storeCnt').textContent=sellables().reduce((a,k)=>a+S.inv[k],0);
- show('hCoins',S.ui.coins);show('hXp',S.ui.xp);show('hStore',S.ui.store);show('hShop',S.ui.shop);show('hQuest',S.ui.quest);show('hDaily',S.done);
+ show('hCoins',S.ui.coins);show('hXp',S.ui.xp);show('hStore',S.ui.store);show('hShop',S.ui.shop);show('hQuest',S.ui.quest);show('hDaily',S.done);show('hMove',S.done);
  const canFill=S.done?S.orders.filter(o=>S.inv[o.item]>=o.qty).length:(S.tut>=TI.sell&&S.inv.potato>0?1:0);
  $('boardBadge').style.display=S.ui.board&&canFill?'block':'none';show('hOrders',S.ui.board);$('boardLbl').style.display=S.ui.board?'':'none';$('ordersDot').style.display=S.ui.board&&canFill?'block':'none';$('ordersDot').textContent=canFill||'';$('boardBadge').textContent=canFill;
  renderGauge();$('canBadge').classList.toggle('on',S.can>0);$('canCnt').textContent=S.can>1?S.can:'';$('canCnt').style.display=S.can>1?'':'none';

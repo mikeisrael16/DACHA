@@ -25,7 +25,8 @@ const ILC={WW:5152,WH:2186,
   coop:{n:'Курятник',x:905,y:560,w:230,lvl:20,cost:300},pyard:{n:'Птичий двор',x:4200,y:1960,w:250,lvl:28,cost:900},
   dairy:{n:'Сыроварня',x:1290,y:2090,w:285,lvl:8,cost:700},spinnery:{n:'Прядильня',x:1610,y:2090,w:285,lvl:10,cost:900},mill:{n:'Мельница',x:1930,y:2090,w:285,lvl:22,cost:500},
   oven:{n:'Русская печь',x:2250,y:2090,w:285,lvl:24,cost:600},bakery:{n:'Пекарня',x:2570,y:2090,w:285,lvl:30,cost:1500},smokehouse:{n:'Коптильня',x:2890,y:2090,w:285,lvl:32,cost:1600},
-  apiary:{n:'Пасека',x:3210,y:2090,w:285,lvl:27,cost:900},fair:{n:'Ярмарка',x:3640,y:2130,w:300,lvl:29,cost:1200}},
+  apiary:{n:'Пасека',x:3210,y:2090,w:285,lvl:27,cost:900},fair:{n:'Ярмарка',x:3640,y:2130,w:300,lvl:29,cost:1200},
+  olivepress:{n:'Маслобойня',x:3990,y:1700,w:270,lvl:999,cost:800},winery:{n:'Винодельня',x:4390,y:1720,w:310,lvl:999,cost:1200},spice:{n:'Цех специй',x:2720,y:640,w:210,lvl:999,cost:700},tabun:{n:'Табун',x:2930,y:650,w:230,lvl:999,cost:600}},
  pos:{goat:[[3560,470],[3660,410],[3620,560]],awassi:[[3800,520],[3910,470],[3760,630]],donkey:[[3470,540]],camel:[[3990,610]],ostrich:[[3720,330],[3870,380]],bees:[[2260,530],[2390,505],[2520,530]],
   chicken:[[1010,610],[1100,630],[1190,600],[1270,640]],quail:[[1120,520],[1210,540],[1300,560]],duck:[[4420,1880],[4500,1990],[4380,2080]],goose:[[4110,2100],[4250,2120]],turkey:[[4560,2120],[4330,2140]],cow:[[4010,640],[4190,670],[4370,630]],sheep:[[1340,690],[1460,720],[1590,660],[1250,600]]},
  CATP:[940,1490],BOWLF:[800,1510],BOWLW:[870,1516],
@@ -62,14 +63,14 @@ const IL_STEPS=[
  [5,['il_eggplant','il_parsley'],[[1,'Новые семена: баклажаны и петрушка!']]],
  [6,['il_date','il_silan'],[[2,'Финиковая пальма! Из фиников на кухне варят сладкий сироп силан.']]],
  [7,['il_chickpea','il_coriander','il_falafel'],[[5,'Нут и кинза! Из нута, петрушки и кинзы на кухне делают фалафель — Давид его обожает.']]],
- [8,['il_oliveoil','il_olivesjar','il_hummus'],[[2,'Теперь на кухне можно давить оливковое масло, мариновать оливки и готовить хумус!']],null],
+ [8,['olivepress','il_oliveoil','il_olivesjar','il_evoil','il_hummus'],[[2,'Пора строить маслобойню — она у сада, справа внизу! Там давят обычное оливковое масло и премиальное Extra Virgin, маринуют оливки. А на кухне из масла и нута получится хумус.']],[3990,1560]],
  [9,['awassi'],[[1,'На пастбище можно завести овец авасси — у них отличная шерсть для прядильни.']],[3800,520]],
  [10,['il_pomeg','il_pomjuice'],[[2,'Гранат! Из гранатов на кухне выжимают вкуснейший сок.']]],
  [11,['il_spotato','il_sage'],[[1,'Новые семена: батат и шалфей.']]],
  [12,['il_fig','il_figjam'],[[2,'Инжир! Из него варят инжирное варенье.']]],
  [13,['donkey'],[[5,'Ослик! Он даёт удобрение — с ним урожай растёт быстрее.']],[3500,500]],
- [14,['il_grape'],[[1,'Виноград! Сажай лозу в саду — Давид любит есть его прямо с куста.']]],
- [15,['il_zaatar','il_zaatarmix','il_labneh','il_goatcheese'],[[5,'Заатар — главная израильская пряность! Смешай его на кухне с оливковым маслом, а в сыроварне делай лабане и козий сыр.']]],
+ [14,['il_grape','winery','il_wine'],[[1,'Виноград! Сажай лозу в саду. А рядом с садом можно построить винодельню — из винограда Галилеи там делают вино.']],[4390,1560]],
+ [15,['il_zaatar','spice','il_zaatarmix','il_falspice','il_labneh','il_goatcheese'],[[5,'Заатар — главная израильская пряность! Построй цех специй у дороги к лесу — там смешивают заатар с оливковым маслом и готовят специи для фалафеля, а в сыроварне делай лабане и козий сыр.']]],
  [16,['il_orange'],[[2,'Яффские апельсины — самые знаменитые в мире!']]],
  [17,['il_sabra'],[[7,'Сабра — колючий кактус со сладкими плодами. Осторожно, колется!']]],
  [18,['il_okra','il_basil'],[[1,'Новые семена: бамия и базилик.']]],
@@ -81,16 +82,17 @@ const IL_STEPS=[
  [24,['il_melon'],[[2,'Израильский арбуз — летом без него никак!']]],
  [25,['ostrich'],[[7,'Страус! Одно страусиное яйцо — как двадцать куриных. Кормить зерносмесью.']],[3800,360]],
  [26,['il_loquat'],[[1,'Мушмула, она же шесек — весенний фрукт.']]],
- [27,['il_pita','il_challah','il_jachnun','il_sabich','il_malabi'],[[5,'Последний секрет: на кухне теперь можно печь питу и халу, готовить джахнун, сабих и малаби. Муку бери с мельницы.']]]];
+ [27,['tabun','il_pita','il_lavash','il_zpita','il_challah','il_jachnun','il_sabich','il_malabi'],[[5,'Последний секрет: построй табун — глиняную печь у дороги в лес. В нём пекут горячую питу, лаваш, питу с заатаром и халу к пятнице. А на кухне — джахнун, сабих и малаби. Муку бери с мельницы.']],[2930,520]]];
 let DRIP_LVL=999;
-function setLvl(id,L){if(ANN[id])ANN[id][1]=L;if(PER[id])PER[id][2]=L;for(const f in FAC)if(FAC[f].rec[id])FAC[f].rec[id][0]=L;if(ANIM[id]&&ANIM[id].loc==='il')ANIM[id].lvl=L;if(id==='drip')DRIP_LVL=L}
+function setLvl(id,L){if(ANN[id])ANN[id][1]=L;if(PER[id])PER[id][2]=L;for(const f in FAC)if(FAC[f].rec[id])FAC[f].rec[id][0]=L;if(ANIM[id]&&ANIM[id].loc==='il')ANIM[id].lvl=L;if(id==='drip')DRIP_LVL=L;if(FAC[id]&&ILFAC.includes(id))FAC[id].lvl=L;if(FIX[id]&&ILFAC.includes(id))FIX[id].lvl=L}
+const ILFAC=['olivepress','spice','winery','tabun'];
 function ilSetup(){const on=ilOn(),B=on?(S.ilBase||level()):0;
  if(on&&!S.dry20){S.dry20=1;const t0=now();S.objs.forEach(o=>{delete o.dryAt;if(isCropObj(o)&&o.ripeAt&&t0-o.ripeAt>DRY_MS/2)o.ripeAt=t0})}
  if(on&&!S.wildFix){S.wildFix=1;S.wt=S.wt||0;S.objs.forEach(o=>{if(isCropObj(o)&&(o.state==='weeds'||o.state==='used'))o.state='wild'})}
  IL_STEPS.forEach(([st,ids])=>ids.forEach(id=>setLvl(id,on?B+st:999)));
  ANIM.chicken.lvl=20;if(FIX.coop)FIX.coop.lvl=20;orchSigns(on)}
 function orchSigns(on){document.querySelectorAll('.orchLbl').forEach(e=>e.remove());if(!on)return;
- [[4170,1500],[540,1760]].forEach(([x,y])=>{const d=document.createElement('div');d.className='orchLbl';d.textContent='🌳 Сад — место для деревьев';d.style.left=x+'px';d.style.top=y+'px';$('world').appendChild(d)})}
+ [[4140,762],[540,1760]].forEach(([x,y])=>{const d=document.createElement('div');d.className='orchLbl';d.textContent='🌳 Сад — место для деревьев';d.style.left=x+'px';d.style.top=y+'px';$('world').appendChild(d)})}
 function ilFeatures(){const B=S.ilBase,out=[];
  IL_STEPS.forEach(([st,ids,lines,cam])=>{if(st&&lines)out.push({k:'il_'+st,lvl:B+st,lines,cam:cam||null})});
  const CM={market:'market',wellI:'well',dairy:'dairy',spin:'spinnery',mill:'mill',oven:'oven',apiary:'apiary',pyard:'pyard',bakery:'bakery',fairI:'fair',smoke:'smokehouse'};
@@ -104,7 +106,7 @@ function makeIL(old){const L=lvlOfXp(old.xp),s=newState();const ru=JSON.parse(JS
   stats:old.stats||s.stats,daily:old.daily||s.daily,seenVer:old.seenVer,rod2:!!old.rod2,holGift:old.holGift||{},loc:'il',ilBase:L,orch:1,moved:0,orchMoved:0,catFixed:1,ilArrive:1,ru,firstPotato:false,lastSeen:now()});
  Object.assign(s.ui,{coins:true,xp:true,store:true,shop:true,board:true,quest:true});
  if(old.cat&&!old.cat.gone)s.cat=Object.assign({},old.cat,{food:now()+864e5,water:now()+864e5});else s.cat=old.cat||null;
- s.objs=[newCropObj('bed',0,0,0,0),newCropObj('bed',0,3,0,0),newCropObj('bed',0,0,2,0),newCropObj('bed',0,3,2,0),newCropObj('gh',7,0,0,0)];s.objs.forEach(o=>o.state='wild');s.wt=0;s.wildFix=1;s.tips.il_slow=1;s.tips.il_v32=1;
+ s.objs=[newCropObj('bed',0,0,0,0),newCropObj('bed',0,3,0,0),newCropObj('bed',0,0,2,0),newCropObj('bed',0,3,2,0),newCropObj('gh',7,0,0,0)];s.objs.forEach(o=>o.state='wild');s.wt=0;s.wildFix=1;s.tips.il_slow=1;s.tips.il_v32=1;s.tips.il_v34=1;s.ilNeigh=1;
  ANN_IDS.forEach(id=>{if(!isIL(id)&&L>=ANN[id][1])s.tips['crop_'+id]=1});PER_IDS.forEach(id=>{if(!isIL(id)&&L>=PER[id][2])s.tips['per_'+id]=1});
  Object.assign(s.inv,{seed_il_tomato:2,seed_il_cucumber:2,seed_il_mint:2});s.orders=[];s.quests=[];return s}
 
@@ -116,7 +118,7 @@ function flyToIsrael(){const f=$('flight');f.classList.add('on');f.querySelector
  setTimeout(()=>{const s=makeIL(S);S=s;save();startGame(s);setTimeout(()=>f.classList.remove('on'),900)},3600)}
 
 /* ---------- Arrival & Svetlana ---------- */
-function ilArrival(){if(!S.ilArrive){if(!S.tips.il_slow){S.tips.il_slow=1;save();sayLater([[8,'Мама, ты заметила? В Израиле всё делается не спеша. Теперь всё растёт, готовится и делается примерно в два раза дольше — савланут!'],[6,'А ещё на грядках снова вылезли сорняки. Прополи их инструментом из магазина (вкладка «Улучшения»): рыхлитель, грабли или тяпка — каждый следующий быстрее.'],[5,'А если накопишь 10 000 монет — купи трактор. Он сам будет вскапывать все грядки!']],[2370,1000,.55])}else if(!S.tips.il_v32){S.tips.il_v32=1;save();sayLater([[9,'Мама, хорошие новости! Поливать грядки каждые 20 минут больше не нужно.'],[3,'Но здесь жарко: если созревший урожай пролежит на грядке 20 часов — он засохнет. За 4 часа до этого над грядкой загорится красная табличка с таймером.'],[5,'А ещё к нам переехали коровы и овцы! Коровник стоит на пастбище, овчарня — во дворе рядом с курятником. Купить их можно в магазине.'],[1,'Сад — на лугу у пастбища и на участке за домом, там стоят таблички «Сад». Места хватит на 17 деревьев!']],[3300,1000,.5])}return}S.ilArrive=0;save();placeDavid(0);
+function ilArrival(){if(!S.ilArrive){if(!S.tips.il_slow){S.tips.il_slow=1;save();sayLater([[8,'Мама, ты заметила? В Израиле всё делается не спеша. Теперь всё растёт, готовится и делается примерно в два раза дольше — савланут!'],[6,'А ещё на грядках снова вылезли сорняки. Прополи их инструментом из магазина (вкладка «Улучшения»): рыхлитель, грабли или тяпка — каждый следующий быстрее.'],[5,'А если накопишь 10 000 монет — купи трактор. Он сам будет вскапывать все грядки!']],[2370,1000,.55])}else if(!S.tips.il_v34&&S.tips.il_v32){S.tips.il_v34=1;save();sayLater([[9,'Мама, у нас большие новости!'],[5,'Теперь всё можно переставить по-своему: нажми кнопку ✋ справа, потом на постройку или животное — и на новое место.'],[2,'А ещё у нас будут свои мастерские: маслобойня, винодельня, цех специй и табун для питы и халы. Они открываются по одной, когда созреет урожай для них.'],[0,'И заказы теперь присылают наши соседи — Ави, бабушка Хана, Йоси с рынка и другие!']],[3300,1000,.5])}else if(!S.tips.il_v32){S.tips.il_v32=1;save();sayLater([[9,'Мама, хорошие новости! Поливать грядки каждые 20 минут больше не нужно.'],[3,'Но здесь жарко: если созревший урожай пролежит на грядке 20 часов — он засохнет. За 4 часа до этого над грядкой загорится красная табличка с таймером.'],[5,'А ещё к нам переехали коровы и овцы! Коровник стоит на пастбище, овчарня — во дворе рядом с курятником. Купить их можно в магазине.'],[1,'Сад — на лугу у пастбища и на участке за домом, там стоят таблички «Сад». Места хватит на 17 деревьев!']],[3300,1000,.5])}return}S.ilArrive=0;save();placeDavid(0);
  sayLater([[0,'Мама, ты приехала! Как я рада! Добро пожаловать в Израиль — на нашу дачу в мошаве, в Галилее.'],
   [6,'Честно, я совсем всё запустила: работа, Давид… Остались всего четыре заросшие грядки и одна старая теплица.'],
   [1,'Зато места тут очень много! Большое поле — для грядок, каменный двор — для теплиц, луг справа — для сада, а внизу — место для мастерских.']],[2370,1050,.55]);
@@ -182,3 +184,39 @@ function tractorTick(t){if(!ilOn()||!S.tractor)return;const el=trEl();
  const nx=S.objs.find(o=>o.kind==='bed'&&!o.busy&&(o.state==='used'||o.state==='weeds'));
  if(nx){const R=rectOf(nx);TR.target=nx.id;TR.doneAt=t+2600;TR.home=false;el.style.left=(R.x+R.w/2)+'px';el.style.top=(R.y+R.h*.8)+'px';el.style.zIndex=Math.round(R.y+R.h+5);return}
  if(!TR.home&&t-TR.idleAt>4000){TR.home=true;el.style.left=TRP[0]+'px';el.style.top=TRP[1]+'px';el.style.zIndex=TRP[1]}}
+
+/* ---------- v3.4: player moves buildings & animals ---------- */
+let mv=null;
+function mvStore(){if(!S.mv||typeof S.mv!=='object')S.mv={fix:{},ani:{}};S.mv.fix=S.mv.fix||{};S.mv.ani=S.mv.ani||{};return S.mv}
+function applyMoves(){const M=mvStore();for(const k in M.fix)if(FIX[k]&&!FIX[k].hid){FIX[k].x=M.fix[k][0];FIX[k].y=M.fix[k][1]}
+ for(const a in M.ani)if(ANIM[a])for(const i in M.ani[a])if(ANIM[a].pos[i])ANIM[a].pos[i]=M.ani[a][i].slice()}
+function mvEl(sel){return sel.t==='fix'?fixEls[sel.k]:aniEls[sel.a+sel.i]}
+function mvPos(sel){return sel.t==='fix'?[FIX[sel.k].x,FIX[sel.k].y]:ANIM[sel.a].pos[sel.i].slice()}
+function startMove(){if(!S.done||placing)return;closeTray();mv={sel:null,undo:[]};document.body.classList.add('moving');
+ $('placeBar').classList.add('on');$('pRot').style.display='none';$('pOk').textContent='✔ Готово';$('placeTip').textContent='Нажми на постройку или животное, а потом — на новое место';$('placeTip').classList.add('on');
+ tip('move',[[9,'Мама, здесь можно всё расставить по-своему! Нажми на постройку или животное — оно засветится.'],[5,'Потом нажми на свободное место — и оно переедет туда. На грядки, теплицы и сад ставить нельзя. Когда закончишь — «Готово».']])}
+function endMove(){if(!mv)return;if(mv.sel){const e=mvEl(mv.sel);e&&e.classList.remove('mvsel')}mv=null;document.body.classList.remove('moving');$('placeBar').classList.remove('on');$('placeTip').classList.remove('on');$('pOk').textContent='✔ Поставить';save()}
+function mvSelect(sel){if(mv.sel){const e=mvEl(mv.sel);e&&e.classList.remove('mvsel')}mv.sel=sel;const e=mvEl(sel);if(e)e.classList.add('mvsel');SND.pop();
+ $('placeTip').textContent=(sel.t==='fix'?FIX[sel.k].n:ANIM[sel.a].name)+': нажми на новое место'}
+function inZone(x,y,pad){return ZONES.some(Z=>{const cs=Z.k==='per'?80:96,rh=Z.k==='per'?56:96;return x>Z.x0-pad&&x<Z.x0+Z.cols*cs+pad&&y>Z.y0-pad&&y<Z.y0+Z.rows*rh+pad})}
+function mvOk(sel,x,y){if(x<80||x>WW-80||y<300||y>WH-10)return false;
+ for(const h of document.querySelectorAll('.hitz[data-tap=house],.hitz[data-tap=barrel]')){const L=parseFloat(h.style.left),T=parseFloat(h.style.top),W=parseFloat(h.style.width),H=parseFloat(h.style.height);if(x>L&&x<L+W&&y>T&&y<T+H)return false}
+ if(sel.t==='fix'){const w=FIX[sel.k].w;for(const dx of [-w*.45,0,w*.45])if(inZone(x+dx,y-10,0)||inZone(x+dx,y-w*.5,0))return false;
+  for(const k in FIX){if(k===sel.k||FIX[k].hid)continue;const F=FIX[k],el=fixEls[k];if(el&&el.style.display==='none')continue;if(Math.abs(F.x-x)<(F.w+w)*.42&&Math.abs(F.y-y)<Math.max(F.w,w)*.55)return false}return true}
+ return !inZone(x,y,10)}
+function mvApply(sel,p){const[x,y]=p;const M=mvStore();
+ if(sel.t==='fix'){const F=FIX[sel.k];F.x=x;F.y=y;M.fix[sel.k]=[x,y];const el=fixEls[sel.k];if(el){el.style.left=x+'px';el.style.top=y+'px';el.style.zIndex=y}
+  const b=$('kb_'+sel.k);if(b){const q=fbPos(sel.k);b.style.left=q[0]+'px';b.style.top=q[1]+'px'}}
+ else{const A=ANIM[sel.a];A.pos[sel.i]=[x,y];(M.ani[sel.a]=M.ani[sel.a]||{})[sel.i]=[x,y];const el=aniEls[sel.a+sel.i];if(el){el.style.left=x+'px';el.style.top=y+'px';el.style.zIndex=y}
+  const b=aBub[sel.a+sel.i];if(b){b.style.left=x+'px';b.style.top=(y-A.w*.72)+'px'}}}
+function mvTap(target,wp){const el=target&&target.closest?target.closest('[data-tap]'):null;const t=el&&el.dataset.tap||'';
+ if(t.startsWith('fix:')){const k=t.slice(4);if(FIX[k]&&!FIX[k].hid){mvSelect({t:'fix',k});return}}
+ if(t.startsWith('ani:')){const[,a,i]=t.split(':');if(ANIM[a]&&ANIM[a].pos[+i]){mvSelect({t:'ani',a,i:+i});return}}
+ if(!mv.sel){toast('Сначала нажми на постройку или животное');SND.fail();return}
+ const x=Math.round(wp[0]),y=Math.round(wp[1]+(mv.sel.t==='fix'?FIX[mv.sel.k].w*.35:20));
+ if(!mvOk(mv.sel,x,y)){toast('Сюда нельзя — выбери свободное место');SND.fail();return}
+ mv.undo.push([mv.sel,mvPos(mv.sel)]);mvApply(mv.sel,[x,y]);SND.plant();burst(x,y-20,10,['#e8d3a0','#fff'],60,[4,8]);save()}
+$('hMove').addEventListener('pointerdown',e=>{e.stopPropagation();ac();SND.tap();if(mv)endMove();else startMove()});
+$('pOk').addEventListener('click',()=>{if(!mv)return;endMove();toast('Готово! Всё стоит на новых местах')});
+$('pNo').addEventListener('click',()=>{if(!mv)return;while(mv.undo.length){const[s,p]=mv.undo.pop();mvApply(s,p)}endMove();toast('Перестановка отменена')});
+function ilNeighFix(){if(!ilOn()||S.ilNeigh)return;S.ilNeigh=1;(S.orders||[]).forEach(o=>{const n=ILNEIGH[Math.floor(Math.random()*ILNEIGH.length)];o.who=n[0];o.ava=n[1]})}
