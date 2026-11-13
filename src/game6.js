@@ -6,8 +6,9 @@ function renderFix(){for(const k in FIX){const F=FIX[k];let el=fixEls[k];if(!el)
  renderScare();renderSpots()}
 function tapFix(k){const F=FIX[k];
  if(!S.build[k]){if(level()<F.lvl){toast(F.n+' откроется на уровне '+F.lvl);SND.fail();return}msg(F.n,'Построить за '+cost(F.cost)+' монет?',[{t:'Построить',f:()=>buildFix(k)},{t:'Позже',cls:'orange'}]);return}
- if(k==='market')return openMarket();if(k==='well')return tapWater('well');if(k==='fair')return openFair();if(FAC[k])return openFac(k);
- const hs=ANI_IDS.filter(a=>ANIM[a].house===k);if(hs.length){toast(hs.map(a=>ANIM[a].name+': '+aniCount(a)+' из '+ANIM[a].max).join(' · ')+'. Купить — Магазин → Животные')}}
+ if(k==='market')return openMarket();if(!S.done)return openFixMain(k);
+ const hs=ANI_IDS.filter(a=>ANIM[a].house===k);if(hs.length)toast(hs.map(a=>ANIM[a].name+': '+aniCount(a)+' из '+ANIM[a].max).join(' · ')+'. Купить — Магазин → Животные');openTray({t:'fix',k})}
+function openFixMain(k){if(k==='well')return tapWater('well');if(k==='fair')return openFair();if(FAC[k])return openFac(k)}
 function buildFix(k){const F=FIX[k];if(!spend(cost(F.cost)))return;S.build[k]=true;renderFix();SND.harvest();burst(F.x,F.y-60,24,['#a8743f','#7a4e26','#ffd23f'],140);
  fixEls[k].animate([{transform:'translate(-50%,-100%) scale(.3)',opacity:0},{transform:'translate(-50%,-100%) scale(1)',opacity:1}],{duration:700,easing:'cubic-bezier(.3,1.6,.5,1)'});
  addXp(20,F.x,F.y-120);stat('built');save();featureTips()}
@@ -30,7 +31,7 @@ function tapAnimal(a,i){const x=(S.ani[a]||[])[i];if(!x)return;const A=ANIM[a];
   if(A.bonus&&Math.random()<A.bonus[1]){addItem(A.bonus[0],1);txt+=' +1 '+iName(A.bonus[0]).toLowerCase()}
   floatText(p[0],p[1]-A.w,txt,'#fff');addXp(A.xp,p[0],p[1]-A.w*.6);
   if(a==='sheep'||A.bonus)burst(p[0],p[1]-A.w*.4,12,['#fff','#f4efe2','#e8e2d0'],70,[6,12]);renderAnimals();renderHUD();save();return}
- if(x.state==='eat'){toast(A.name+' кушает — ещё '+fmt(x.t1-now()));return}
+ if(x.state==='eat')toast(A.name+' кушает — ещё '+fmt(x.t1-now()));
  openTray({t:'ani',a,i})}
 function feedAnimal(T,f){const x=S.ani[T.a][T.i];if(x.state!=='hungry')return;if(!S.inv[f]){toast('Нет корма: '+iName(f).toLowerCase());SND.fail();return}
  takeItem(f,1);const A=ANIM[T.a];x.state='eat';x.t0=now();x.t1=now()+A.time*1000*tm()*(f==='feed'?.6:1);SND.plant();renderAnimals();save()}
@@ -72,7 +73,7 @@ function collectDish(f,i){const x=S.fac[f].slots[i];if(!x)return;const q=(recOf(
  const c=elStage($('hStore'));floatText(c[0]-40,c[1]+70,'+'+q+' '+PROD[x.r][0],'#fff',true);addXp(Math.round(PROD[x.r][1]/10),fbPos(f)[0],fbPos(f)[1]);bump('hStore');renderFacUI();renderHUD();save()}
 const fbPos=f=>f==='kitchen'?KITP:[FIX[f].x,FIX[f].y-FIX[f].w*.95];const kbKey={};
 function recOf(id){for(const f in FAC)if(FAC[f].rec[id])return FAC[f].rec[id];return null}
-function renderFacBubs(){for(const f in FAC){if(f!=='kitchen'&&!FIX[f]){const e0=$('kb_'+f);if(e0)e0.style.display='none';continue}let el=$('kb_'+f);if(!el){el=document.createElement('div');el.id='kb_'+f;el.className='bb';el.dataset.tap=f==='kitchen'?'house':'fix:'+f;el.style.pointerEvents='auto';el.style.left=fbPos(f)[0]+'px';el.style.top=fbPos(f)[1]+'px';$('kbubs').appendChild(el)}
+function renderFacBubs(){for(const f in FAC){if(f!=='kitchen'&&!FIX[f]){const e0=$('kb_'+f);if(e0)e0.style.display='none';continue}let el=$('kb_'+f);if(!el){el=document.createElement('div');el.id='kb_'+f;el.className='bb';el.dataset.tap=f==='kitchen'?'house':'facb:'+f;el.style.pointerEvents='auto';el.style.left=fbPos(f)[0]+'px';el.style.top=fbPos(f)[1]+'px';$('kbubs').appendChild(el)}
   if(!facOn(f)){el.style.display='none';continue}el.style.display='';const t=now();const xs=S.fac[f].slots.filter(Boolean);const ready=xs.filter(x=>t>=x.t1);let key,html;
   if(ready.length){key='r';html=`<div class="kb ready"><img src="${IMG[PROD[ready[0].r][2]]}">Готово!</div>`}
   else if(xs.length){const x=xs.slice().sort((a,b)=>a.t1-b.t1)[0];key='c'+x.r;html=`<div class="kb"><img src="${IMG[PROD[x.r][2]]}"><span class="kt">${fmt(x.t1-t)}</span></div>`}

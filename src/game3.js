@@ -91,7 +91,7 @@ function sellables(){return Object.keys(S.inv).filter(k=>S.inv[k]>0&&(ANN[k]||PE
 function renderHUD(){if(!S)return;
  $('coinTxt').textContent=S.coins;const lv=level();$('lvTxt').textContent=lv;$('xpBar').style.width=Math.min(100,(S.xp-xpFor(lv))/(xpFor(lv+1)-xpFor(lv))*100)+'%';
  $('storeCnt').textContent=sellables().reduce((a,k)=>a+S.inv[k],0);
- show('hCoins',S.ui.coins);show('hXp',S.ui.xp);show('hStore',S.ui.store);show('hShop',S.ui.shop);show('hQuest',S.ui.quest);show('hDaily',S.done);show('hMove',S.done);
+ show('hCoins',S.ui.coins);show('hXp',S.ui.xp);show('hStore',S.ui.store);show('hShop',S.ui.shop);show('hQuest',S.ui.quest);show('hDaily',S.done);
  const canFill=S.done?S.orders.filter(o=>S.inv[o.item]>=o.qty).length:(S.tut>=TI.sell&&S.inv.potato>0?1:0);
  $('boardBadge').style.display=S.ui.board&&canFill?'block':'none';show('hOrders',S.ui.board);$('boardLbl').style.display=S.ui.board?'':'none';$('ordersDot').style.display=S.ui.board&&canFill?'block':'none';$('ordersDot').textContent=canFill||'';$('boardBadge').textContent=canFill;
  renderGauge();$('canBadge').classList.toggle('on',S.can>0);$('canCnt').textContent=S.can>1?S.can:'';$('canCnt').style.display=S.can>1?'':'none';

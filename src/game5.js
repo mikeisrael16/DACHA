@@ -69,10 +69,11 @@ function trayItems(T){const w=tutWait(),it=[];
    if(S.done&&(o.state!=='planted')&&!o.busy)it.push({k:'move',img:IMG.move,lbl:'Переставить'})}
   else{if(needsWater(o))it.push({k:'can',img:IMG.i_can,lbl:S.can?'Лейка':'Пустая',dim:!S.can});if(!o.busy)it.push({k:'move',img:IMG.move,lbl:'Переставить'})}}
  if(T.t==='bowl'){if(T.b==='catfood')it.push({k:'catfood',img:IMG.catfood,cnt:S.inv.catfood||null,lbl:S.inv.catfood?'Корм':'Нет корма',dim:!S.inv.catfood});else{const ok=S.can>0||S.water>0||S.build.well;it.push({k:'catwater',img:IMG.i_can,lbl:S.can?'Лейка':ok?'Из бочки':'Нет воды',dim:!ok})}return it}
- if(T.t==='ani'){const a=S.ani[T.a][T.i];if(a.state==='hungry')ANIM[T.a].feeds.forEach(f=>it.push({k:'feed:'+f,img:IMG[f],cnt:S.inv[f]||null,lbl:iName(f),dim:!S.inv[f]}))}
+ if(T.t==='ani'){const a=S.ani[T.a][T.i];if(a.state==='hungry')ANIM[T.a].feeds.forEach(f=>it.push({k:'feed:'+f,img:IMG[f],cnt:S.inv[f]||null,lbl:iName(f),dim:!S.inv[f]}));if(S.done)it.push({k:'move',img:IMG.move,lbl:'Переставить'})}
+ if(T.t==='fix'){const k=T.k;if(FAC[k])it.push({k:'open',img:IMG['b_'+k]||IMG.move,lbl:'Открыть'});else if(k==='well')it.push({k:'open',img:IMG.i_can,lbl:'Набрать воду'});else if(k==='fair')it.push({k:'open',img:IMG.b_fair||IMG.move,lbl:'Открыть'});it.push({k:'move',img:IMG.move,lbl:'Переставить'});return it}
  if(w==='dig')return it.filter(i=>i.k==='shovel');if(w==='plant')return it.filter(i=>i.k==='seed:potato');if(w==='water')return it.filter(i=>i.k==='can');if(w==='fert')return it.filter(i=>i.k==='fert');
  return it}
-function trayPos(T){if(T.t==='bowl'){const p=T.b==='catfood'?BOWLF:BOWLW;return[p[0],p[1]-70]}if(T.t==='obj'){const o=objById(T.id);const p=topOf(o);return[p[0],p[1]-6]}const A=ANIM[T.a],a=A.pos[T.i];return[a[0],a[1]-A.w*.75]}
+function trayPos(T){if(T.t==='fix'){const F=FIX[T.k];return[F.x,F.y-F.w*.85]}if(T.t==='bowl'){const p=T.b==='catfood'?BOWLF:BOWLW;return[p[0],p[1]-70]}if(T.t==='obj'){const o=objById(T.id);const p=topOf(o);return[p[0],p[1]-6]}const A=ANIM[T.a],a=A.pos[T.i];return[a[0],a[1]-A.w*.75]}
 function openTray(T){const it=trayItems(T);const t=$('tray');if(!it.length){closeTray();return false}
  closeTray();trayT=T;t.innerHTML='';it.forEach(o=>{const d=document.createElement('div');d.className='titem'+(o.dim?' dim':'');d.dataset.k=o.k;d.innerHTML=`<img src="${o.img}">${o.cnt?`<div class="cnt">${o.cnt}</div>`:''}<div class="lbl">${o.lbl}</div>`;d.addEventListener('pointerdown',e=>startDrag(e,o,d));t.appendChild(d)});
  const p=trayPos(T);t.style.left=Math.max(240,Math.min(WW-240,p[0]))+'px';t.style.top=p[1]+'px';t.style.zIndex=6000;t.classList.remove('on');void t.offsetWidth;t.classList.add('on');trayOpen=true;SND.pop();
@@ -106,6 +107,8 @@ function finishBusy(o){const k=o.busy.type,data=o.busy.data;o.busy=null;const R=
  else if(k==='water'){const P=PER[o.p];const dur=(o.stage===0?P[4]:P[5])*1000*tm();o.seg={t0:now(),t1:now()+dur};SND.pop();stat('water')}
  renderObj(o,k==='plant');save()}
 function applyTool(k,T){closeTray();if(!T)return;
+ if(T.t==='fix'){if(k==='move')return moveOne({t:'fix',k:T.k});if(k==='open')return openFixMain(T.k);return}
+ if(T.t==='ani'&&k==='move')return moveOne({t:'ani',a:T.a,i:T.i});
  if(T.t==='ani'){if(k.startsWith('feed:'))feedAnimal(T,k.slice(5));return}
  if(T.t==='bowl'){fillBowl(T.b);return}
  const o=objById(T.id);if(!o||o.busy)return;
@@ -141,6 +144,7 @@ function handleTap(target,wp){if(mv){mvTap(target,wp);return}if(placing){placeAt
  if(tap.startsWith('thief:'))return shooThief(tap.slice(6),true);
  if(tap.startsWith('ani:')){const[,a,i]=tap.split(':');return tapAnimal(a,+i)}
  if(tap.startsWith('fix:'))return tapFix(tap.slice(4));
+ if(tap.startsWith('facb:'))return openFixMain(tap.slice(5));
  if(tap==='house')return openFac('kitchen');
  if(tap==='scare')return toast(S.scareUntil>now()?'Пугало сторожит ещё '+fmt(S.scareUntil-now()):'Пугало развалилось — поставь новое (Магазин → Защита)');
  if(tap==='david')return tapDavid();if(tap==='tractor'){SND.tap();return toast('Трактор сам вскапывает все свободные грядки')}if(tap==='cat')return petCat();if(tap==='catfood'||tap==='catwater')return tapBowl(tap);
